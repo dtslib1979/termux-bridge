@@ -18,6 +18,12 @@
       "tier": 1
     },
     {
+      "id": "dtslib-dashboard",
+      "name": "OPS Dashboard",
+      "url": "https://dtslib.com/dashboard/",
+      "tier": 1
+    },
+    {
       "id": "parksy-image",
       "name": "Parksy Image",
       "url": "https://dtslib1979.github.io/parksy-image",
