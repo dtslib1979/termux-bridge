@@ -1,7 +1,6 @@
 name: QA Snapshot
 
 on:
-  # Manual trigger with options
   workflow_dispatch:
     inputs:
       tier:
@@ -19,7 +18,6 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
-  # On push to main (only if urls changed)
   push:
     branches: [main]
     paths:
@@ -61,16 +59,20 @@ jobs:
 
       - name: Upload screenshots as artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: qa-snapshots-${{ github.run_number }}
-          path: screenshots/latest/
-          retention-days: 30
+          name: qa-screenshots-${{ github.run_number }}
+          path: screenshots/
+          retention-days: 14
 
-      - name: Commit latest screenshots
+      - name: Commit QA results (JSON + report only)
         run: |
           git config user.name "QA Bot"
           git config user.email "qa-bot@dtslib.com"
-          git add screenshots/latest/
+          git add runs/
           git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "qa: snapshot $(date -u +%Y-%m-%d) — $(grep -c 'OK' screenshots/latest/report.md || echo 0) pass"
+          PASS=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.totals?.pass||0)")
+          WARN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.totals?.warn||0)")
+          BROKEN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.brokenLinks||0)")
+          git commit -m "qa: ${PASS} pass / ${WARN} warn / ${BROKEN} broken — $(date -u +%Y-%m-%d)"
           git push
