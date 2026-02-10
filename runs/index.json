@@ -1,0 +1,13 @@
+[
+  {
+    "runId": "2026-02-10-08-52",
+    "timestamp": "2026-02-10T08:54:05.189Z",
+    "sitesChecked": 26,
+    "totals": {
+      "pass": 20,
+      "warn": 6,
+      "fail": 0
+    },
+    "brokenLinks": 14
+  }
+]
