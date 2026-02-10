@@ -1,8 +1,8 @@
 {
   "name": "playwright-bot",
   "version": "2.0.0",
-  "description": "DTSLIB QA Bot — screenshots, link check, visual QA",
-  "main": "snap.js",
+  "description": "DTSLIB QA Bot — automated site health checks, broken link detection, structured JSON reports",
+  "main": "qa/check.js",
   "scripts": {
     "qa": "node qa/check.js",
     "qa:hq": "node qa/check.js --tier=1",

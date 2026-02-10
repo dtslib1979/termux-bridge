@@ -16,8 +16,7 @@ Global (dtslib-papyrus)
 
 ## Local Rules
 
-이 폴더에 로컬 규칙 추가:
-- `local/*.md`
+- [`automation-boundary.md`](./automation-boundary.md) — 자동화 경계 선언 (무엇을 자동화하고, 무엇을 인간에게 남기고, 무엇을 의도적으로 배제하는가)
 
 ---
 
@@ -27,7 +26,7 @@ Global (dtslib-papyrus)
 |------|------|
 | `_inherit.json` | 상속 선언 |
 | `index.md` | 이 파일 |
-| `local/` | 로컬 전용 규칙 |
+| `automation-boundary.md` | 자동화 경계 스펙 |
 
 ---
 
