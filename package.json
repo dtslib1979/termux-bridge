@@ -1,17 +1,19 @@
 {
   "name": "playwright-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "DTSLIB QA Bot — screenshots, link check, visual QA",
+  "main": "snap.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "qa": "node qa/check.js",
+    "qa:hq": "node qa/check.js --tier=1",
+    "qa:studios": "node qa/check.js --tier=2",
+    "snap": "node snap.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "dtslib1979",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "playwright-core": "^1.57.0",
     "ws": "^8.18.3"
   }
 }

@@ -1,0 +1,160 @@
+{
+  "sites": [
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "url": "https://dtslib.com",
+      "tier": 1
+    },
+    {
+      "id": "parksy-image",
+      "name": "Parksy Image",
+      "url": "https://dtslib1979.github.io/parksy-image",
+      "tier": 2
+    },
+    {
+      "id": "parksy-audio",
+      "name": "Parksy Audio",
+      "url": "https://dtslib1979.github.io/parksy-audio",
+      "tier": 2
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "url": "https://dtslib1979.github.io/espiritu-tango",
+      "tier": 2
+    },
+    {
+      "id": "apk-lab",
+      "name": "APK Lab",
+      "url": "https://dtslib-apk-lab.vercel.app/",
+      "tier": 2
+    },
+    {
+      "id": "cloud-appstore",
+      "name": "Cloud Appstore",
+      "url": "https://dtslib-cloud-appstore.vercel.app/",
+      "tier": 2
+    },
+    {
+      "id": "parksy-kr",
+      "name": "Parksy.kr",
+      "url": "https://parksy.kr",
+      "tier": 2
+    },
+    {
+      "id": "dtslib-kr",
+      "name": "DTSLIB.kr",
+      "url": "https://dtslib.kr",
+      "tier": 2
+    },
+    {
+      "id": "eae-kr",
+      "name": "EAE.kr",
+      "url": "https://eae.kr",
+      "tier": 2
+    },
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "url": "https://dtslib1979.github.io/dtslib-branch",
+      "tier": 2
+    },
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "url": "https://dtslib1979.github.io/koosy",
+      "tier": 3
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "url": "https://dtslib1979.github.io/gohsy",
+      "tier": 3
+    },
+    {
+      "id": "artrew",
+      "name": "Artrew",
+      "url": "https://dtslib1979.github.io/artrew",
+      "tier": 3
+    },
+    {
+      "id": "papafly",
+      "name": "Papafly",
+      "url": "https://dtslib1979.github.io/papafly",
+      "tier": 3
+    },
+    {
+      "id": "namone",
+      "name": "Namone",
+      "url": "https://dtslib1979.github.io/namone/",
+      "tier": 3
+    },
+    {
+      "id": "namoneygoal",
+      "name": "Namoneygoal",
+      "url": "https://dtslib1979.github.io/namoneygoal",
+      "tier": 3
+    },
+    {
+      "id": "eae-univ",
+      "name": "EAE University",
+      "url": "https://dtslib1979.github.io/eae-univ",
+      "tier": 3
+    },
+    {
+      "id": "orbitprompt",
+      "name": "OrbitPrompt",
+      "url": "https://dtslib1979.github.io/OrbitPrompt",
+      "tier": 3
+    },
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "url": "https://dtslib1979.github.io/phoneparis",
+      "tier": 3
+    },
+    {
+      "id": "dongseon-studio",
+      "name": "Dongseon Studio",
+      "url": "https://dtslib1979.github.io/dongseon-studio",
+      "tier": 3
+    },
+    {
+      "id": "hoyadang",
+      "name": "Hoyadang",
+      "url": "https://hoyadang.com",
+      "tier": 3
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "url": "https://dtslib1979.github.io/gohsy-production",
+      "tier": 3
+    },
+    {
+      "id": "buckleychang",
+      "name": "Buckley Chang",
+      "url": "https://buckleychang.com",
+      "tier": 3
+    },
+    {
+      "id": "buddies-kr",
+      "name": "Buddies.kr",
+      "url": "https://buddies.kr",
+      "tier": 3
+    },
+    {
+      "id": "alexandria",
+      "name": "Alexandria Sanctuary",
+      "url": "https://dtslib1979.github.io/alexandria-sanctuary",
+      "tier": 3
+    },
+    {
+      "id": "parksy-logs",
+      "name": "Parksy Logs",
+      "url": "https://dtslib1979.github.io/parksy-logs/",
+      "tier": 3
+    }
+  ]
+}

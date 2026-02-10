@@ -1,0 +1,76 @@
+name: QA Snapshot
+
+on:
+  # Manual trigger with options
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Max tier to check (1=HQ only, 2=+studios, 3=all)'
+        required: false
+        default: '3'
+        type: choice
+        options: ['1', '2', '3']
+      ids:
+        description: 'Specific site IDs (comma-separated, empty=all)'
+        required: false
+        default: ''
+
+  # Daily at 15:00 KST (06:00 UTC)
+  schedule:
+    - cron: '0 6 * * *'
+
+  # On push to main (only if urls changed)
+  push:
+    branches: [main]
+    paths:
+      - 'qa/urls.json'
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install playwright
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Run QA check
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.tier }}" ]; then
+            ARGS="$ARGS --tier=${{ github.event.inputs.tier }}"
+          fi
+          if [ -n "${{ github.event.inputs.ids }}" ]; then
+            ARGS="$ARGS --id=${{ github.event.inputs.ids }}"
+          fi
+          node qa/check.js $ARGS
+
+      - name: Upload screenshots as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-snapshots-${{ github.run_number }}
+          path: screenshots/latest/
+          retention-days: 30
+
+      - name: Commit latest screenshots
+        run: |
+          git config user.name "QA Bot"
+          git config user.email "qa-bot@dtslib.com"
+          git add screenshots/latest/
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "qa: snapshot $(date -u +%Y-%m-%d) — $(grep -c 'OK' screenshots/latest/report.md || echo 0) pass"
+          git push
