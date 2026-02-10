@@ -17,7 +17,7 @@ const JPEG_QUALITY = 70;
 const NAV_TIMEOUT = 15000;
 const LINK_TIMEOUT = 8000;
 
-async function checkSite(browser, site) {
+async function checkSite(browser, site, ignorePatterns) {
   const result = {
     id: site.id,
     name: site.name,
@@ -74,10 +74,19 @@ async function checkSite(browser, site) {
 
         if (!res || res.status() >= 400) {
           const status = res ? res.status() : 'TIMEOUT';
-          result.brokenLinks.push({ href: link.href, text: link.text, status });
+          const ignored = ignorePatterns.some(p => link.href.includes(p.pattern));
+          if (ignored) {
+            result.ignoredLinks = result.ignoredLinks || [];
+            result.ignoredLinks.push({ href: link.href, text: link.text, status, reason: ignorePatterns.find(p => link.href.includes(p.pattern)).reason });
+          } else {
+            result.brokenLinks.push({ href: link.href, text: link.text, status });
+          }
         }
       } catch {
-        result.brokenLinks.push({ href: link.href, text: link.text, status: 'ERROR' });
+        const ignored = ignorePatterns.some(p => link.href.includes(p.pattern));
+        if (!ignored) {
+          result.brokenLinks.push({ href: link.href, text: link.text, status: 'ERROR' });
+        }
       }
     }
 
@@ -188,6 +197,7 @@ function saveSummary(results, startTime, runId, runDir) {
     sitesChecked: results.length,
     totals: { pass, warn, fail },
     brokenLinks: totalBroken,
+    ignoredLinks: results.reduce((n, r) => n + (r.ignoredLinks || []).length, 0),
     consoleErrors: totalErrors,
     topBroken: results
       .filter(r => r.brokenLinks.length > 0)
@@ -251,6 +261,7 @@ function updateIndex(runId, summary) {
 (async () => {
   const config = JSON.parse(fs.readFileSync(URLS_FILE, 'utf8'));
   const sites = config.sites;
+  const ignorePatterns = config.ignoreLinks || [];
 
   const tierFilter = process.argv.find(a => a.startsWith('--tier='));
   const tier = tierFilter ? parseInt(tierFilter.split('=')[1]) : null;
@@ -276,7 +287,7 @@ function updateIndex(runId, summary) {
 
   for (const site of targets) {
     console.log(`[QA] ${site.name} (${site.url})`);
-    const result = await checkSite(browser, site);
+    const result = await checkSite(browser, site, ignorePatterns);
     console.log(`  → ${result.status} | ${result.loadTime}ms | ${result.brokenLinks.length} broken | ${result.consoleErrors.length} errors`);
     results.push(result);
   }

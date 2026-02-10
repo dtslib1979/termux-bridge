@@ -1,4 +1,15 @@
 {
+  "ignoreLinks": [
+    { "pattern": "github.com/dtslib1979/parksy-image", "reason": "Private repo — 404 expected for unauthenticated" },
+    { "pattern": "github.com/dtslib1979/parksy-audio", "reason": "Private repo — 404 expected for unauthenticated" },
+    { "pattern": "grok.com", "reason": "External site blocks HEAD requests — 403 false positive" },
+    { "pattern": "sora.com", "reason": "External site blocks HEAD requests — 403 false positive" },
+    { "pattern": "midjourney.com", "reason": "External site blocks HEAD requests — 403 false positive" },
+    { "pattern": "canva.com", "reason": "External site blocks HEAD requests — 403 false positive" },
+    { "pattern": "phoneparis.com", "reason": "Domain not yet configured — pending DNS setup" },
+    { "pattern": "dtslib-apk-lab/releases/download", "reason": "APK not yet built — pending release" },
+    { "pattern": "nightly.link/dtslib1979/dtslib-apk-lab", "reason": "APK not yet built — pending release" }
+  ],
   "sites": [
     {
       "id": "dtslib-com",

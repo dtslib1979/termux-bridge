@@ -7,7 +7,7 @@
     "qa": "node qa/check.js",
     "qa:hq": "node qa/check.js --tier=1",
     "qa:studios": "node qa/check.js --tier=2",
-    "snap": "node snap.js"
+    "snap": "node local/snap.js"
   },
   "keywords": [],
   "author": "dtslib1979",

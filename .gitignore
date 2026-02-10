@@ -2,3 +2,4 @@ node_modules/
 .chrome-data/
 screenshots/
 *.log
+package-lock.json
