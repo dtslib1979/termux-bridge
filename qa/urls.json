@@ -8,7 +8,8 @@
     { "pattern": "canva.com", "reason": "External site blocks HEAD requests — 403 false positive" },
     { "pattern": "phoneparis.com", "reason": "Domain not yet configured — pending DNS setup" },
     { "pattern": "dtslib-apk-lab/releases/download", "reason": "APK not yet built — pending release" },
-    { "pattern": "nightly.link/dtslib1979/dtslib-apk-lab", "reason": "APK not yet built — pending release" }
+    { "pattern": "nightly.link/dtslib1979/dtslib-apk-lab", "reason": "APK not yet built — pending release" },
+    { "pattern": "github.com/dtslib1979/dtslib-papyrus/blob/main/automation", "reason": "GitHub rate-limits HEAD requests from Actions — 429 false positive" }
   ],
   "sites": [
     {
