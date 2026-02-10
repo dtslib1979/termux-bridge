@@ -1,5 +1,16 @@
 [
   {
+    "runId": "2026-02-10-20-11",
+    "timestamp": "2026-02-10T20:11:29.390Z",
+    "sitesChecked": 3,
+    "totals": {
+      "pass": 3,
+      "warn": 0,
+      "fail": 0
+    },
+    "brokenLinks": 0
+  },
+  {
     "runId": "2026-02-10-09-45",
     "timestamp": "2026-02-10T09:47:08.319Z",
     "sitesChecked": 26,

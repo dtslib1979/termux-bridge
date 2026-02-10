@@ -1,0 +1,146 @@
+[
+  {
+    "id": "buddies-kr",
+    "name": "Buddies.kr",
+    "url": "https://buddies.kr",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 1286,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2728 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "gohsy-production",
+    "name": "Gohsy Production",
+    "url": "https://dtslib1979.github.io/gohsy-production",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 1078,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1775 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dtslib-com",
+    "name": "DTSLIB HQ",
+    "url": "https://dtslib.com",
+    "tier": 1,
+    "status": "PASS",
+    "loadTime": 1068,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1689 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  }
+]
