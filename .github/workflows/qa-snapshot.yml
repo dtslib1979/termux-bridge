@@ -75,5 +75,7 @@ jobs:
           WARN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.totals?.warn||0)")
           BROKEN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.brokenLinks||0)")
           git commit -m "qa: ${PASS} pass / ${WARN} warn / ${BROKEN} broken — $(date -u +%Y-%m-%d)"
+          git checkout -- package.json 2>/dev/null || true
+          git clean -fd screenshots/ 2>/dev/null || true
           git pull --rebase || true
           git push
