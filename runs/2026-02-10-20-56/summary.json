@@ -1,0 +1,27 @@
+{
+  "runId": "2026-02-10-20-56",
+  "timestamp": "2026-02-10T20:56:30.811Z",
+  "duration": 3,
+  "sitesChecked": 1,
+  "totals": {
+    "pass": 1,
+    "warn": 0,
+    "fail": 0
+  },
+  "brokenLinks": 0,
+  "ignoredLinks": 1,
+  "consoleErrors": 4,
+  "docQA": {
+    "pass": 6,
+    "warn": 0,
+    "fail": 0
+  },
+  "topBroken": [],
+  "topSlow": [
+    {
+      "id": "dtslib-dashboard",
+      "name": "OPS Dashboard",
+      "ms": 1175
+    }
+  ]
+}
