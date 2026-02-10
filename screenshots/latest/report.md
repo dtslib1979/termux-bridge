@@ -1,39 +1,39 @@
 # QA Snapshot Report
 
-**Generated:** 2026-02-10 07:46:34 UTC
+**Generated:** 2026-02-10 07:52:11 UTC
 **Sites checked:** 26
-**Duration:** 88s
+**Duration:** 81s
 **Summary:** 15 PASS / 11 WARN / 0 FAIL / 35 broken links
 
 ---
 
 | Status | Site | Load | Links | Errors |
 |--------|------|------|-------|--------|
-| OK | DTSLIB HQ | 1.1s | 0 | 0 |
+| OK | DTSLIB HQ | 0.9s | 0 | 0 |
 | !! | Parksy Image | 0.9s | 5 | 4 |
 | !! | Parksy Audio | 0.7s | 2 | 0 |
 | !! | Espiritu Tango | 2.0s | 0 | 2 |
 | !! | APK Lab | 0.7s | 4 | 0 |
-| OK | Cloud Appstore | 0.8s | 0 | 0 |
+| OK | Cloud Appstore | 0.7s | 0 | 0 |
 | !! | Parksy.kr | 0.6s | 5 | 0 |
 | !! | DTSLIB.kr | 0.6s | 2 | 1 |
-| !! | EAE.kr | 0.7s | 8 | 1 |
-| OK | Branch HQ | 2.3s | 0 | 1 |
+| !! | EAE.kr | 0.6s | 8 | 1 |
+| OK | Branch HQ | 2.1s | 0 | 1 |
 | OK | Koosy | 2.3s | 0 | 0 |
-| OK | Gohsy | 2.3s | 0 | 1 |
+| OK | Gohsy | 2.1s | 0 | 1 |
 | OK | Artrew | 2.2s | 0 | 0 |
-| OK | Papafly | 2.2s | 0 | 0 |
-| OK | Namone | 0.9s | 0 | 0 |
+| OK | Papafly | 2.1s | 0 | 0 |
+| OK | Namone | 0.8s | 0 | 0 |
 | !! | Namoneygoal | 1.0s | 1 | 2 |
-| !! | EAE University | 0.7s | 3 | 0 |
-| !! | OrbitPrompt | 0.7s | 2 | 0 |
-| OK | Phoneparis | 0.9s | 0 | 0 |
-| OK | Dongseon Studio | 1.3s | 0 | 0 |
+| !! | EAE University | 0.6s | 3 | 0 |
+| !! | OrbitPrompt | 0.6s | 2 | 0 |
+| OK | Phoneparis | 0.7s | 0 | 0 |
+| OK | Dongseon Studio | 1.0s | 0 | 0 |
 | OK | Hoyadang | 0.8s | 0 | 0 |
 | OK | Gohsy Production | 1.1s | 0 | 0 |
 | OK | Buckley Chang | 0.9s | 0 | 0 |
 | OK | Buddies.kr | 0.7s | 0 | 0 |
-| !! | Alexandria Sanctuary | 1.2s | 3 | 0 |
+| !! | Alexandria Sanctuary | 0.8s | 3 | 0 |
 | OK | Parksy Logs | 0.7s | 0 | 0 |
 
 ---
