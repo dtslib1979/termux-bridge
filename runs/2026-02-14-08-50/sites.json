@@ -1,11 +1,11 @@
 [
   {
-    "id": "dtslib-com",
-    "name": "DTSLIB HQ",
-    "url": "https://dtslib.com",
-    "tier": 1,
+    "id": "gohsy-production",
+    "name": "Gohsy Production",
+    "url": "https://dtslib1979.github.io/gohsy-production",
+    "tier": 3,
     "status": "PASS",
-    "loadTime": 1204,
+    "loadTime": 2914,
     "brokenLinks": [],
     "consoleErrors": [],
     "docQA": [
@@ -25,7 +25,7 @@
         "id": "A3-text-density",
         "name": "가시 텍스트 500자+",
         "status": "PASS",
-        "detail": "1783 chars"
+        "detail": "2089 chars"
       },
       {
         "id": "A4-url-nav",

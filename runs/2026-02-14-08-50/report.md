@@ -1,16 +1,16 @@
 # QA Snapshot Report
 
-**Run ID:** 2026-02-12-07-54
-**Generated:** 2026-02-12 07:55:10 UTC
+**Run ID:** 2026-02-14-08-50
+**Generated:** 2026-02-14 08:50:34 UTC
 **Sites checked:** 1
-**Duration:** 13s
+**Duration:** 6s
 **Summary:** 1 PASS / 0 WARN / 0 FAIL / 0 broken links
 
 ---
 
 | Status | Site | Load | Links | Errors | DocQA |
 |--------|------|------|-------|--------|-------|
-| OK | DTSLIB HQ | 1.2s | 0 | 0 | 6/6 |
+| OK | Gohsy Production | 2.9s | 0 | 0 | 6/6 |
 
 ---
 
@@ -20,4 +20,4 @@
 
 | Site | sw-off | skeleton | text-density | url-nav | meta | freshness |
 |------|------|------|------|------|------|------|
-| DTSLIB HQ | OK | OK | OK | OK | OK | OK |
+| Gohsy Production | OK | OK | OK | OK | OK | OK |
