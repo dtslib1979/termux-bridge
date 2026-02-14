@@ -1,5 +1,16 @@
 [
   {
+    "runId": "2026-02-14-09-41",
+    "timestamp": "2026-02-14T09:41:34.568Z",
+    "sitesChecked": 1,
+    "totals": {
+      "pass": 1,
+      "warn": 0,
+      "fail": 0
+    },
+    "brokenLinks": 0
+  },
+  {
     "runId": "2026-02-14-08-50",
     "timestamp": "2026-02-14T08:50:34.004Z",
     "sitesChecked": 1,
@@ -35,17 +46,6 @@
   {
     "runId": "2026-02-13-06-18",
     "timestamp": "2026-02-13T06:20:23.563Z",
-    "sitesChecked": 27,
-    "totals": {
-      "pass": 15,
-      "warn": 12,
-      "fail": 0
-    },
-    "brokenLinks": 0
-  },
-  {
-    "runId": "2026-02-13-00-42",
-    "timestamp": "2026-02-13T00:44:28.592Z",
     "sitesChecked": 27,
     "totals": {
       "pass": 15,

@@ -1,0 +1,27 @@
+{
+  "runId": "2026-02-14-09-41",
+  "timestamp": "2026-02-14T09:41:34.568Z",
+  "duration": 6,
+  "sitesChecked": 1,
+  "totals": {
+    "pass": 1,
+    "warn": 0,
+    "fail": 0
+  },
+  "brokenLinks": 0,
+  "ignoredLinks": 0,
+  "consoleErrors": 0,
+  "docQA": {
+    "pass": 6,
+    "warn": 0,
+    "fail": 0
+  },
+  "topBroken": [],
+  "topSlow": [
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2604
+    }
+  ]
+}
