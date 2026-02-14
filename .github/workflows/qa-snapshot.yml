@@ -23,6 +23,10 @@ on:
     paths:
       - 'qa/urls.json'
 
+concurrency:
+  group: qa-snapshot
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -77,5 +81,5 @@ jobs:
           git commit -m "qa: ${PASS} pass / ${WARN} warn / ${BROKEN} broken — $(date -u +%Y-%m-%d)"
           git checkout -- package.json 2>/dev/null || true
           git clean -fd screenshots/ 2>/dev/null || true
-          git pull --rebase || true
+          git pull --rebase || (git rebase --abort && git pull --no-rebase && git push && exit 0)
           git push
