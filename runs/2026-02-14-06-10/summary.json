@@ -1,7 +1,7 @@
 {
-  "runId": "2026-02-11-06-21",
-  "timestamp": "2026-02-11T06:23:31.174Z",
-  "duration": 94,
+  "runId": "2026-02-14-06-10",
+  "timestamp": "2026-02-14T06:12:36.358Z",
+  "duration": 98,
   "sitesChecked": 27,
   "totals": {
     "pass": 15,
@@ -19,29 +19,29 @@
   "topBroken": [],
   "topSlow": [
     {
-      "id": "gohsy",
-      "name": "Gohsy",
-      "ms": 2324
+      "id": "papafly",
+      "name": "Papafly",
+      "ms": 2380
     },
     {
       "id": "artrew",
       "name": "Artrew",
-      "ms": 2106
+      "ms": 2343
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2302
     },
     {
       "id": "koosy",
       "name": "Koosy",
-      "ms": 2092
-    },
-    {
-      "id": "papafly",
-      "name": "Papafly",
-      "ms": 2066
+      "ms": 2288
     },
     {
       "id": "dtslib-branch",
       "name": "Branch HQ",
-      "ms": 2061
+      "ms": 2191
     }
   ]
 }
