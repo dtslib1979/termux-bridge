@@ -73,13 +73,22 @@ jobs:
         run: |
           git config user.name "QA Bot"
           git config user.email "qa-bot@dtslib.com"
+
+          # Save QA output files before reset
+          cp -r runs/ /tmp/qa-runs/
+
+          # Sync to latest remote (discard stale checkout)
+          git fetch origin main
+          git reset --hard origin/main
+
+          # Restore QA output on top of latest
+          cp -r /tmp/qa-runs/* runs/
+
           git add runs/
           git diff --staged --quiet && echo "No changes" && exit 0
+
           PASS=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.totals?.pass||0)")
           WARN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.totals?.warn||0)")
           BROKEN=$(cat runs/index.json | node -e "const d=require('fs').readFileSync(0,'utf8');const j=JSON.parse(d);console.log(j[0]?.brokenLinks||0)")
           git commit -m "qa: ${PASS} pass / ${WARN} warn / ${BROKEN} broken — $(date -u +%Y-%m-%d)"
-          git checkout -- package.json 2>/dev/null || true
-          git clean -fd screenshots/ 2>/dev/null || true
-          git pull --rebase || (git rebase --abort && git pull --no-rebase && git push && exit 0)
           git push
