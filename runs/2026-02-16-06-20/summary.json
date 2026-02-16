@@ -1,0 +1,47 @@
+{
+  "runId": "2026-02-16-06-20",
+  "timestamp": "2026-02-16T06:22:28.731Z",
+  "duration": 119,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 15,
+    "warn": 12,
+    "fail": 0
+  },
+  "brokenLinks": 0,
+  "ignoredLinks": 14,
+  "consoleErrors": 16,
+  "docQA": {
+    "pass": 145,
+    "warn": 17,
+    "fail": 0
+  },
+  "topBroken": [],
+  "topSlow": [
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2707
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2602
+    },
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "ms": 2514
+    },
+    {
+      "id": "artrew",
+      "name": "Artrew",
+      "ms": 2479
+    },
+    {
+      "id": "papafly",
+      "name": "Papafly",
+      "ms": 2417
+    }
+  ]
+}
