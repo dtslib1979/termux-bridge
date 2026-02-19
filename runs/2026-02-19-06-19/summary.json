@@ -1,0 +1,47 @@
+{
+  "runId": "2026-02-19-06-19",
+  "timestamp": "2026-02-19T06:21:23.166Z",
+  "duration": 97,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 15,
+    "warn": 12,
+    "fail": 0
+  },
+  "brokenLinks": 0,
+  "ignoredLinks": 14,
+  "consoleErrors": 16,
+  "docQA": {
+    "pass": 145,
+    "warn": 17,
+    "fail": 0
+  },
+  "topBroken": [],
+  "topSlow": [
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2272
+    },
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "ms": 2193
+    },
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 2150
+    },
+    {
+      "id": "papafly",
+      "name": "Papafly",
+      "ms": 2097
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2066
+    }
+  ]
+}
