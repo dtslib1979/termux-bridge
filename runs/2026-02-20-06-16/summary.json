@@ -1,0 +1,47 @@
+{
+  "runId": "2026-02-20-06-16",
+  "timestamp": "2026-02-20T06:17:55.994Z",
+  "duration": 104,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 15,
+    "warn": 12,
+    "fail": 0
+  },
+  "brokenLinks": 0,
+  "ignoredLinks": 16,
+  "consoleErrors": 16,
+  "docQA": {
+    "pass": 144,
+    "warn": 18,
+    "fail": 0
+  },
+  "topBroken": [],
+  "topSlow": [
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 15002
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2257
+    },
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "ms": 2099
+    },
+    {
+      "id": "artrew",
+      "name": "Artrew",
+      "ms": 2071
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 2066
+    }
+  ]
+}
