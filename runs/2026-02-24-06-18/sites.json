@@ -1,0 +1,1328 @@
+[
+  {
+    "id": "koosy",
+    "name": "Koosy",
+    "url": "https://dtslib1979.github.io/koosy",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 2382,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "509 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "gohsy-production",
+    "name": "Gohsy Production",
+    "url": "https://dtslib1979.github.io/gohsy-production",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 2223,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2096 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "gohsy",
+    "name": "Gohsy",
+    "url": "https://dtslib1979.github.io/gohsy",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 2215,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "557 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "espiritu-tango",
+    "name": "Espiritu Tango",
+    "url": "https://dtslib1979.github.io/espiritu-tango",
+    "tier": 2,
+    "status": "PASS",
+    "loadTime": 2076,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1822 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "artrew",
+    "name": "Artrew",
+    "url": "https://dtslib1979.github.io/artrew",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 2050,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "627 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "papafly",
+    "name": "Papafly",
+    "url": "https://dtslib1979.github.io/papafly",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 2036,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "455 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dtslib-branch",
+    "name": "Branch HQ",
+    "url": "https://dtslib1979.github.io/dtslib-branch",
+    "tier": 2,
+    "status": "WARN",
+    "loadTime": 1910,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "326 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dtslib-com",
+    "name": "DTSLIB HQ",
+    "url": "https://dtslib.com",
+    "tier": 1,
+    "status": "PASS",
+    "loadTime": 1182,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1783 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dongseon-studio",
+    "name": "Dongseon Studio",
+    "url": "https://dtslib1979.github.io/dongseon-studio",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 1013,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 0, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "866 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "namoneygoal",
+    "name": "Namoneygoal",
+    "url": "https://dtslib1979.github.io/namoneygoal",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 971,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Registry load failed: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "637 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "buckleychang",
+    "name": "Buckley Chang",
+    "url": "https://buckleychang.com",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 865,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 2, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "412 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "phoneparis",
+    "name": "Phoneparis",
+    "url": "https://dtslib1979.github.io/phoneparis",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 825,
+    "brokenLinks": [
+      {
+        "href": "http://phoneparis.kr/products/baptism/",
+        "text": "Baptism\n        →",
+        "status": 404
+      }
+    ],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2689 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "alexandria",
+    "name": "Alexandria Sanctuary",
+    "url": "https://dtslib1979.github.io/alexandria-sanctuary",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 811,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2861 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "parksy-image",
+    "name": "Parksy Image",
+    "url": "https://dtslib1979.github.io/parksy-image",
+    "tier": 2,
+    "status": "WARN",
+    "loadTime": 797,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1094 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "WARN",
+        "detail": "Missing: description"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "hoyadang",
+    "name": "Hoyadang",
+    "url": "https://hoyadang.com",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 784,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1488 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "namone",
+    "name": "Namone",
+    "url": "https://dtslib1979.github.io/namone/",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 769,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "280 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dtslib-dashboard",
+    "name": "OPS Dashboard",
+    "url": "https://dtslib.com/dashboard/",
+    "tier": 1,
+    "status": "PASS",
+    "loadTime": 754,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1073 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "buddies-kr",
+    "name": "Buddies.kr",
+    "url": "https://buddies.kr",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 711,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2728 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "orbitprompt",
+    "name": "OrbitPrompt",
+    "url": "https://dtslib1979.github.io/OrbitPrompt",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 677,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "593 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "WARN",
+        "detail": "Missing: description"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "apk-lab",
+    "name": "APK Lab",
+    "url": "https://dtslib-apk-lab.vercel.app/",
+    "tier": 2,
+    "status": "WARN",
+    "loadTime": 674,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "248 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "WARN",
+        "detail": "Missing: description"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (public, max-age=0, must-revalidate); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "cloud-appstore",
+    "name": "Cloud Appstore",
+    "url": "https://dtslib-cloud-appstore.vercel.app/",
+    "tier": 2,
+    "status": "WARN",
+    "loadTime": 660,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "WARN",
+        "detail": "338 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (public, max-age=0, must-revalidate); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "eae-univ",
+    "name": "EAE University",
+    "url": "https://dtslib1979.github.io/eae-univ",
+    "tier": 3,
+    "status": "PASS",
+    "loadTime": 659,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2231 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "parksy-audio",
+    "name": "Parksy Audio",
+    "url": "https://dtslib1979.github.io/parksy-audio",
+    "tier": 2,
+    "status": "WARN",
+    "loadTime": 657,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "809 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "WARN",
+        "detail": "Missing: description"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "parksy-logs",
+    "name": "Parksy Logs",
+    "url": "https://dtslib1979.github.io/parksy-logs/",
+    "tier": 3,
+    "status": "WARN",
+    "loadTime": 630,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "WARN",
+        "detail": "h1: 1, main/article: false"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1009 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "WARN",
+        "detail": "Missing: description"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "dtslib-kr",
+    "name": "DTSLIB.kr",
+    "url": "https://dtslib.kr",
+    "tier": 2,
+    "status": "PASS",
+    "loadTime": 620,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "1485 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "eae-kr",
+    "name": "EAE.kr",
+    "url": "https://eae.kr",
+    "tier": 2,
+    "status": "PASS",
+    "loadTime": 611,
+    "brokenLinks": [],
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "2015 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  },
+  {
+    "id": "parksy-kr",
+    "name": "Parksy.kr",
+    "url": "https://parksy.kr",
+    "tier": 2,
+    "status": "PASS",
+    "loadTime": 589,
+    "brokenLinks": [],
+    "consoleErrors": [],
+    "docQA": [
+      {
+        "id": "A1-sw-off",
+        "name": "SW 미등록",
+        "status": "PASS",
+        "detail": "No SW registered"
+      },
+      {
+        "id": "A2-skeleton",
+        "name": "문서 골격",
+        "status": "PASS",
+        "detail": "h1: 1, main/article: true"
+      },
+      {
+        "id": "A3-text-density",
+        "name": "가시 텍스트 500자+",
+        "status": "PASS",
+        "detail": "3429 chars"
+      },
+      {
+        "id": "A4-url-nav",
+        "name": "URL=문서 이동",
+        "status": "PASS",
+        "detail": "No hash routing"
+      },
+      {
+        "id": "A5-meta",
+        "name": "lang/title/desc/charset",
+        "status": "PASS",
+        "detail": "All present"
+      },
+      {
+        "id": "F6-freshness",
+        "name": "Response freshness",
+        "status": "PASS",
+        "detail": "OK (max-age=600); CDN detected"
+      }
+    ]
+  }
+]

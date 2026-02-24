@@ -1,0 +1,53 @@
+{
+  "runId": "2026-02-24-06-18",
+  "timestamp": "2026-02-24T06:20:30.926Z",
+  "duration": 90,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 13,
+    "warn": 14,
+    "fail": 0
+  },
+  "brokenLinks": 1,
+  "ignoredLinks": 20,
+  "consoleErrors": 16,
+  "docQA": {
+    "pass": 144,
+    "warn": 18,
+    "fail": 0
+  },
+  "topBroken": [
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "count": 1
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "ms": 2382
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2223
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2215
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 2076
+    },
+    {
+      "id": "artrew",
+      "name": "Artrew",
+      "ms": 2050
+    }
+  ]
+}
