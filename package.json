@@ -1,7 +1,7 @@
 {
-  "name": "playwright-bot",
-  "version": "2.0.0",
-  "description": "DTSLIB QA Bot — automated site health checks, broken link detection, structured JSON reports",
+  "name": "termux-bridge",
+  "version": "3.0.0",
+  "description": "PC ↔ Termux 간극을 메우는 도구 모음 — QA, CDP 스크린샷, 모바일 개발 인프라",
   "main": "qa/check.js",
   "scripts": {
     "qa": "node qa/check.js",

@@ -1,5 +1,6 @@
-# Automation Boundary — playwright-bot
+# Automation Boundary — termux-bridge
 
+> **구 이름:** playwright-bot (2026-01-04 ~ 2026-02-26)
 > This system intentionally stops automation before account-bound or monetized actions.
 > All outputs are evidential artifacts for human decision.
 
@@ -69,7 +70,7 @@ Termux (Android + system Chromium + ws)
   → Local file output only
 ```
 
-- **Files**: `snap.js`, `screenshot.js`, `screenshot-mobile.js`
+- **Files**: `local/snap.js`, `local/screenshot.js`, `local/screenshot-mobile.js`
 - **Use case**: Quick visual check during development
 - **Not part of QA pipeline**
 
@@ -88,8 +89,9 @@ Termux (Android + system Chromium + ws)
 
 ## One-Line Definition
 
-> **playwright-bot produces evidence. Humans produce decisions.**
+> **termux-bridge produces evidence. Humans produce decisions.**
 
 ---
 
 *Effective: 2026-02-10*
+*Renamed: 2026-02-26*

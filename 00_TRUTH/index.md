@@ -1,6 +1,7 @@
-# playwright-bot — Truth (Level 2)
+# termux-bridge — Truth (Level 2)
 
 > Parent: `dtslib-papyrus`
+> Renamed: playwright-bot → termux-bridge (2026-02-26)
 
 ---
 
@@ -9,7 +10,7 @@
 ```
 Global (dtslib-papyrus)
     └── dtslib-papyrus
-            └── playwright-bot (here)
+            └── termux-bridge (here)
 ```
 
 ---

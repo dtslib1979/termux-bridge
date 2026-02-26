@@ -1,5 +1,5 @@
 {
-  "repo": "playwright-bot",
+  "repo": "termux-bridge",
   "level": 2,
   "parent": "dtslib-papyrus",
   "type": "DTSLIB Tool",

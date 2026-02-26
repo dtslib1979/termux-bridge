@@ -1,8 +1,9 @@
-# playwright-bot
+# termux-bridge
 
-Automated site health checks for the DTSLIB ecosystem.
+PC ↔ Termux 간극을 메우는 도구 모음 — QA, CDP 스크린샷, 모바일 개발 인프라
 
-> **playwright-bot produces evidence. Humans produce decisions.**
+> **구 이름:** playwright-bot (2026-01-04 ~ 2026-02-26)
+> **termux-bridge produces evidence. Humans produce decisions.**
 
 ## What It Does
 
@@ -11,6 +12,7 @@ Automated site health checks for the DTSLIB ecosystem.
 - Detects **broken links** (up to 50 per site)
 - Collects **console errors**
 - Outputs **structured JSON** + Markdown reports
+- Bridges the gap between PC and Termux environments
 
 ## Architecture
 
@@ -48,9 +50,9 @@ node qa/check.js --id=koosy,gohsy  # specific sites
 ## File Structure
 
 ```
-playwright-bot/
+termux-bridge/
 ├── qa/
-│   ├── check.js          # QA engine (310 lines)
+│   ├── check.js          # QA engine
 │   └── urls.json          # 26 sites + ignore whitelist
 ├── runs/                   # Auto-generated results
 │   ├── index.json          # Last 5 runs index

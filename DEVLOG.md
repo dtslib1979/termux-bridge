@@ -1,4 +1,6 @@
-# playwright-bot 개발일지
+# termux-bridge 개발일지
+
+> **구 이름:** playwright-bot (2026-01-04 ~ 2026-02-26)
 
 ## 2026-01-04 | 초기 구축 완료
 
@@ -60,7 +62,7 @@ npm install ws        # WebSocket only
 ### 핵심 코드 구조
 
 ```
-playwright-bot/
+termux-bridge/
 ├── screenshot.js    # CDP 기반 스크린샷 봇
 ├── screenshots/     # 출력 디렉토리
 ├── package.json
@@ -155,7 +157,7 @@ URL: https://dtslib-papyrus.vercel.app
 ### 파일 구조 (v2.0)
 
 ```
-playwright-bot/
+termux-bridge/
 ├── .github/workflows/qa-snapshot.yml  ← Actions 워크플로우
 ├── qa/
 │   ├── check.js                       ← 메인 QA 엔진 (302줄)
