@@ -1,0 +1,53 @@
+{
+  "runId": "2026-02-28-06-05",
+  "timestamp": "2026-02-28T06:07:13.461Z",
+  "duration": 115,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 13,
+    "warn": 14,
+    "fail": 0
+  },
+  "brokenLinks": 1,
+  "ignoredLinks": 18,
+  "consoleErrors": 15,
+  "docQA": {
+    "pass": 144,
+    "warn": 18,
+    "fail": 0
+  },
+  "topBroken": [
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "count": 1
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2438
+    },
+    {
+      "id": "koosy",
+      "name": "Koosy",
+      "ms": 2390
+    },
+    {
+      "id": "papafly",
+      "name": "Papafly",
+      "ms": 2353
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2332
+    },
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 2274
+    }
+  ]
+}
