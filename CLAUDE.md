@@ -156,10 +156,52 @@ termux-bridge/
 | 연결 | 용도 |
 |------|------|
 | dtslib-papyrus | QA 대시보드가 runs/ raw fetch |
+| phoneparis | baptism BOM (`tools/baptism/config/packages.json`)의 원장 |
 | 28개 전체 레포 | 이 도구 모음으로 개발/운영 |
 
 ---
 
-*Version: 2.0*
+## 8. 포스팅 규칙 (Ledger ↔ BOM 동기화)
+
+> **이 레포 = 원장 (General Ledger).** 실제 설치/검증된 도구 목록.
+> **phoneparis baptism = 상품 BOM.** 고객에게 제공하는 패키지 명세.
+
+### 포스팅 방향
+
+```
+termux-bridge CLAUDE.md §3 (실제 설치 현황)
+        ↓ posting
+phoneparis/tools/baptism/config/packages.json (상품 BOM)
+```
+
+### 포스팅 트리거
+
+| 이벤트 | 액션 |
+|--------|------|
+| 새 패키지 설치 성공 | CLAUDE.md §3 업데이트 → packages.json에 `verified: true` + 버전 추가 |
+| 패키지 설치 실패 확인 | CLAUDE.md §3 "불가능" 추가 → packages.json `blocked` 섹션에 추가 |
+| 패키지 버전 업데이트 | CLAUDE.md §3 버전 갱신 → packages.json `verified_version` 갱신 |
+
+### Claude 세션 체크
+
+새 도구 설치/제거 시: **"BOM 포스팅 완료했는가?"** 확인.
+양쪽 불일치 발견 시: 경고 + 동기화 실행.
+
+---
+
+*Version: 2.1*
 *Renamed: 2026-02-26 (playwright-bot → termux-bridge)*
 *Built with: Claude Code (Claude Opus 4.6)*
+
+---
+
+## Browser Runtime
+
+> Parksy OS 2+2 매트릭스 — 이 레포 전담 브라우저
+
+| 항목 | 값 |
+|------|-----|
+| **브라우저** | Google Chrome |
+| **이유** | PC↔Termux 자동화 — 기술 튜토리얼 |
+| **URL** | https://github.com/dtslib1979/termux-bridge |
+
