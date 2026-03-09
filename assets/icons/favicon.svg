@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="13" fill="#020404"/>
+  <rect x="2" y="2" width="96" height="96" rx="11" fill="none" stroke="url(#g)" stroke-width="1.5" opacity="0.5"/>
+  <!-- 브릿지 구조: 상단 아치 -->
+  <path d="M 18 62 Q 50 28 82 62" stroke="url(#g)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- 브릿지 기둥 -->
+  <line x1="34" y1="50" x2="34" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="38" x2="50" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="66" y1="50" x2="66" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- 브릿지 바닥 -->
+  <line x1="14" y1="72" x2="86" y2="72" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
+  <!-- TB 워드마크 -->
+  <text x="50" y="90" font-family="monospace" font-size="10" font-weight="700" fill="url(#g)" text-anchor="middle" letter-spacing="2">TB</text>
+</svg>

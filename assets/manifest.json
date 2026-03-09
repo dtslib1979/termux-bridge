@@ -1,0 +1,23 @@
+{
+  "name": "termux-bridge",
+  "short_name": "TB",
+  "description": "Termux ↔ PC 간극을 메우는 도구 모음",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#020404",
+  "theme_color": "#020404",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
