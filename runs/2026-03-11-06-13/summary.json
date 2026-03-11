@@ -1,0 +1,73 @@
+{
+  "runId": "2026-03-11-06-13",
+  "timestamp": "2026-03-11T06:14:56.185Z",
+  "duration": 113,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 9,
+    "warn": 15,
+    "fail": 3
+  },
+  "brokenLinks": 33,
+  "ignoredLinks": 17,
+  "consoleErrors": 16,
+  "docQA": {
+    "pass": 141,
+    "warn": 18,
+    "fail": 3
+  },
+  "topBroken": [
+    {
+      "id": "eae-kr",
+      "name": "EAE.kr",
+      "count": 26
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "count": 2
+    },
+    {
+      "id": "namone",
+      "name": "Namone",
+      "count": 2
+    },
+    {
+      "id": "dongseon-studio",
+      "name": "Dongseon Studio",
+      "count": 2
+    },
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "count": 1
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 2800
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 2749
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2456
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2367
+    },
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "ms": 1904
+    }
+  ]
+}
