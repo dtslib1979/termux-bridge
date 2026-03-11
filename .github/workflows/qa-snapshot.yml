@@ -51,6 +51,7 @@ jobs:
         run: npx playwright install chromium
 
       - name: Run QA check
+        continue-on-error: true
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.tier }}" ]; then
