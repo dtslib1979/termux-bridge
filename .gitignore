@@ -1,5 +1,6 @@
 node_modules/
 .chrome-data/
 screenshots/
+snap.log
 *.log
 package-lock.json
