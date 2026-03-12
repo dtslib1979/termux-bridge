@@ -10,52 +10,284 @@
   <title>termux-bridge | DTSLIB Infra</title>
   <style>
     :root {
-      --bg: #020404; --card: #0d1410; --gold: #D4AF37;
-      --green: #34D399; --text: #F8FAF9; --muted: rgba(248,250,249,0.55);
+      --bg: #020404;
+      --card: #0d1410;
+      --card2: #0a0f0d;
+      --gold: #D4AF37;
+      --green: #34D399;
+      --blue: #60A5FA;
+      --purple: #A78BFA;
+      --orange: #FB923C;
+      --text: #F8FAF9;
+      --muted: rgba(248,250,249,0.5);
       --border: rgba(248,250,249,0.07);
+      --border-gold: rgba(212,175,55,0.25);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; min-height: 100dvh; padding: 24px 16px; }
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); margin-bottom: 12px; }
-    h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-    .sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
-    .cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-    .card-title { font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-    .card-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
-    .stat-row { display: flex; gap: 10px; margin-bottom: 24px; }
-    .stat { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
-    .stat-num { font-size: 24px; font-weight: 700; color: var(--green); }
-    .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .link { display: block; padding: 13px 16px; text-align: center; border: 1px solid rgba(212,175,55,0.3); border-radius: 10px; color: var(--gold); font-size: 13px; font-weight: 600; text-decoration: none; background: rgba(212,175,55,0.07); }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100dvh; padding: 28px 18px 48px; max-width: 480px; margin: 0 auto; }
+
+    /* HEADER */
+    .header { margin-bottom: 32px; }
+    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; }
+    .badge-green { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .badge-gold  { background: rgba(212,175,55,0.12); color: var(--gold); border: 1px solid rgba(212,175,55,0.25); }
+    .badge-blue  { background: rgba(96,165,250,0.12); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+    h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* AXIOM */
+    .axiom { border: 1px solid rgba(212,175,55,0.3); border-radius: 14px; padding: 18px; margin-bottom: 24px; background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(212,175,55,0.02) 100%); }
+    .axiom-label { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+    .axiom-body { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .axiom-body strong { color: var(--gold); }
+
+    /* FORMULA */
+    .formula-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px; margin-bottom: 24px; }
+    .formula-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+    .formula { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .f-name { font-size: 15px; font-weight: 800; color: var(--green); }
+    .f-eq { font-size: 18px; color: var(--muted); font-weight: 300; }
+    .f-fraction { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .f-num { display: flex; align-items: center; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(248,250,249,0.2); }
+    .f-den { font-size: 13px; color: var(--blue); font-weight: 700; padding-top: 4px; }
+    .f-plus { font-size: 16px; color: var(--muted); }
+    .f-shizuku { font-size: 14px; font-weight: 700; color: var(--purple); }
+    .f-playwright { font-size: 14px; font-weight: 700; color: var(--orange); }
+    .formula-desc { display: flex; flex-direction: column; gap: 6px; }
+    .fd-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; }
+    .fd-key { font-weight: 700; min-width: 80px; }
+    .fd-val { color: var(--muted); line-height: 1.5; }
+    .c-purple { color: var(--purple); }
+    .c-orange { color: var(--orange); }
+    .c-blue   { color: var(--blue); }
+    .c-gold   { color: var(--gold); }
+    .c-green  { color: var(--green); }
+
+    /* LAYER STACK */
+    .section-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+    .layer { border-radius: 10px; padding: 12px 14px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .layer-icon { font-size: 18px; width: 28px; text-align: center; flex-shrink: 0; }
+    .layer-info { flex: 1; }
+    .layer-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .layer-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .layer-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; flex-shrink: 0; }
+
+    .layer-claude  { background: rgba(212,175,55,0.06); border-color: rgba(212,175,55,0.2); }
+    .layer-shizuku { background: rgba(167,139,250,0.06); border-color: rgba(167,139,250,0.2); }
+    .layer-pw      { background: rgba(251,146,60,0.06); border-color: rgba(251,146,60,0.2); }
+    .layer-cdp     { background: rgba(251,146,60,0.04); border-color: rgba(251,146,60,0.12); }
+    .layer-git     { background: rgba(96,165,250,0.06); border-color: rgba(96,165,250,0.2); }
+
+    .tag-axiom  { background: rgba(212,175,55,0.15); color: var(--gold); }
+    .tag-system { background: rgba(167,139,250,0.15); color: var(--purple); }
+    .tag-web    { background: rgba(251,146,60,0.15); color: var(--orange); }
+    .tag-local  { background: rgba(251,146,60,0.1); color: var(--orange); }
+    .tag-infra  { background: rgba(96,165,250,0.15); color: var(--blue); }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+    .tl-item { display: flex; gap: 12px; }
+    .tl-left { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+    .tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .tl-line { width: 1px; background: var(--border); flex: 1; min-height: 20px; }
+    .tl-content { padding-bottom: 18px; flex: 1; }
+    .tl-date { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-bottom: 3px; }
+    .tl-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .tl-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* STATS */
+    .stat-row { display: flex; gap: 8px; margin-bottom: 24px; }
+    .stat { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 800; color: var(--green); }
+    .stat-label { font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.3; }
+
+    /* LINKS */
+    .links { display: flex; flex-direction: column; gap: 8px; }
+    .link { display: block; padding: 13px 16px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; }
+    .link-gold { border: 1px solid var(--border-gold); color: var(--gold); background: rgba(212,175,55,0.06); }
+    .link-muted { border: 1px solid var(--border); color: var(--muted); background: transparent; font-size: 12px; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
   </style>
 </head>
 <body>
-  <div class="badge">INFRA · Chrome</div>
-  <h1>termux-bridge</h1>
-  <p class="sub">PC ↔ Termux 간극을 메우는 도구 모음<br>QA · CDP 스크린샷 · 모바일 개발 인프라</p>
 
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge-row">
+      <span class="badge badge-green">INFRA</span>
+      <span class="badge badge-gold">Mobile First</span>
+      <span class="badge badge-blue">Galaxy + Termux</span>
+    </div>
+    <h1>termux-bridge</h1>
+    <p class="sub">핸드폰으로 하고 싶다 → 모르니까 다리가 필요하다<br>PC에서 되는 걸 Termux에서도 되게 만드는 도구 모음</p>
+  </div>
+
+  <!-- AXIOM -->
+  <div class="axiom">
+    <div class="axiom-label">공리 (Axiom)</div>
+    <div class="axiom-body">
+      <strong>Claude Max</strong>가 전제 조건이다.<br>
+      코딩 없이 말로 지시한다. Claude가 실행한다.<br>
+      <span style="font-size:12px; color:var(--muted);">월 $100 · 토큰 스트레스 없이 작업 흐름 유지</span>
+    </div>
+  </div>
+
+  <!-- FORMULA -->
+  <div class="formula-wrap">
+    <div class="formula-label">핵심 공식</div>
+    <div class="formula">
+      <span class="f-name">termux-bridge</span>
+      <span class="f-eq">=</span>
+      <div class="f-fraction">
+        <div class="f-num">
+          <span class="f-shizuku">Shizuku</span>
+          <span class="f-plus">+</span>
+          <span class="f-playwright">Playwright</span>
+        </div>
+        <div class="f-den">GitHub</div>
+      </div>
+    </div>
+    <div class="formula-desc">
+      <div class="fd-row">
+        <span class="fd-key c-purple">Shizuku</span>
+        <span class="fd-val">루트 없이 디바이스 시스템 제어. APK 설치·권한·앱 제어</span>
+      </div>
+      <div class="fd-row">
+        <span class="fd-key c-orange">Playwright</span>
+        <span class="fd-val">API 없는 플랫폼 자동화. 점자처럼 DOM 직접 제어 (티스토리·네이버·YouTube)</span>
+      </div>
+      <div class="fd-row">
+        <span class="fd-key c-blue">GitHub</span>
+        <span class="fd-val">분모. 모든 것의 기반. 버전관리 + Actions CI + 28개 레포 운영</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER STACK -->
+  <div class="section-label">도구 레이어</div>
+  <div class="stack">
+    <div class="layer layer-claude">
+      <div class="layer-icon">🧠</div>
+      <div class="layer-info">
+        <div class="layer-name c-gold">Claude Max</div>
+        <div class="layer-desc">십장. 말로 지시하면 코드가 나온다. 코딩 불필요.</div>
+      </div>
+      <div class="layer-tag tag-axiom">공리</div>
+    </div>
+    <div class="layer layer-shizuku">
+      <div class="layer-icon">⚡</div>
+      <div class="layer-info">
+        <div class="layer-name c-purple">Shizuku</div>
+        <div class="layer-desc">ADB급 시스템 권한. 루트 없이 Android 제어.</div>
+      </div>
+      <div class="layer-tag tag-system">시스템</div>
+    </div>
+    <div class="layer layer-pw">
+      <div class="layer-icon">🎭</div>
+      <div class="layer-info">
+        <div class="layer-name c-orange">Playwright</div>
+        <div class="layer-desc">웹 자동화 점자. API 없는 플랫폼 DOM 직접 제어. GitHub Actions에서 실행.</div>
+      </div>
+      <div class="layer-tag tag-web">웹</div>
+    </div>
+    <div class="layer layer-cdp">
+      <div class="layer-icon">📡</div>
+      <div class="layer-info">
+        <div class="layer-name c-orange" style="opacity:0.8">CDP (로컬)</div>
+        <div class="layer-desc">Playwright가 안 되는 Termux에서 쓰는 날것의 점자. snap.js</div>
+      </div>
+      <div class="layer-tag tag-local">로컬</div>
+    </div>
+    <div class="layer layer-git">
+      <div class="layer-icon">🐙</div>
+      <div class="layer-info">
+        <div class="layer-name c-blue">GitHub</div>
+        <div class="layer-desc">분모. 28개 레포 · Daily QA · Actions CI · 모든 것의 토대.</div>
+      </div>
+      <div class="layer-tag tag-infra">인프라</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TIMELINE -->
+  <div class="section-label">이력</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:var(--orange)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-date">2026 · 01 · 04</div>
+        <div class="tl-title">playwright-bot 탄생</div>
+        <div class="tl-desc">Termux에서 GUI를 못 보니까 눈을 달기 시도. CDP 직접 연결로 해결. 이 레포의 근본.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:var(--green)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-date">2026 · 02 · 14</div>
+        <div class="tl-title">QA 시스템 v2.0</div>
+        <div class="tl-desc">26사이트 일일 자동 점검. GitHub Actions + Playwright. JSON 리포트 + 스크린샷.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:var(--blue)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-date">2026 · 02 · 26</div>
+        <div class="tl-title">playwright-bot → termux-bridge</div>
+        <div class="tl-desc">역할이 확장됨. PC ↔ Termux 간극을 메우는 다리.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:var(--purple)"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-date">2026 · 03 · 12</div>
+        <div class="tl-title">Shizuku 시스템 레이어 추가</div>
+        <div class="tl-desc">루트 없이 Android 시스템 제어. APK 설치·권한 관리·앱 제어.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot" style="background:var(--gold)"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-date">2026 · 03 · 13</div>
+        <div class="tl-title">역산 교재화 구상</div>
+        <div class="tl-desc">3개월 실전 후 거꾸로 리뷰. 코딩 없는 프로그래밍 교본. 십장 모델.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STATS -->
   <div class="stat-row">
-    <div class="stat"><div class="stat-num">26</div><div class="stat-label">모니터링 사이트</div></div>
-    <div class="stat"><div class="stat-num">Daily</div><div class="stat-label">자동 실행</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">티어 구조</div></div>
+    <div class="stat"><div class="stat-num">28</div><div class="stat-label">운영<br>레포</div></div>
+    <div class="stat"><div class="stat-num">26</div><div class="stat-label">QA<br>사이트</div></div>
+    <div class="stat"><div class="stat-num">3mo</div><div class="stat-label">실전<br>이력</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">코딩<br>지식</div></div>
   </div>
 
-  <div class="cards">
-    <div class="card">
-      <div class="card-title">QA System</div>
-      <div class="card-body">GitHub Actions 기반 일일 26사이트 자동 점검.<br>Desktop + Mobile 스크린샷, 링크 체크, 콘솔 에러 수집.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">CDP 스크린샷</div>
-      <div class="card-body">Chrome DevTools Protocol 로컬 캡처.<br>gohsy-fashion GUI 자동화 이식 예정.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">아키텍처</div>
-      <div class="card-body">GitHub Actions → Artifacts → runs/ 커밋 → Papyrus 대시보드 연동.</div>
-    </div>
+  <!-- LINKS -->
+  <div class="links">
+    <a class="link link-gold" href="https://github.com/dtslib1979/termux-bridge">GitHub 레포지토리 →</a>
+    <a class="link link-muted" href="https://github.com/dtslib1979/termux-bridge/blob/main/DEVLOG.md">개발일지 (DEVLOG) →</a>
   </div>
 
-  <a class="link" href="https://github.com/dtslib1979/termux-bridge">GitHub 레포지토리 →</a>
 </body>
 </html>
