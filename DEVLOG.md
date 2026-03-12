@@ -206,4 +206,83 @@ termux-bridge/
 
 ---
 
-*Updated: 2026-02-10*
+## 2026-02-26 | 이름 변경 — playwright-bot → termux-bridge
+
+### 변경 이유
+
+v1 역할(CDP 스크린샷 도구)을 넘어 "Termux 모바일 개발 필수 도구 모음"으로 역할이 확장됨.
+"PC ↔ Termux 간극을 메우는 다리"가 실제 정체성이므로 이름도 맞춤.
+
+### 추가된 레이어
+
+- `install/` — 유니버설 인스톨러 + BOM 원장
+- `local/shizuku.sh` — Shizuku/ADB 시스템 제어 도구
+- `install/bom.json` — 검증된 패키지 원장 (phoneparis baptism sync_target)
+
+---
+
+## 2026-03-12 | 아키텍처 확정 — phoneparis 맞춤 프로그램 생산 구조
+
+### 배경
+
+phoneparis 맞춤 프로그램 시스템의 전체 구조를 논의하며 세 레이어의 역할이 명확히 정의됨.
+
+### 확정된 아키텍처
+
+```
+[termux-bridge]              ← General Ledger / 기술코드 생산 센터
+  bom.json (verified 원장)
+  install.sh (환경 세팅)
+  CLAUDE.md §3 (세션 컨텍스트)
+         ↓ posting (bom.json → packages.json)
+[phoneparis/tools/baptism/]  ← Bridge Layer / 상품 BOM
+  packages.json (고객용 패키지 명세)
+         ↓ 조합
+[APK Lab]         [DTSLIB Studio PWA]
+  Axis, Pen,        Lecture Shorts/Long,
+  Capture,          Auto Shorts,
+  Subtitle,         Clip Shorts ...
+  Wavesy, TTS ...
+         ↓ 라이프스타일 매핑
+[phoneparis 맞춤 프로그램]    ← 고객 제품
+```
+
+### 세 레이어 역할 분담
+
+| 레이어 | 역할 | 핵심 파일 |
+|--------|------|-----------|
+| termux-bridge | 실제 검증된 도구만 기록. 새 기술 조합 개발·검증 | `bom.json`, `install.sh` |
+| baptism | 검증된 목록을 고객용 BOM으로 변환. 조합 브릿지 | `packages.json` |
+| APK Lab | 시스템 권한·오프라인·백그라운드 필요한 네이티브 앱 | F-Droid → APK 파이프라인 |
+| DTSLIB Studio | 브라우저 즉시 실행. ffmpeg WASM 기반 | PWA 4종 |
+
+### 콘텐츠 조합 원칙
+
+APK (오프라인·시스템 접근 필요) + PWA (즉시 실행·설치 불필요) 두 풀에서 라이프스타일에 맞게 픽앤믹스.
+
+예시:
+- 크리에이터 타입 → Auto Shorts + Wavesy + TTS + Capture
+- 강의 제작 타입 → Lecture Shorts/Long + Subtitle
+- 생산성 타입 → Pen + Liner + ChronoCall
+
+### 슬로건 ↔ 아키텍처 대응
+
+> "폰 하나로 AI를 **쓴다**. **만든다**. **움직인다**."
+
+| 슬로건 | 담당 레이어 |
+|--------|------------|
+| 쓴다 | phoneparis (제품, 고객 인터페이스) |
+| 만든다 | termux-bridge (인프라, 기술코드 생산) |
+| 움직인다 | APK Lab + DTSLIB Studio (실행 산출물) |
+
+### 상시 작업 3종 세트
+
+| 레포 | 역할 |
+|------|------|
+| termux-bridge | 인프라 검증 + BOM 원장 관리 |
+| phoneparis | baptism BOM + 맞춤 프로그램 조합 |
+| dtslib (APK Lab + Studio) | 네이티브 앱 + PWA 생산 |
+
+---
+
+*Updated: 2026-03-12*
