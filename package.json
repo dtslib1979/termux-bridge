@@ -7,7 +7,12 @@
     "qa": "node qa/check.js",
     "qa:hq": "node qa/check.js --tier=1",
     "qa:studios": "node qa/check.js --tier=2",
-    "snap": "node local/snap.js"
+    "snap": "node local/snap.js",
+    "setup": "bash install.sh",
+    "setup:verify": "bash install.sh --verify",
+    "setup:bom": "bash install.sh --bom-only",
+    "sync-bom": "bash install/sync-bom.sh",
+    "shizuku": "bash local/shizuku.sh"
   },
   "keywords": [],
   "author": "dtslib1979",
