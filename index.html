@@ -64,6 +64,24 @@
     .c-gold   { color: var(--gold); }
     .c-green  { color: var(--green); }
 
+    /* FORMULA MATH */
+    .formula-math { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 24px 0 20px; }
+    .fm-lhs { display: flex; align-items: center; gap: 10px; }
+    .fm-T { font-size: 22px; font-weight: 800; color: var(--green); font-style: italic; }
+    .fm-eq { font-size: 22px; color: var(--muted); font-weight: 300; }
+    .fm-rhs { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .fm-numerator { display: flex; align-items: center; gap: 5px; padding-bottom: 8px; }
+    .fm-bar { width: 100%; height: 1.5px; background: rgba(248,250,249,0.35); }
+    .fm-denominator { padding-top: 8px; }
+    .fm-claude { font-size: 15px; font-weight: 800; color: var(--gold); }
+    .fm-cdot { font-size: 18px; color: var(--muted); line-height: 1; }
+    .fm-paren { font-size: 22px; color: var(--muted); font-weight: 200; line-height: 1; }
+    .fm-shizuku { font-size: 15px; font-weight: 800; color: var(--purple); }
+    .fm-plus { font-size: 16px; color: var(--muted); }
+    .fm-playwright { font-size: 15px; font-weight: 800; color: var(--orange); }
+    .fm-github { font-size: 15px; font-weight: 800; color: var(--blue); }
+    .fm-where { text-align: center; font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 18px; letter-spacing: 0.04em; }
+
     /* LAYER STACK */
     .section-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
     .stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
@@ -139,30 +157,47 @@
   <!-- FORMULA -->
   <div class="formula-wrap">
     <div class="formula-label">핵심 공식</div>
-    <div class="formula">
-      <span class="f-name">termux-bridge</span>
-      <span class="f-eq">=</span>
-      <div class="f-fraction">
-        <div class="f-num">
-          <span class="f-shizuku">Shizuku</span>
-          <span class="f-plus">+</span>
-          <span class="f-playwright">Playwright</span>
+
+    <div class="formula-math">
+      <div class="fm-lhs">
+        <span class="fm-T">T</span>
+        <span class="fm-eq">=</span>
+      </div>
+      <div class="fm-rhs">
+        <div class="fm-numerator">
+          <span class="fm-claude">Claude</span>
+          <span class="fm-cdot">·</span>
+          <span class="fm-paren">(</span>
+          <span class="fm-shizuku">Shizuku</span>
+          <span class="fm-plus">+</span>
+          <span class="fm-playwright">Playwright</span>
+          <span class="fm-paren">)</span>
         </div>
-        <div class="f-den">GitHub</div>
+        <div class="fm-bar"></div>
+        <div class="fm-denominator">
+          <span class="fm-github">GitHub</span>
+        </div>
       </div>
     </div>
+
+    <div class="fm-where">where  T = termux-bridge</div>
+
     <div class="formula-desc">
       <div class="fd-row">
+        <span class="fd-key c-gold">Claude</span>
+        <span class="fd-val">공리. 말로 지시하면 코드가 나온다.</span>
+      </div>
+      <div class="fd-row">
         <span class="fd-key c-purple">Shizuku</span>
-        <span class="fd-val">루트 없이 디바이스 시스템 제어. APK 설치·권한·앱 제어</span>
+        <span class="fd-val">루트 없이 Android 시스템 제어. APK·권한·앱</span>
       </div>
       <div class="fd-row">
         <span class="fd-key c-orange">Playwright</span>
-        <span class="fd-val">API 없는 플랫폼 자동화. 점자처럼 DOM 직접 제어 (티스토리·네이버·YouTube)</span>
+        <span class="fd-val">API 없는 플랫폼 점자 자동화. 티스토리·네이버·YouTube</span>
       </div>
       <div class="fd-row">
         <span class="fd-key c-blue">GitHub</span>
-        <span class="fd-val">분모. 모든 것의 기반. 버전관리 + Actions CI + 28개 레포 운영</span>
+        <span class="fd-val">분모. 모든 것의 토대. 28개 레포 · Actions CI</span>
       </div>
     </div>
   </div>
