@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "source": "termux-bridge",
+    "ledger_version": "3.0",
+    "description": "PC ↔ Termux 간극을 메우는 도구 모음 — 검증된 패키지 원장",
+    "generated": "PLACEHOLDER — run install.sh to update",
+    "platform": "termux",
+    "canonical": true,
+    "note": "canonical=true (Termux) 일 때만 phoneparis baptism 원장으로 사용",
+    "repo": "https://github.com/dtslib1979/termux-bridge",
+    "sync_target": "phoneparis/tools/baptism/config/packages.json"
+  },
+  "system": [
+    {"name":"git",        "cmd":"git",              "pkg_termux":"git",         "pkg_apt":"git",          "pkg_brew":"git",         "verified":true, "verified_version":"2.53.0", "purpose":"버전 관리"},
+    {"name":"node",       "cmd":"node",             "pkg_termux":"nodejs",      "pkg_apt":"nodejs",       "pkg_brew":"node",        "verified":true, "verified_version":"24.13.0","purpose":"JS 런타임"},
+    {"name":"python",     "cmd":"python3",          "pkg_termux":"python",      "pkg_apt":"python3",      "pkg_brew":"python3",     "verified":true, "verified_version":"3.12.12","purpose":"Python 런타임"},
+    {"name":"ffmpeg",     "cmd":"ffmpeg",           "pkg_termux":"ffmpeg",      "pkg_apt":"ffmpeg",       "pkg_brew":"ffmpeg",      "verified":true, "verified_version":"8.0.1",  "purpose":"오디오/비디오 처리"},
+    {"name":"gh",         "cmd":"gh",               "pkg_termux":"gh",          "pkg_apt":"gh",           "pkg_brew":"gh",          "verified":true, "verified_version":"2.87.3", "purpose":"GitHub CLI"},
+    {"name":"imagemagick","cmd":"convert",          "pkg_termux":"imagemagick", "pkg_apt":"imagemagick",  "pkg_brew":"imagemagick", "verified":true, "verified_version":"7.1.2",  "purpose":"이미지 변환/처리"},
+    {"name":"jq",         "cmd":"jq",               "pkg_termux":"jq",          "pkg_apt":"jq",           "pkg_brew":"jq",          "verified":true, "verified_version":"1.8.1",  "purpose":"JSON 처리"},
+    {"name":"poppler",    "cmd":"pdftotext",        "pkg_termux":"poppler",     "pkg_apt":"poppler-utils","pkg_brew":"poppler",     "verified":true, "verified_version":"26.02.0","purpose":"PDF 도구"},
+    {"name":"rclone",     "cmd":"rclone",           "pkg_termux":"rclone",      "pkg_apt":"rclone",       "pkg_brew":"rclone",      "verified":true, "verified_version":"1.73.1", "purpose":"Google Drive 동기화"},
+    {"name":"rsync",      "cmd":"rsync",            "pkg_termux":"rsync",       "pkg_apt":"rsync",        "pkg_brew":"rsync",       "verified":true, "verified_version":"3.4.1",  "purpose":"파일 동기화"},
+    {"name":"tree",       "cmd":"tree",             "pkg_termux":"tree",        "pkg_apt":"tree",         "pkg_brew":"tree",        "verified":true, "verified_version":"2.3.1",  "purpose":"디렉토리 시각화"},
+    {"name":"wget",       "cmd":"wget",             "pkg_termux":"wget",        "pkg_apt":"wget",         "pkg_brew":"wget",        "verified":true, "verified_version":"1.25.0", "purpose":"파일 다운로드"},
+    {"name":"chromium",   "cmd":"chromium-browser", "pkg_termux":"chromium",    "pkg_apt":"",             "pkg_brew":"",            "verified":true, "verified_version":"",       "purpose":"CDP 스크린샷용 (Termux x11-repo)"},
+    {"name":"cmake",      "cmd":"cmake",            "pkg_termux":"cmake",       "pkg_apt":"cmake",        "pkg_brew":"cmake",       "verified":true, "verified_version":"",       "purpose":"빌드 도구"},
+    {"name":"ninja",      "cmd":"ninja",            "pkg_termux":"ninja-build", "pkg_apt":"ninja-build",  "pkg_brew":"ninja",       "verified":true, "verified_version":"",       "purpose":"빌드 도구"},
+    {"name":"termux-api", "cmd":"termux-microphone-record","pkg_termux":"termux-api","pkg_apt":"","pkg_brew":"","verified":true,"verified_version":"0.59.1","purpose":"핸드폰 하드웨어 접근"}
+  ],
+  "python": [
+    {"name":"pillow",   "import":"PIL",      "verified":true, "verified_version":"12.1.1","purpose":"이미지 처리 (OpenCV 대체)"},
+    {"name":"numpy",    "import":"numpy",    "verified":true, "verified_version":"2.2.5", "purpose":"수치 연산"},
+    {"name":"requests", "import":"requests", "verified":true, "verified_version":"2.32.5","purpose":"HTTP 클라이언트"}
+  ],
+  "npm": [
+    {"name":"claude", "scope":"global", "verified":true, "verified_version":"", "purpose":"Claude Code CLI"},
+    {"name":"ws",     "scope":"local",  "verified":true, "verified_version":"",  "purpose":"CDP WebSocket 연결"}
+  ],
+  "blocked": [
+    {"name":"opencv-python", "reason":"aarch64 빌드 실패",           "alternative":"pillow"},
+    {"name":"scipy",          "reason":"빌드 실패",                   "alternative":"numpy"},
+    {"name":"puppeteer",      "reason":"Android 미지원",              "alternative":"CDP 직접 연결"},
+    {"name":"playwright",     "reason":"Android 미지원 (Termux)",     "alternative":"GitHub Actions"},
+    {"name":"docker",         "reason":"커널 제약",                   "alternative":"불가"},
+    {"name":"lighthouse",     "reason":"빌드 실패",                   "alternative":"GitHub Actions"}
+  ]
+}
