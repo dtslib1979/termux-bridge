@@ -120,6 +120,11 @@ termux-bridge/
 ├── DEVLOG.md                    ← 개발일지 (삽질 기록 보존)
 ├── package.json
 │
+├── install.sh                   ← 유니버설 인스톨러 (Termux·Ubuntu·macOS)
+├── install/
+│   ├── bom.json                 ← 검증된 패키지 원장 → phoneparis baptism 동기화
+│   └── README.md
+│
 ├── qa/                          ← QA 엔진 (Actions용)
 │   ├── check.js                 ← 메인 엔진
 │   └── urls.json                ← 26사이트 + ignore 화이트리스트
