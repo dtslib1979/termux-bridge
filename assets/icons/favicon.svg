@@ -1,20 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#34D399"/>
-      <stop offset="100%" stop-color="#D4AF37"/>
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="13" fill="#020404"/>
-  <rect x="2" y="2" width="96" height="96" rx="11" fill="none" stroke="url(#g)" stroke-width="1.5" opacity="0.5"/>
-  <!-- 브릿지 구조: 상단 아치 -->
-  <path d="M 18 62 Q 50 28 82 62" stroke="url(#g)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-  <!-- 브릿지 기둥 -->
-  <line x1="34" y1="50" x2="34" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="50" y1="38" x2="50" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="66" y1="50" x2="66" y2="72" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- 브릿지 바닥 -->
-  <line x1="14" y1="72" x2="86" y2="72" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
-  <!-- TB 워드마크 -->
-  <text x="50" y="90" font-family="monospace" font-size="10" font-weight="700" fill="url(#g)" text-anchor="middle" letter-spacing="2">TB</text>
+  <!-- Termux 스타일: 검정 배경 + 초록 터미널 프롬프트 -->
+  <rect width="100" height="100" rx="18" fill="#0d0d0d"/>
+  <!-- 터미널 상단 바 -->
+  <rect x="8" y="8" width="84" height="13" rx="4" fill="#1a1a1a"/>
+  <!-- 상단 버튼 3개 (macOS 터미널 스타일) -->
+  <circle cx="18" cy="14.5" r="3" fill="#ff5f57"/>
+  <circle cx="28" cy="14.5" r="3" fill="#ffbd2e"/>
+  <circle cx="38" cy="14.5" r="3" fill="#28ca41"/>
+  <!-- 터미널 본체 -->
+  <rect x="8" y="25" width="84" height="67" rx="4" fill="#0a150a"/>
+  <!-- 프롬프트 라인 1 -->
+  <text x="14" y="46" font-family="monospace" font-size="15" font-weight="700" fill="#34D399">$</text>
+  <!-- 커서 블록 -->
+  <rect x="25" y="33" width="8" height="15" rx="1" fill="#34D399"/>
+  <!-- 프롬프트 라인 2 -->
+  <text x="14" y="63" font-family="monospace" font-size="9" fill="#34D399" opacity="0.6">termux</text>
+  <text x="57" y="63" font-family="monospace" font-size="9" fill="#34D399" opacity="0.6">▮</text>
+  <!-- 프롬프트 라인 3 (흐릿) -->
+  <rect x="14" y="71" width="28" height="2" rx="1" fill="#34D399" opacity="0.2"/>
+  <rect x="14" y="77" width="18" height="2" rx="1" fill="#34D399" opacity="0.15"/>
+  <rect x="14" y="83" width="40" height="2" rx="1" fill="#34D399" opacity="0.1"/>
 </svg>
