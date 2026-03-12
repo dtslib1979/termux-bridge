@@ -39,7 +39,7 @@
 | GUI click automation | Platform ban risk (YouTube/Google TOS) | Red Line |
 | Login-gated page checks | Credential storage in Actions = security risk | Red Line |
 | Termux:API notifications | Repo-centric OS doesn't need device hooks | Over-engineering |
-| Shizuku/ADB automation | Same as above | Over-engineering |
+| Shizuku/ADB automation | QA 파이프라인에 device hooks 불필요. **단, 개발 도구로는 사용** (`local/shizuku.sh`) | QA 제외 (도구는 유효) |
 | SEO/Lighthouse scoring | Scope Boundary (this is health check, not optimization) | Scope Boundary |
 | Uptime monitoring | GitHub Pages has its own uptime; we check content, not availability | Scope Boundary |
 

@@ -102,11 +102,11 @@ npm_install_local() {
 SYS_ENTRIES=""
 PY_ENTRIES=""
 NPM_ENTRIES=""
+ANDROID_ENTRIES=""
 BLOCKED_ENTRIES=""
 PASS_COUNT=0; FAIL_COUNT=0; WARN_COUNT=0
 
 bom_entry() {
-  # $1=name $2=cmd $3=verified(true/false) $4=version $5=purpose $6=pkg_termux $7=pkg_apt $8=pkg_brew
   local name="$1" cmd="$2" verified="$3" version="$4" purpose="$5"
   local pkg_termux="${6:-$name}" pkg_apt="${7:-$name}" pkg_brew="${8:-$name}"
   printf '    {"name":"%s","cmd":"%s","pkg_termux":"%s","pkg_apt":"%s","pkg_brew":"%s","verified":%s,"verified_version":"%s","purpose":"%s"}' \
@@ -118,27 +118,17 @@ bom_blocked() {
   printf '    {"name":"%s","reason":"%s","alternative":"%s"}' "$name" "$reason" "$alternative"
 }
 
-append_sys() {
-  [ -n "$SYS_ENTRIES" ] && SYS_ENTRIES="$SYS_ENTRIES,"$'\n'
-  SYS_ENTRIES="$SYS_ENTRIES$1"
-}
-append_py()  {
-  [ -n "$PY_ENTRIES" ]  && PY_ENTRIES="$PY_ENTRIES,"$'\n'
-  PY_ENTRIES="$PY_ENTRIES$1"
-}
-append_npm() {
-  [ -n "$NPM_ENTRIES" ] && NPM_ENTRIES="$NPM_ENTRIES,"$'\n'
-  NPM_ENTRIES="$NPM_ENTRIES$1"
-}
-append_blocked() {
-  [ -n "$BLOCKED_ENTRIES" ] && BLOCKED_ENTRIES="$BLOCKED_ENTRIES,"$'\n'
-  BLOCKED_ENTRIES="$BLOCKED_ENTRIES$1"
-}
+append_sys()     { [ -n "$SYS_ENTRIES" ]     && SYS_ENTRIES="$SYS_ENTRIES,"$'\n';     SYS_ENTRIES="$SYS_ENTRIES$1"; }
+append_py()      { [ -n "$PY_ENTRIES" ]      && PY_ENTRIES="$PY_ENTRIES,"$'\n';       PY_ENTRIES="$PY_ENTRIES$1"; }
+append_npm()     { [ -n "$NPM_ENTRIES" ]     && NPM_ENTRIES="$NPM_ENTRIES,"$'\n';     NPM_ENTRIES="$NPM_ENTRIES$1"; }
+append_android() { [ -n "$ANDROID_ENTRIES" ] && ANDROID_ENTRIES="$ANDROID_ENTRIES,"$'\n'; ANDROID_ENTRIES="$ANDROID_ENTRIES$1"; }
+append_blocked() { [ -n "$BLOCKED_ENTRIES" ] && BLOCKED_ENTRIES="$BLOCKED_ENTRIES,"$'\n'; BLOCKED_ENTRIES="$BLOCKED_ENTRIES$1"; }
 
-# ── 패키지 처리 (설치 + 검증 + BOM) ─────────────────────────────────────
+# ── 패키지 처리 함수 ──────────────────────────────────────────────────────
 handle_sys() {
   local name="$1" cmd="$2" pkg_t="${3:-$name}" pkg_a="${4:-$name}" pkg_b="${5:-$name}" purpose="${6:-}"
-  local platform_pkg; case "$PLATFORM" in termux) platform_pkg="$pkg_t" ;; macos) platform_pkg="$pkg_b" ;; *) platform_pkg="$pkg_a" ;; esac
+  local platform_pkg
+  case "$PLATFORM" in termux) platform_pkg="$pkg_t" ;; macos) platform_pkg="$pkg_b" ;; *) platform_pkg="$pkg_a" ;; esac
 
   if ! command -v "$cmd" &>/dev/null; then
     pkg_install "$platform_pkg"
@@ -161,7 +151,7 @@ handle_py() {
   if ! python3 -c "import $import" &>/dev/null 2>&1; then
     pip_install "$name"
   fi
-  if python3 -c "import $import; import importlib.metadata; print(importlib.metadata.version('$name'))" &>/dev/null 2>&1; then
+  if python3 -c "import $import" &>/dev/null 2>&1; then
     local v; v=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('$name'))" 2>/dev/null || echo "")
     pass "pip:$name $v"
     append_py "$(printf '    {"name":"%s","import":"%s","verified":true,"verified_version":"%s","purpose":"%s"}' "$name" "$import" "$v" "$purpose")"
@@ -209,6 +199,48 @@ handle_npm_local() {
   fi
 }
 
+# ── Android 앱 감지 (Termux 전용 — APK는 자동설치 불가, 감지만) ──────────
+handle_android_app() {
+  local name="$1" pkg_id="$2" purpose="$3" install_url="$4" termux_tool="${5:-}"
+
+  if [ "$PLATFORM" != "termux" ]; then
+    warn "android_app:$name — Termux 전용, 현재 플랫폼 스킵"
+    WARN_COUNT=$((WARN_COUNT+1))
+    append_android "$(printf '    {"name":"%s","package":"%s","verified":false,"verified_version":"","purpose":"%s","layer":"system","install_url":"%s","termux_tool":"%s","note":"non-termux platform"}' \
+      "$name" "$pkg_id" "$purpose" "$install_url" "$termux_tool")"
+    return
+  fi
+
+  # pm 명령으로 설치 여부 확인 (Termux에서 접근 가능한 경우)
+  local installed=false
+  local ver_str=""
+
+  # 방법 1: pm list packages (일부 Android 버전에서 가능)
+  if pm list packages 2>/dev/null | grep -q "$pkg_id"; then
+    installed=true
+    ver_str=$(pm dump "$pkg_id" 2>/dev/null | grep "versionName" | head -1 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' || echo "")
+  # 방법 2: adb 연결된 경우 adb shell pm
+  elif command -v adb &>/dev/null && adb devices 2>/dev/null | grep -q "localhost"; then
+    if adb shell pm list packages 2>/dev/null | grep -q "$pkg_id"; then
+      installed=true
+      ver_str=$(adb shell pm dump "$pkg_id" 2>/dev/null | grep "versionName" | head -1 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' || echo "")
+    fi
+  fi
+
+  if $installed; then
+    pass "android:$name $ver_str"
+    append_android "$(printf '    {"name":"%s","package":"%s","verified":true,"verified_version":"%s","purpose":"%s","layer":"system","install_url":"%s","termux_tool":"%s"}' \
+      "$name" "$pkg_id" "$ver_str" "$purpose" "$install_url" "$termux_tool")"
+    PASS_COUNT=$((PASS_COUNT+1))
+  else
+    warn "android:$name — 미설치 (수동 설치 필요)"
+    warn "  설치: $install_url"
+    append_android "$(printf '    {"name":"%s","package":"%s","verified":false,"verified_version":"","purpose":"%s","layer":"system","install_url":"%s","termux_tool":"%s","note":"manual install required"}' \
+      "$name" "$pkg_id" "$purpose" "$install_url" "$termux_tool")"
+    WARN_COUNT=$((WARN_COUNT+1))
+  fi
+}
+
 # ════════════════════════════════════════════════════════════════════════
 # MAIN
 # ════════════════════════════════════════════════════════════════════════
@@ -247,33 +279,35 @@ fi
 
 # ── 시스템 패키지 ────────────────────────────────────────────────────────
 head_ "► System Packages"
-handle_sys "git"        "git"       "git"        "git"             "git"        "버전 관리"
-handle_sys "node"       "node"      "nodejs"     "nodejs"          "node"       "JS 런타임"
-handle_sys "python"     "python3"   "python"     "python3"         "python3"    "Python 런타임"
-handle_sys "ffmpeg"     "ffmpeg"    "ffmpeg"     "ffmpeg"          "ffmpeg"     "오디오/비디오 처리"
-handle_sys "gh"         "gh"        "gh"         "gh"              "gh"         "GitHub CLI"
-handle_sys "imagemagick" "convert"  "imagemagick" "imagemagick"    "imagemagick" "이미지 변환/처리"
-handle_sys "jq"         "jq"        "jq"         "jq"              "jq"         "JSON 처리"
-handle_sys "poppler"    "pdftotext" "poppler"    "poppler-utils"   "poppler"    "PDF 도구"
-handle_sys "rclone"     "rclone"    "rclone"     "rclone"          "rclone"     "Google Drive 동기화"
-handle_sys "rsync"      "rsync"     "rsync"      "rsync"           "rsync"      "파일 동기화"
-handle_sys "tree"       "tree"      "tree"       "tree"            "tree"       "디렉토리 시각화"
-handle_sys "wget"       "wget"      "wget"       "wget"            "wget"       "파일 다운로드"
+handle_sys "git"          "git"          "git"            "git"             "git"          "버전 관리"
+handle_sys "node"         "node"         "nodejs"         "nodejs"          "node"         "JS 런타임"
+handle_sys "python"       "python3"      "python"         "python3"         "python3"      "Python 런타임"
+handle_sys "ffmpeg"       "ffmpeg"       "ffmpeg"         "ffmpeg"          "ffmpeg"       "오디오/비디오 처리"
+handle_sys "gh"           "gh"           "gh"             "gh"              "gh"           "GitHub CLI"
+handle_sys "imagemagick"  "convert"      "imagemagick"    "imagemagick"     "imagemagick"  "이미지 변환/처리"
+handle_sys "jq"           "jq"           "jq"             "jq"              "jq"           "JSON 처리"
+handle_sys "poppler"      "pdftotext"    "poppler"        "poppler-utils"   "poppler"      "PDF 도구"
+handle_sys "rclone"       "rclone"       "rclone"         "rclone"          "rclone"       "Google Drive 동기화"
+handle_sys "rsync"        "rsync"        "rsync"          "rsync"           "rsync"        "파일 동기화"
+handle_sys "tree"         "tree"         "tree"           "tree"            "tree"         "디렉토리 시각화"
+handle_sys "wget"         "wget"         "wget"           "wget"            "wget"         "파일 다운로드"
+# android-tools: adb 바이너리 — shizuku.sh 사전조건
+handle_sys "android-tools" "adb"         "android-tools"  "android-tools"   "android-platform-tools" "ADB 바이너리 (shizuku.sh 사전조건)"
 
-# Termux 전용: chromium
+# Termux 전용 패키지
 if [ "$PLATFORM" = "termux" ]; then
-  handle_sys "chromium" "chromium-browser" "chromium" "" "" "CDP 스크린샷용"
-  handle_sys "cmake"    "cmake"            "cmake"    "" "" "빌드 도구"
-  handle_sys "ninja"    "ninja"            "ninja-build" "" "" "빌드 도구"
-  handle_sys "termux-api" "termux-microphone-record" "termux-api" "" "" "핸드폰 하드웨어 접근"
+  handle_sys "chromium"   "chromium-browser" "chromium"   "" ""              "CDP 스크린샷용 (x11-repo)"
+  handle_sys "cmake"      "cmake"            "cmake"      "cmake"  "cmake"   "빌드 도구"
+  handle_sys "ninja"      "ninja"            "ninja-build" "ninja-build" "ninja" "빌드 도구"
+  handle_sys "termux-api" "termux-microphone-record" "termux-api" "" ""      "핸드폰 하드웨어 접근"
 else
-  warn "chromium: Termux 전용 — 현재 플랫폼 스킵"
+  warn "chromium/termux-api: Termux 전용 패키지 — 현재 플랫폼 스킵"
   WARN_COUNT=$((WARN_COUNT+1))
 fi
 
 # ── Python 패키지 ────────────────────────────────────────────────────────
 head_ "► Python Packages"
-if command -v python3 &>/dev/null && command -v pip &>/dev/null || command -v pip3 &>/dev/null; then
+if command -v python3 &>/dev/null && { command -v pip &>/dev/null || command -v pip3 &>/dev/null; }; then
   handle_py "pillow"   "PIL"      "이미지 처리 (OpenCV 대체)"
   handle_py "numpy"    "numpy"    "수치 연산"
   handle_py "requests" "requests" "HTTP 클라이언트"
@@ -285,22 +319,32 @@ fi
 # ── npm 패키지 ───────────────────────────────────────────────────────────
 head_ "► npm Packages"
 if command -v npm &>/dev/null; then
-  handle_npm_g     "claude"     "claude"     "Claude Code CLI"
-  handle_npm_local "ws"                      "CDP WebSocket 연결"
+  handle_npm_g     "claude"  "claude"  "Claude Code CLI"
+  handle_npm_local "ws"                "CDP WebSocket 연결"
 else
   warn "npm 미설치 — npm 패키지 스킵"
   WARN_COUNT=$((WARN_COUNT+1))
 fi
 
-# ── Blocked (플랫폼 불가) ─────────────────────────────────────────────────
+# ── Android 앱 (감지 전용 — 수동 설치 필요) ─────────────────────────────
+head_ "► Android Apps (Termux 전용 — 감지만, 수동 설치)"
+handle_android_app \
+  "Shizuku" \
+  "moe.shizuku.privileged.api" \
+  "ADB급 시스템 권한 — 루트 없이. APK 설치·권한 관리·앱 제어" \
+  "https://shizuku.rikka.app" \
+  "local/shizuku.sh"
+
+# ── Blocked ───────────────────────────────────────────────────────────────
 head_ "► Blocked (설치 불가 — 대안 사용)"
-append_blocked "$(bom_blocked "opencv-python" "aarch64 빌드 실패" "pillow")"
-append_blocked "$(bom_blocked "scipy"          "빌드 실패"          "numpy")"
-append_blocked "$(bom_blocked "puppeteer"      "Android 미지원"     "CDP 직접 연결")"
-append_blocked "$(bom_blocked "playwright"     "Android 미지원 (Termux)" "GitHub Actions")"
-append_blocked "$(bom_blocked "docker"         "커널 제약"           "불가")"
-append_blocked "$(bom_blocked "lighthouse"     "빌드 실패"           "GitHub Actions")"
-info "opencv → pillow, puppeteer/playwright → CDP+Actions, docker → 불가"
+append_blocked "$(bom_blocked "opencv-python" "aarch64 빌드 실패"           "pillow")"
+append_blocked "$(bom_blocked "scipy"          "빌드 실패"                   "numpy")"
+append_blocked "$(bom_blocked "puppeteer"      "Android 미지원"              "CDP 직접 연결")"
+append_blocked "$(bom_blocked "playwright"     "Android 미지원 (Termux)"     "GitHub Actions")"
+append_blocked "$(bom_blocked "docker"         "커널 제약"                   "불가")"
+append_blocked "$(bom_blocked "lighthouse"     "빌드 실패"                   "GitHub Actions")"
+append_blocked "$(bom_blocked "tasker"         "코드로 만들 수 있는 걸 GUI 자동화 도구로 대체 불필요" "APK/PWA 직접 제작")"
+info "opencv→pillow, puppeteer/playwright→CDP+Actions, tasker→직접제작"
 
 # ── BOM JSON 생성 ────────────────────────────────────────────────────────
 head_ "► BOM 생성 → install/bom.json"
@@ -327,6 +371,9 @@ $PY_ENTRIES
   "npm": [
 $NPM_ENTRIES
   ],
+  "android_apps": [
+$ANDROID_ENTRIES
+  ],
   "blocked": [
 $BLOCKED_ENTRIES
   ]
@@ -342,6 +389,23 @@ echo ""
 
 if [ "$FAIL_COUNT" -gt 0 ]; then
   warn "일부 패키지 설치 실패. 위 [XX] 항목 확인"
+fi
+
+# ── Shizuku 설치 안내 (미설치인 경우) ───────────────────────────────────
+if [ "$PLATFORM" = "termux" ] && echo "$ANDROID_ENTRIES" | grep -q '"Shizuku".*"verified":false'; then
+  head_ "► Shizuku 설치 안내 (필수)"
+  echo -e "${YELLOW}Shizuku가 미설치되어 있습니다.${NC}"
+  echo ""
+  echo "1. Play Store 또는 F-Droid에서 Shizuku 설치:"
+  echo "   https://shizuku.rikka.app"
+  echo ""
+  echo "2. 설치 후 설정 → 개발자 옵션 → 무선 디버깅 활성화"
+  echo ""
+  echo "3. Shizuku 앱 실행 → '무선 디버깅으로 시작' 선택"
+  echo ""
+  echo "4. Termux에서 연결:"
+  echo "   bash local/shizuku.sh pair     # 최초 1회"
+  echo "   bash local/shizuku.sh status   # 상태 확인"
 fi
 
 # ── phoneparis 동기화 안내 ──────────────────────────────────────────────
