@@ -219,9 +219,54 @@ phoneparis/tools/baptism/config/packages.json (상품 BOM)
 
 ---
 
-*Version: 2.2*
+---
+
+## 9. phoneparis 맞춤 프로그램 생산 구조 (2026-03-12 확정)
+
+### 전체 아키텍처
+
+```
+[termux-bridge]              ← General Ledger / 기술코드 생산 센터
+         ↓ bom.json → packages.json 포스팅
+[phoneparis/tools/baptism/]  ← Bridge Layer / 상품 BOM
+         ↓ 조합
+[APK Lab]  +  [DTSLIB Studio PWA]
+         ↓ 라이프스타일 매핑
+[phoneparis 맞춤 프로그램]    ← 고객 제품
+```
+
+### 두 생산 풀
+
+| 풀 | 특징 | 예시 앱 |
+|----|------|---------|
+| APK Lab | 네이티브. 시스템 권한·오프라인·백그라운드 | Axis, Pen, Capture, Subtitle, Wavesy, TTS, ChronoCall, Liner |
+| DTSLIB Studio PWA | 브라우저 즉시 실행. ffmpeg WASM | Lecture Shorts/Long, Auto Shorts, Clip Shorts |
+
+### 콘텐츠 조합 방식
+
+라이프스타일 세그먼트 정의 → 해당 세그먼트 APK + PWA 조합 선택.
+
+### 슬로건 ↔ 레이어
+
+| "폰 하나로..." | 레이어 |
+|--------------|--------|
+| 쓴다 | phoneparis 고객 인터페이스 |
+| 만든다 | termux-bridge 인프라 |
+| 움직인다 | APK Lab + Studio 실행 산출물 |
+
+### 상시 작업 3종 세트
+
+| 레포 | 역할 |
+|------|------|
+| termux-bridge | 인프라 검증 + BOM 원장 |
+| phoneparis | baptism BOM + 프로그램 조합 |
+| dtslib | APK + PWA 생산 |
+
+---
+
+*Version: 2.3*
 *Renamed: 2026-02-26 (playwright-bot → termux-bridge)*
-*Updated: 2026-03-12 (Shizuku 추가, Tasker 제거)*
+*Updated: 2026-03-12 (Shizuku 추가, Tasker 제거, §9 phoneparis 아키텍처 확정)*
 *Built with: Claude Code (Claude Opus 4.6)*
 
 ---
