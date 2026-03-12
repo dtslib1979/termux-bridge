@@ -37,6 +37,9 @@
     {"name":"claude", "scope":"global", "verified":true, "verified_version":"", "purpose":"Claude Code CLI"},
     {"name":"ws",     "scope":"local",  "verified":true, "verified_version":"",  "purpose":"CDP WebSocket 연결"}
   ],
+  "android_apps": [
+    {"name":"Shizuku","package":"moe.shizuku.privileged.api","verified":true,"verified_version":"","purpose":"ADB급 시스템 권한 — 루트 없이. Termux 위 시스템 레이어","layer":"system","install_url":"https://shizuku.rikka.app","termux_tool":"local/shizuku.sh"}
+  ],
   "blocked": [
     {"name":"opencv-python", "reason":"aarch64 빌드 실패",           "alternative":"pillow"},
     {"name":"scipy",          "reason":"빌드 실패",                   "alternative":"numpy"},
