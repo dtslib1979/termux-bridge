@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#020404">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+  <title>플랫폼 자동화 맵 | termux-bridge</title>
+  <style>
+    :root {
+      --bg: #020404; --card: #0d1410; --gold: #D4AF37;
+      --green: #34D399; --blue: #60A5FA; --purple: #A78BFA;
+      --orange: #FB923C; --red: #F87171;
+      --text: #F8FAF9; --muted: rgba(248,250,249,0.5);
+      --border: rgba(248,250,249,0.07);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100dvh; padding: 28px 18px 48px; max-width: 480px; margin: 0 auto; }
+
+    /* HEADER */
+    .back { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); text-decoration: none; margin-bottom: 20px; }
+    .back:hover { color: var(--text); }
+    h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+    /* LEGEND */
+    .legend { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* SECTION */
+    .section-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; margin-top: 24px; }
+
+    /* PLATFORM CARD */
+    .platform-list { display: flex; flex-direction: column; gap: 8px; }
+    .platform { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .platform-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .platform-icon { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+    .platform-name { font-size: 14px; font-weight: 700; flex: 1; }
+    .platform-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+    .badge-full   { background: rgba(52,211,153,0.15); color: var(--green); }
+    .badge-high   { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge-mid    { background: rgba(251,146,60,0.15); color: var(--orange); }
+    .badge-hard   { background: rgba(248,113,113,0.15); color: var(--red); }
+
+    /* BAR */
+    .bar-wrap { margin-bottom: 8px; }
+    .bar-labels { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
+    .bar-pw  { color: var(--orange); font-weight: 700; }
+    .bar-cic { color: var(--blue); font-weight: 700; }
+    .bar-track { height: 6px; background: rgba(248,250,249,0.08); border-radius: 4px; overflow: hidden; display: flex; }
+    .bar-fill-pw  { background: var(--orange); height: 100%; border-radius: 4px 0 0 4px; transition: width 0.3s; }
+    .bar-fill-cic { background: var(--blue); height: 100%; border-radius: 0 4px 4px 0; }
+
+    .platform-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+    /* NOTE */
+    .note { background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.2); border-radius: 10px; padding: 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 24px; }
+    .note strong { color: var(--gold); }
+
+    /* BACK BUTTON BOTTOM */
+    .btn-back { display: block; margin-top: 24px; padding: 13px 16px; text-align: center; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <a class="back" href="index.html">← termux-bridge</a>
+
+  <h1>플랫폼 자동화 맵</h1>
+  <p class="sub">Playwright(점자) vs Claude in Chrome(눈) 비율.<br>API 없는 플랫폼을 어떤 도구로 얼마나 자동화할 수 있나.</p>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div>Playwright</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Claude in Chrome</div>
+  </div>
+
+  <!-- 현재 사용 중 -->
+  <div class="section-label">현재 사용 중</div>
+  <div class="platform-list">
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">📝</div>
+        <div class="platform-name">티스토리</div>
+        <div class="platform-badge badge-full">100% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 100%</span><span class="bar-cic">CiC 0%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:100%"></div><div class="bar-fill-cic" style="width:0%"></div></div>
+      </div>
+      <div class="platform-desc">DOM 구조 고정. 스킨 편집·포스팅·다계정 일괄 작업 전부 Playwright로 완결.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">🟢</div>
+        <div class="platform-name">네이버 블로그</div>
+        <div class="platform-badge badge-full">90% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 90%</span><span class="bar-cic">CiC 10%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:90%"></div><div class="bar-fill-cic" style="width:10%"></div></div>
+      </div>
+      <div class="platform-desc">글쓰기·이미지·태그 전부 됨. 간헐적 CAPTCHA 또는 비정형 팝업은 Claude in Chrome.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">🎬</div>
+        <div class="platform-name">YouTube</div>
+        <div class="platform-badge badge-high">80% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 80%</span><span class="bar-cic">CiC 20%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:80%"></div><div class="bar-fill-cic" style="width:20%"></div></div>
+      </div>
+      <div class="platform-desc">업로드·제목·태그·설명·공개설정 됨. 썸네일 퀄리티 확인·자막 검수는 눈 필요.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">🛒</div>
+        <div class="platform-name">카페24 도메인 관리</div>
+        <div class="platform-badge badge-full">95% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 95%</span><span class="bar-cic">CiC 5%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:95%"></div><div class="bar-fill-cic" style="width:5%"></div></div>
+      </div>
+      <div class="platform-desc">어드민 패널 구조 일정. DNS·도메인 설정 반복 작업 완전 자동화 가능.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">🔍</div>
+        <div class="platform-name">구글 개발자 콘솔</div>
+        <div class="platform-badge badge-high">80% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 80%</span><span class="bar-cic">CiC 20%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:80%"></div><div class="bar-fill-cic" style="width:20%"></div></div>
+      </div>
+      <div class="platform-desc">앱 배포·설정·권한 관리 됨. UI 복잡도 높아서 초기 셋업은 눈이 효율적.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">📘</div>
+        <div class="platform-name">Facebook</div>
+        <div class="platform-badge badge-mid">40% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 40%</span><span class="bar-cic">CiC 60%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:40%"></div><div class="bar-fill-cic" style="width:60%"></div></div>
+      </div>
+      <div class="platform-desc">봇 탐지 강함. UI 수시로 변경. 단순 포스팅은 됨, 광고·분석은 Claude in Chrome 의존.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">📸</div>
+        <div class="platform-name">인스타그램</div>
+        <div class="platform-badge badge-hard">20% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 20%</span><span class="bar-cic">CiC 80%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:20%"></div><div class="bar-fill-cic" style="width:80%"></div></div>
+      </div>
+      <div class="platform-desc">봇 탐지 업계 최강. 로그인·2FA·세션 관리 복잡. 대부분 Claude in Chrome으로 처리.</div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 추가 제안 -->
+  <div class="section-label">추가 제안 — 28개 레포 운영 기준</div>
+  <div class="platform-list">
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">📊</div>
+        <div class="platform-name">Google Search Console</div>
+        <div class="platform-badge badge-high">75% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 75%</span><span class="bar-cic">CiC 25%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:75%"></div><div class="bar-fill-cic" style="width:25%"></div></div>
+      </div>
+      <div class="platform-desc">URL 등록·sitemap 제출 자동화 됨. 데이터 해석·이상 판단은 눈.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">▲</div>
+        <div class="platform-name">Vercel</div>
+        <div class="platform-badge badge-full">95% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 95%</span><span class="bar-cic">CiC 5%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:95%"></div><div class="bar-fill-cic" style="width:5%"></div></div>
+      </div>
+      <div class="platform-desc">CLI로 대부분 해결. 대시보드 설정도 DOM 구조 일정. 거의 완전 자동화.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">🌐</div>
+        <div class="platform-name">Cloudflare</div>
+        <div class="platform-badge badge-full">90% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 90%</span><span class="bar-cic">CiC 10%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:90%"></div><div class="bar-fill-cic" style="width:10%"></div></div>
+      </div>
+      <div class="platform-desc">DNS·Page Rules·Workers 설정 반복 작업 자동화 가능. API도 있음.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">📈</div>
+        <div class="platform-name">Google Analytics</div>
+        <div class="platform-badge badge-mid">60% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 60%</span><span class="bar-cic">CiC 40%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:60%"></div><div class="bar-fill-cic" style="width:40%"></div></div>
+      </div>
+      <div class="platform-desc">데이터 추출·리포트 자동화 됨. 이상 트래픽 판단·인사이트 해석은 눈.</div>
+    </div>
+
+    <div class="platform">
+      <div class="platform-header">
+        <div class="platform-icon">☕</div>
+        <div class="platform-name">네이버 카페</div>
+        <div class="platform-badge badge-high">70% 자동화</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-labels"><span class="bar-pw">Playwright 70%</span><span class="bar-cic">CiC 30%</span></div>
+        <div class="bar-track"><div class="bar-fill-pw" style="width:70%"></div><div class="bar-fill-cic" style="width:30%"></div></div>
+      </div>
+      <div class="platform-desc">글쓰기·댓글 반복 작업 됨. 카페마다 UI 다르고 등급 제한 있을 때 눈 필요.</div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <strong>판단 기준</strong><br>
+    Playwright = DOM 구조 일정 + 반복 작업 + 판단 불필요<br>
+    Claude in Chrome = UI 수시 변경 + 봇 탐지 강함 + 결과 판단 필요<br><br>
+    비율은 <strong>일반적인 작업 기준</strong>. 작업 종류에 따라 달라짐.
+  </div>
+
+  <a class="btn-back" href="index.html">← 돌아가기</a>
+
+</body>
+</html>
