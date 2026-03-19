@@ -1,0 +1,73 @@
+{
+  "runId": "2026-03-19-06-18",
+  "timestamp": "2026-03-19T06:19:56.824Z",
+  "duration": 111,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 8,
+    "warn": 15,
+    "fail": 4
+  },
+  "brokenLinks": 19,
+  "ignoredLinks": 15,
+  "consoleErrors": 13,
+  "docQA": {
+    "pass": 137,
+    "warn": 19,
+    "fail": 6
+  },
+  "topBroken": [
+    {
+      "id": "eae-kr",
+      "name": "EAE.kr",
+      "count": 8
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "count": 2
+    },
+    {
+      "id": "cloud-appstore",
+      "name": "Cloud Appstore",
+      "count": 2
+    },
+    {
+      "id": "namone",
+      "name": "Namone",
+      "count": 2
+    },
+    {
+      "id": "dongseon-studio",
+      "name": "Dongseon Studio",
+      "count": 2
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 2627
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2561
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2540
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 2095
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "ms": 1745
+    }
+  ]
+}
