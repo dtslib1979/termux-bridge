@@ -2,6 +2,37 @@
 
 > **구 이름:** playwright-bot (2026-01-04 ~ 2026-02-26)
 
+## 2026-03-21 | TTS 브릿지 원클릭 통합 (tts-bridge.sh)
+
+### 문제
+- TTS 서버 시작 + SSH 역방향 터널 + PC 접속이 각각 수동 3단계였음
+- Termux 탭 두 개 이상 필요하고, alias 없이 긴 ssh 명령 직접 입력
+
+### 해결
+`tts-bridge.sh` 하나로 통합:
+1. `tts-server.sh` nohup bg 시작
+2. `exec ssh -R 9876:localhost:9876 ... PC` → 탭 하나에서 완료
+
+### PC 측 추가
+`~/.bashrc`에 `tts()` 함수 + `cc-tts` alias 추가:
+```bash
+tts "폰이 읽어줘"
+cc-tts "Claude 프롬프트"
+```
+
+### setup.sh 변경
+`set_alias` 함수 추가 → `alias pc='~/termux-bridge/tts-bridge.sh'` 자동 설치/교체
+
+### 사용 플로우
+```
+Termux: pc (엔터 한번)
+  → TTS 서버 bg 시작
+  → PC SSH 연결 + 역방향 터널 (9876)
+  → PC 쉘에서 tts "읽어줘" 하면 폰이 읽어줌
+```
+
+---
+
 ## 2026-01-04 | 초기 구축 완료
 
 ### 목적

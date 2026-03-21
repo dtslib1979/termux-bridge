@@ -48,17 +48,37 @@ add_alias() {
   fi
 }
 
+# 기존 alias를 새 값으로 교체하거나 없으면 추가
+set_alias() {
+  local name="$1"
+  local cmd="$2"
+  if grep -q "alias $name=" "$BASHRC" 2>/dev/null; then
+    sed -i "s|alias $name=.*|alias $name='$cmd'|" "$BASHRC"
+    echo "  -> alias $name 업데이트됨"
+  else
+    echo "alias $name='$cmd'" >> "$BASHRC"
+    echo "  -> alias $name 추가됨"
+  fi
+}
+
 # cc: termux-bridge 폴더에서 claude 바로 실행
 add_alias "cc" "cd $REPO_DIR && claude"
 # cb: termux-bridge 폴더로 이동
 add_alias "cb" "cd $REPO_DIR"
+# pc: TTS 서버 bg 시작 + PC SSH 역방향 터널 (tts-bridge.sh)
+set_alias "pc" "$REPO_DIR/tts-bridge.sh"
 
 echo ""
 echo "=== 완료 ==="
 echo ""
 echo "  source ~/.bashrc  (alias 바로 적용)"
 echo ""
-echo "앞으로 Claude Code 실행:"
-echo "  cc    ← termux-bridge에서 claude 바로 실행"
-echo "  cb    ← termux-bridge 폴더 이동"
+echo "앞으로 사용법:"
+echo "  pc        ← TTS 서버 시작 + PC SSH 접속 (원클릭)"
+echo "  cc        ← termux-bridge에서 claude 바로 실행"
+echo "  cb        ← termux-bridge 폴더 이동"
+echo ""
+echo "PC 접속 후:"
+echo "  tts \"읽어줘\"          ← 폰이 읽어줌"
+echo "  cc-tts \"프롬프트\"      ← Claude 응답도 폰이 읽어줌"
 echo ""
