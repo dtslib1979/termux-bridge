@@ -12,6 +12,14 @@
 PORT=9876
 TTS_ENABLED=true
 
+# 기존 9876 포트 점유 프로세스 정리 (SSH 터널 좀비 등)
+_stale_pids=$(lsof -ti :"$PORT" 2>/dev/null)
+if [ -n "$_stale_pids" ]; then
+    echo "[정리] 포트 $PORT 기존 프로세스 종료: $_stale_pids"
+    kill $_stale_pids 2>/dev/null
+    sleep 0.3
+fi
+
 # TTS 서버 연결 확인
 if ! nc -z localhost "$PORT" 2>/dev/null; then
     echo "[경고] TTS 서버 없음 (폰에서 tts-bridge.sh 실행 필요)"
