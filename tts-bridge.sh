@@ -16,7 +16,7 @@ PC_USER="dtsli"
 PC_PORT="2222"
 TTS_PORT="9876"
 TTS_SCRIPT="$HOME/termux-bridge/tts-server.sh"
-LOG="/tmp/tts-server.log"
+LOG="${TMPDIR:-/tmp}/tts-server.log"
 
 # ── 1. TTS 서버 시작 ────────────────────────────────
 echo ""
