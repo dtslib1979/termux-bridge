@@ -44,8 +44,8 @@ tts_filter() {
         # 마크다운 기호 제거
         local clean
         clean=$(echo "$line" | sed 's/[#*`_~>|]//g; s/  */ /g; s/^ *//; s/ *$//')
-        # 한글 포함 줄만 TTS 전송
-        if echo "$clean" | grep -q '[가-힣]' && [ -n "$clean" ]; then
+        # 한글 포함 줄만 TTS 전송 (grep -P: locale 무관 유니코드 범위)
+        if echo "$clean" | grep -qP '[\x{AC00}-\x{D7A3}]' && [ -n "$clean" ]; then
             nc -q1 localhost "$PORT" <<< "$clean" 2>/dev/null &
         fi
     done

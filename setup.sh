@@ -68,6 +68,22 @@ add_alias "cb" "cd $REPO_DIR"
 # pc: TTS 서버 bg 시작 + PC SSH 역방향 터널 (tts-bridge.sh)
 set_alias "pc" "$REPO_DIR/tts-bridge.sh"
 
+# 5. TTS 서버 자동 시작 (.bashrc에 한 번만 추가)
+echo "[5/5] TTS 서버 자동 시작 설정..."
+TTS_MARKER="# tts-server auto-start (termux-bridge)"
+if ! grep -q "$TTS_MARKER" "$BASHRC" 2>/dev/null; then
+  cat >> "$BASHRC" <<EOF
+
+$TTS_MARKER
+if ! pgrep -f "tts-server.sh" > /dev/null 2>&1; then
+    nohup bash $REPO_DIR/tts-server.sh > \${TMPDIR:-/tmp}/tts-server.log 2>&1 &
+fi
+EOF
+  echo "  -> TTS 서버 자동 시작 추가됨 (Termux 열 때 백그라운드 시작)"
+else
+  echo "  -> TTS 서버 자동 시작 이미 설정됨"
+fi
+
 echo ""
 echo "=== 완료 ==="
 echo ""
