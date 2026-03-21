@@ -46,7 +46,7 @@ tts_filter() {
         clean=$(echo "$line" | sed 's/[#*`_~>|]//g; s/  */ /g; s/^ *//; s/ *$//')
         # 한글 포함 줄만 TTS 전송 (grep -P: locale 무관 유니코드 범위)
         if echo "$clean" | grep -qP '[\x{AC00}-\x{D7A3}]' && [ -n "$clean" ]; then
-            nc -q1 localhost "$PORT" <<< "$clean" 2>/dev/null &
+            nc -q1 localhost "$PORT" <<< "$clean" >/dev/null 2>&1 &
         fi
     done
 }

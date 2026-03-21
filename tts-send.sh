@@ -9,7 +9,7 @@
 PORT=9876
 
 send() {
-    nc -q1 localhost "$PORT" <<< "$1" 2>/dev/null
+    nc -q1 localhost "$PORT" <<< "$1" >/dev/null 2>&1
 }
 
 if [ -n "$1" ]; then
