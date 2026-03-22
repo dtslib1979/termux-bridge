@@ -1,78 +1,63 @@
 #!/bin/bash
-# claude-tts.sh (PC WSL2)
-# Claude 응답에서 코드블록 제거 후 한글 텍스트만 폰 TTS 전송
+# claude-tts.sh (PC WSL2) — v2: 직접 소켓 방식
 #
-# 설정: ~/.bashrc에 추가
-#   alias claude='~/termux-bridge/claude-tts.sh'
+# v1 문제: script -q -c "command claude" 래퍼 → 세션 후 좀비 프로세스
+# v2 해결: script 완전 제거 → stdout 직접 파이프 → 소켓 직통 전송
+#
+# 설치 (~/.bashrc):
+#   alias cc='~/termux-bridge/claude-tts.sh'
 #
 # 사용법:
-#   claude "질문"        → -p 모드로 응답 → TTS 자동 전송
-#   claude               → 인터랙티브 모드 (응답 중 한글 자동 TTS)
+#   cc           → 인터랙티브 claude (PTY 직접 실행, TTS 미지원)
+#   cc "질문"    → 단일 질의 + 폰 TTS 자동 전송
+#   cc -p "질문" → 동일 (-p 명시)
 
 PORT=9876
-TTS_ENABLED=true
 
-# 기존 9876 포트 점유 프로세스 정리 (SSH 터널 좀비 등)
-_stale_pids=$(lsof -ti :"$PORT" 2>/dev/null)
-if [ -n "$_stale_pids" ]; then
-    echo "[정리] 포트 $PORT 기존 프로세스 종료: $_stale_pids"
-    kill $_stale_pids 2>/dev/null
-    sleep 0.3
-fi
+_tts_connected() {
+    nc -z localhost "$PORT" 2>/dev/null
+}
 
-# TTS 서버 연결 확인
-if ! nc -z localhost "$PORT" 2>/dev/null; then
-    echo "[경고] TTS 서버 없음 (폰에서 tts-bridge.sh 실행 필요)"
-    TTS_ENABLED=false
-fi
-
-tts_filter() {
+# stdout 파이프 → 한글 줄만 소켓 직통 전송 (중간 파일/프로세스 없음)
+_tts_pipe() {
     local in_code=false
     while IFS= read -r line; do
-        # ANSI 이스케이프 코드 제거 (TUI 출력 정리)
         line=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*[A-Za-z]//g; s/\x1b[()][AB012]//g; s/\r//g')
-        # 코드블록 시작/끝 감지 (``` 또는 ~~~)
         if [[ "$line" =~ ^(\`\`\`|~~~) ]]; then
             [ "$in_code" = false ] && in_code=true || in_code=false
             continue
         fi
-        # 코드블록 내부 스킵
         [ "$in_code" = true ] && continue
-        # 빈 줄 / 구분선 스킵
         [ -z "$(echo "$line" | tr -d ' \t')" ] && continue
         [[ "$line" =~ ^[-=]{3,}$ ]] && continue
-        # 마크다운 기호 제거
         local clean
         clean=$(echo "$line" | sed 's/[#*`_~>|]//g; s/  */ /g; s/^ *//; s/ *$//')
-        # 한글 포함 줄만 TTS 전송 (grep -P: locale 무관 유니코드 범위)
         if echo "$clean" | grep -qP '[\x{AC00}-\x{D7A3}]' && [ -n "$clean" ]; then
-            nc -q1 localhost "$PORT" <<< "$clean" >/dev/null 2>&1 &
+            echo "$clean" | nc -q1 localhost "$PORT" >/dev/null 2>&1
         fi
     done
 }
 
-# 인수 없으면 인터랙티브 모드 — TTS 래핑 포함 (alias 무한루프 방지)
+# ── 인터랙티브 모드 (인수 없음) ─────────────────────────────────
+# script 래퍼 없이 PTY 직접 실행 → 좀비 없음
+# 인터랙티브 중 TTS 필요하면: cc "질문" 단일 질의 사용
 if [ $# -eq 0 ]; then
-    if [ "$TTS_ENABLED" = true ]; then
-        LOG=$(mktemp /tmp/claude_tts_XXXXXX)
-        # 백그라운드: 로그 실시간 감시 → ANSI 제거 → 한글 TTS 전송
-        tail -f "$LOG" 2>/dev/null | tts_filter &
-        TTS_BG=$!
-        # 인터랙티브 claude 실행 (script로 PTY 유지 + 출력 파일 기록)
-        script -q -c "command claude" "$LOG" 2>/dev/null
-        # 정리
-        sleep 0.5
-        kill "$TTS_BG" 2>/dev/null
-        rm -f "$LOG"
+    if _tts_connected; then
+        echo "[TTS ✓] 연결됨 — 단일질의 TTS: cc \"질문\""
     else
-        exec command claude
+        echo "[TTS ✗] 폰 tts-bridge.sh 없음"
     fi
-    exit 0
+    exec command claude
 fi
 
-# 인수 있으면 -p 단일 질의 모드
-if [ "$TTS_ENABLED" = true ]; then
-    command claude -p "$*" 2>&1 | tee /dev/tty | tts_filter
+# ── 단일 질의 모드 ───────────────────────────────────────────────
+# -p 플래그 직접 처리
+QUERY="$*"
+[[ "$1" == "-p" ]] && shift && QUERY="$*"
+
+if _tts_connected; then
+    command claude -p "$QUERY" 2>&1 | tee /dev/tty | _tts_pipe
 else
-    command claude -p "$*"
+    echo "[TTS ✗] 폰 tts-bridge.sh 없음 — TTS 없이 실행"
+    command claude -p "$QUERY"
 fi
