@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#020404">
+  <meta name="description" content="Interactive tools: terminal simulator, architecture diagram, data usage calculator. See what running a server from a phone actually looks like.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+  <title>App — termux-bridge</title>
+  <style>
+    :root {
+      --bg: #020404; --card: #0d1410; --card2: #060d0a;
+      --gold: #D4AF37; --green: #34D399; --blue: #60A5FA;
+      --purple: #A78BFA; --orange: #FB923C; --red: #F87171;
+      --text: #F8FAF9; --muted: rgba(248,250,249,0.5);
+      --border: rgba(248,250,249,0.07); --border-purple: rgba(167,139,250,0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100dvh; padding: 32px 18px 60px;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 36px; font-size: 11px;
+    }
+    .nav-back { color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+    .nav-back:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-cur { color: var(--purple); font-weight: 700; }
+
+    /* HERO */
+    .eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .eyebrow::before {
+      content: ''; display: block; width: 24px; height: 1.5px;
+      background: var(--purple); border-radius: 1px;
+    }
+    .hero-title {
+      font-size: 24px; font-weight: 900; line-height: 1.2;
+      letter-spacing: -0.03em; margin-bottom: 10px;
+    }
+    .hero-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+    /* TOOL TABS */
+    .tool-tabs {
+      display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px;
+    }
+    .tab-btn {
+      flex-shrink: 0; font-size: 11px; font-weight: 700;
+      padding: 7px 14px; border-radius: 20px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--muted); letter-spacing: 0.04em;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      background: rgba(167,139,250,0.12);
+      border-color: var(--border-purple);
+      color: var(--purple);
+    }
+
+    /* TOOL PANELS */
+    .tool-panel { display: none; }
+    .tool-panel.active { display: block; }
+
+    /* ── TERMINAL SIMULATOR ── */
+    .terminal {
+      background: var(--card2); border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 14px; overflow: hidden; margin-bottom: 16px;
+    }
+    .term-bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      background: #0a1209;
+    }
+    .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .term-dot.r { background: #F87171; }
+    .term-dot.y { background: #FBBF24; }
+    .term-dot.g { background: #34D399; }
+    .term-title { font-size: 11px; color: var(--muted); margin-left: 4px; letter-spacing: 0.06em; }
+    .term-body { padding: 16px 16px 8px; min-height: 200px; }
+    .term-line {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; line-height: 1.7;
+      display: flex; gap: 0; flex-wrap: wrap;
+    }
+    .term-prompt { color: var(--green); flex-shrink: 0; margin-right: 6px; }
+    .term-cmd { color: var(--text); }
+    .term-out { color: var(--muted); padding-left: 0; }
+    .term-out.g { color: var(--green); }
+    .term-out.b { color: var(--blue); }
+    .term-out.gold { color: var(--gold); }
+    .term-out.r { color: var(--red); }
+    .term-cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: var(--green); opacity: 0.8;
+      animation: blink 1.2s step-end infinite;
+      vertical-align: middle; margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:0.8} 50%{opacity:0} }
+
+    .term-input-row {
+      display: flex; gap: 8px; align-items: center;
+      padding: 10px 16px 14px;
+    }
+    .term-prompt-static { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--green); flex-shrink: 0; }
+    .term-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: var(--text);
+    }
+    .term-run {
+      font-size: 10px; font-weight: 700; color: var(--green);
+      background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.2);
+      padding: 5px 10px; border-radius: 6px; cursor: pointer;
+    }
+    .term-run:active { background: rgba(52,211,153,0.2); }
+
+    .term-hint {
+      font-size: 11px; color: var(--muted); margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .quick-cmds { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .quick-cmd {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; color: var(--green);
+      background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.2);
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    }
+    .quick-cmd:active { background: rgba(52,211,153,0.15); }
+
+    /* ── ARCHITECTURE ── */
+    .arch-wrap { margin-bottom: 16px; }
+    .arch-node {
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
+      border: 1px solid var(--border); background: var(--card);
+      position: relative;
+    }
+    .arch-node.phone { border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.05); }
+    .arch-node.network { border-color: rgba(212,175,55,0.3); background: rgba(212,175,55,0.05); }
+    .arch-node.pc { border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.05); }
+    .arch-node.tmux { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05); }
+    .arch-node.claude { border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.05); }
+
+    .arch-layer {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .arch-node.phone .arch-layer { color: var(--green); }
+    .arch-node.network .arch-layer { color: var(--gold); }
+    .arch-node.pc .arch-layer { color: var(--blue); }
+    .arch-node.tmux .arch-layer { color: var(--purple); }
+    .arch-node.claude .arch-layer { color: var(--orange); }
+
+    .arch-title { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+    .arch-detail { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .arch-detail strong { color: var(--text); }
+    .arch-status {
+      position: absolute; top: 14px; right: 14px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+      padding: 3px 8px; border-radius: 10px;
+    }
+    .arch-status.live { background: rgba(52,211,153,0.15); color: var(--green); }
+    .arch-status.always { background: rgba(96,165,250,0.12); color: var(--blue); }
+
+    .arch-arrow {
+      text-align: center; font-size: 14px; color: var(--muted);
+      margin: -2px 0; padding: 2px; opacity: 0.5;
+    }
+
+    .arch-sessions {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      margin-top: 8px;
+    }
+    .sess-chip {
+      font-size: 10px; font-weight: 700; padding: 5px 8px;
+      border-radius: 8px; text-align: center;
+    }
+    .sess-chip.active-s { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+    .sess-chip.idle { background: rgba(248,250,249,0.04); color: var(--muted); border: 1px solid var(--border); }
+
+    /* ── CALCULATOR ── */
+    .calc-wrap { }
+    .calc-section { margin-bottom: 20px; }
+    .calc-title {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .calc-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .calc-label { font-size: 12px; color: var(--muted); flex: 1; }
+    .calc-input {
+      width: 80px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; text-align: right;
+      font-size: 14px; font-weight: 700; color: var(--text); outline: none;
+    }
+    .calc-input:focus { border-color: rgba(167,139,250,0.4); }
+    .calc-unit { font-size: 11px; color: var(--muted); width: 24px; }
+
+    .calc-result {
+      background: rgba(167,139,250,0.06); border: 1px solid var(--border-purple);
+      border-radius: 12px; padding: 16px;
+    }
+    .calc-result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px; font-size: 13px;
+    }
+    .calc-result-row:last-child { margin-bottom: 0; }
+    .calc-result-label { color: var(--muted); }
+    .calc-result-value { font-weight: 700; color: var(--text); }
+    .calc-result-value.green { color: var(--green); }
+    .calc-result-value.gold { color: var(--gold); }
+    .calc-result-value.orange { color: var(--orange); }
+
+    .calc-note {
+      font-size: 11px; color: var(--muted); margin-top: 10px; line-height: 1.5;
+    }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    /* FOOTER NAV */
+    .footer-nav { display: flex; gap: 10px; }
+    .footer-nav a {
+      flex: 1; display: block; text-align: center; text-decoration: none;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 8px;
+      font-size: 11px; font-weight: 700; color: var(--muted);
+    }
+    .footer-nav a span { display: block; font-size: 9px; font-weight: 500; margin-top: 2px; }
+    .footer-nav a.inv { color: var(--green); border-color: rgba(52,211,153,0.2); }
+    .footer-nav a.tut { color: var(--blue); border-color: rgba(96,165,250,0.2); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav">
+    <a class="nav-back" href="../">← termux-bridge</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-cur">03 · App</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="eyebrow">interactive tools</div>
+  <h1 class="hero-title">See what it actually looks like.</h1>
+  <p class="hero-sub">Three tools: a terminal simulator showing real commands, an architecture diagram of the full stack, and a calculator for your data and costs.</p>
+
+  <!-- TABS -->
+  <div class="tool-tabs">
+    <button class="tab-btn active" onclick="switchTab('terminal', this)">Terminal</button>
+    <button class="tab-btn" onclick="switchTab('arch', this)">Architecture</button>
+    <button class="tab-btn" onclick="switchTab('calc', this)">Calculator</button>
+  </div>
+
+  <!-- ── TERMINAL PANEL ── -->
+  <div class="tool-panel active" id="panel-terminal">
+
+    <div class="term-hint">Type a command or tap a shortcut below to see what happens when you connect from your phone to the PC.</div>
+
+    <div class="quick-cmds">
+      <span class="quick-cmd" onclick="runCmd('pc')">pc</span>
+      <span class="quick-cmd" onclick="runCmd('cm')">cm</span>
+      <span class="quick-cmd" onclick="runCmd('cc')">cc</span>
+      <span class="quick-cmd" onclick="runCmd('tmux ls')">tmux ls</span>
+      <span class="quick-cmd" onclick="runCmd('tailscale ip -4')">tailscale ip</span>
+      <span class="quick-cmd" onclick="runCmd('autossh -V')">autossh -V</span>
+      <span class="quick-cmd" onclick="runCmd('help')">help</span>
+    </div>
+
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dot r"></div>
+        <div class="term-dot y"></div>
+        <div class="term-dot g"></div>
+        <div class="term-title">TERMUX · Galaxy S24</div>
+      </div>
+      <div class="term-body" id="term-output">
+        <div class="term-line"><span class="term-out g">Welcome to Termux. Your phone is now a terminal.</span></div>
+        <div class="term-line"><span class="term-out">Type a command or tap a shortcut above.</span></div>
+        <br>
+      </div>
+      <div class="term-input-row">
+        <span class="term-prompt-static">$ </span>
+        <input class="term-input" id="term-input" placeholder="type a command..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')runCmd(this.value)">
+        <button class="term-run" onclick="runCmd(document.getElementById('term-input').value)">RUN</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── ARCH PANEL ── -->
+  <div class="tool-panel" id="panel-arch">
+
+    <div class="arch-wrap">
+
+      <div class="arch-node phone">
+        <div class="arch-status live">LIVE</div>
+        <div class="arch-layer">Layer 0 · Input Device</div>
+        <div class="arch-title">📱 Galaxy Phone + Termux</div>
+        <div class="arch-detail">
+          <strong>Role:</strong> SSH client only. No processing here.<br>
+          <strong>App:</strong> Termux (F-Droid) — free Linux terminal<br>
+          <strong>Network:</strong> WiFi or LTE — autossh reconnects automatically
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓ autossh + Tailscale VPN (100.x.x.x)</div>
+
+      <div class="arch-node network">
+        <div class="arch-layer">Layer 1 · Network</div>
+        <div class="arch-title">🔒 Tailscale + SSH tunnel</div>
+        <div class="arch-detail">
+          <strong>Port:</strong> 2222 (avoids ISP blocks)<br>
+          <strong>Auth:</strong> SSH key pair — no password<br>
+          <strong>Keepalive:</strong> ServerAliveInterval=30, autossh -M 0
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓ WSL2 Ubuntu 24.04</div>
+
+      <div class="arch-node pc">
+        <div class="arch-status always">24/7</div>
+        <div class="arch-layer">Layer 2 · PC Server</div>
+        <div class="arch-title">🖥️ Windows PC + WSL2</div>
+        <div class="arch-detail">
+          <strong>OS:</strong> Windows 11 → WSL2 Ubuntu 24.04<br>
+          <strong>Tailscale IP:</strong> 100.90.83.128<br>
+          <strong>Auto-login:</strong> Sysinternals Autologon (LSA encrypted)
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓ tmux session manager</div>
+
+      <div class="arch-node tmux">
+        <div class="arch-layer">Layer 3 · Session Manager</div>
+        <div class="arch-title">🗂️ tmux — named sessions</div>
+        <div class="arch-detail"><strong>Active sessions:</strong></div>
+        <div class="arch-sessions">
+          <div class="sess-chip active-s">claude-main</div>
+          <div class="sess-chip active-s">tg-image</div>
+          <div class="sess-chip active-s">tg-audio</div>
+          <div class="sess-chip active-s">watchdog</div>
+          <div class="sess-chip idle">tablet</div>
+          <div class="sess-chip idle">ssh-xxxxx ×20</div>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓ Claude Code (WSL2)</div>
+
+      <div class="arch-node claude">
+        <div class="arch-layer">Layer 4 · AI Engine</div>
+        <div class="arch-title">🤖 Claude Code (Claude Max)</div>
+        <div class="arch-detail">
+          <strong>Role:</strong> Executes all development work<br>
+          <strong>Model:</strong> Claude Sonnet / Opus<br>
+          <strong>Output:</strong> 28 repos · 26 sites · 0 lines coded by hand
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.6;">
+      <strong style="color:var(--text);display:block;margin-bottom:6px;">The key insight</strong>
+      The phone is <em>not</em> the server. It's a remote control. All the real work happens on the PC in WSL2, running 24/7. The phone just sends instructions and reads results.
+    </div>
+
+  </div>
+
+  <!-- ── CALC PANEL ── -->
+  <div class="tool-panel" id="panel-calc">
+
+    <div class="calc-section">
+      <div class="calc-title">Your setup</div>
+      <div class="calc-row">
+        <div class="calc-label">Number of repos</div>
+        <input class="calc-input" type="number" id="c-repos" value="28" oninput="calcUpdate()">
+        <div class="calc-unit"></div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">Sites to monitor</div>
+        <input class="calc-input" type="number" id="c-sites" value="26" oninput="calcUpdate()">
+        <div class="calc-unit"></div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">Claude sessions / day</div>
+        <input class="calc-input" type="number" id="c-sessions" value="4" oninput="calcUpdate()">
+        <div class="calc-unit"></div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-label">SSH data / session</div>
+        <input class="calc-input" type="number" id="c-ssh-mb" value="50" oninput="calcUpdate()">
+        <div class="calc-unit">MB</div>
+      </div>
+    </div>
+
+    <div class="calc-section">
+      <div class="calc-title">Monthly costs</div>
+      <div class="calc-result" id="calc-result">
+        <div class="calc-result-row">
+          <span class="calc-result-label">Claude Max (fixed)</span>
+          <span class="calc-result-value gold">$100</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">Tailscale (free tier)</span>
+          <span class="calc-result-value green">$0</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">SSH data (est.)</span>
+          <span class="calc-result-value" id="r-ssh-data">6.0 GB</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">GitHub Actions (QA)</span>
+          <span class="calc-result-value green">$0 (free tier)</span>
+        </div>
+        <div class="calc-result-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+          <span class="calc-result-label" style="color:var(--text);font-weight:700;">Total / month</span>
+          <span class="calc-result-value orange" id="r-total">$100</span>
+        </div>
+      </div>
+      <div class="calc-note" id="r-note">
+        At 4 sessions/day × 28 repos: <strong id="r-sessions-yr">1,456 sessions/year</strong> of development — all directed in plain English, no coding required.
+      </div>
+    </div>
+
+    <div class="calc-section">
+      <div class="calc-title">Comparison</div>
+      <div class="calc-result">
+        <div class="calc-result-row">
+          <span class="calc-result-label">Junior developer</span>
+          <span class="calc-result-value" style="color:var(--red);">$3,000–$5,000/mo</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">Freelancer (per project)</span>
+          <span class="calc-result-value" style="color:var(--red);">$500–$2,000</span>
+        </div>
+        <div class="calc-result-row">
+          <span class="calc-result-label">This setup</span>
+          <span class="calc-result-value gold">$100 flat</span>
+        </div>
+        <div class="calc-result-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+          <span class="calc-result-label" style="color:var(--text);font-weight:700;">Savings / month</span>
+          <span class="calc-result-value green">~$2,900–$4,900</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a class="inv" href="../invitation/">
+      01 · Invitation
+      <span>60-sec story</span>
+    </a>
+    <a class="tut" href="../tutorial/">
+      02 · Tutorial
+      <span>Step-by-step</span>
+    </a>
+  </div>
+
+  <script>
+    // ── TAB SWITCHING ──
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── TERMINAL SIMULATOR ──
+    const COMMANDS = {
+      'pc': {
+        delay: true,
+        lines: [
+          { cls: 'b', text: 'auto-ssh: starting persistent connection to 100.90.83.128:2222' },
+          { cls: 'g', text: 'Connected! ServerAliveInterval=30 active.' },
+          { cls: 'g', text: 'Welcome to Ubuntu 24.04.2 LTS (WSL2)' },
+          { cls: '',  text: '' },
+          { cls: 'b', text: 'SSH_CONNECTION detected — attaching to tmux session' },
+          { cls: 'g', text: 'Attached to session: ssh-54892' },
+          { cls: '',  text: '' },
+          { cls: 'muted', text: '(type cm to switch to claude-main, cc to open Claude Code)' },
+        ]
+      },
+      'cm': {
+        lines: [
+          { cls: 'b', text: 'Switching to session: claude-main' },
+          { cls: 'g', text: '✓ Attached to claude-main' },
+          { cls: 'muted', text: 'All processes running: tg-image · tg-audio · watchdog' },
+        ]
+      },
+      'cc': {
+        lines: [
+          { cls: 'muted', text: '$ cd ~/termux-bridge' },
+          { cls: 'muted', text: '$ claude' },
+          { cls: '',  text: '' },
+          { cls: 'gold', text: '  ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗' },
+          { cls: 'gold', text: '  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝' },
+          { cls: 'gold', text: '  ██║     ██║     ███████║██║   ██║██║  ██║█████╗  ' },
+          { cls: 'gold', text: '  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  ' },
+          { cls: 'gold', text: '  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗' },
+          { cls: '',  text: '' },
+          { cls: 'g', text: '  Claude Code ready. Give instructions in plain English.' },
+          { cls: 'muted', text: '  Context: termux-bridge / 28 repos loaded' },
+        ]
+      },
+      'tmux ls': {
+        lines: [
+          { cls: 'g', text: 'claude-main: 1 windows (created Mon) [attached]' },
+          { cls: 'g', text: 'tg-image:    1 windows (created Mon)' },
+          { cls: 'g', text: 'tg-audio:    1 windows (created Mon)' },
+          { cls: 'g', text: 'watchdog:    1 windows (created Mon)' },
+          { cls: 'muted', text: 'ssh-54892:   1 windows (created just now) [current]' },
+          { cls: 'muted', text: '... and 20 more zombie ssh-xxxxx sessions' },
+          { cls: '',  text: '' },
+          { cls: 'muted', text: '(zombie sessions are normal — they exit cleanly)' },
+        ]
+      },
+      'tailscale ip -4': {
+        lines: [
+          { cls: 'g', text: '100.90.83.128' },
+          { cls: 'muted', text: '(your PC\'s private Tailscale IP — reachable from phone anywhere)' },
+        ]
+      },
+      'autossh -v': {
+        lines: [
+          { cls: 'g', text: 'autossh 1.4g' },
+          { cls: 'muted', text: 'Wraps SSH with auto-reconnect. -M 0 = no monitoring port.' },
+          { cls: 'muted', text: 'Reconnects automatically on WiFi↔LTE switch.' },
+        ]
+      },
+      'autossh -V': {
+        lines: [
+          { cls: 'g', text: 'autossh 1.4g' },
+          { cls: 'muted', text: 'Wraps SSH with auto-reconnect. -M 0 = no monitoring port.' },
+          { cls: 'muted', text: 'Reconnects automatically on WiFi↔LTE switch.' },
+        ]
+      },
+      'help': {
+        lines: [
+          { cls: 'b', text: 'Available commands in this simulator:' },
+          { cls: '', text: '' },
+          { cls: 'g', text: '  pc            — connect phone to PC via autossh+Tailscale' },
+          { cls: 'g', text: '  cm            — switch to claude-main tmux session' },
+          { cls: 'g', text: '  cc            — open Claude Code in termux-bridge dir' },
+          { cls: 'g', text: '  tmux ls       — list all running tmux sessions' },
+          { cls: 'g', text: '  tailscale ip  — show your PC\'s private IP' },
+          { cls: 'g', text: '  autossh -V    — version check' },
+          { cls: '', text: '' },
+          { cls: 'muted', text: '  These are real commands from the actual setup.' },
+        ]
+      },
+    };
+
+    function addLine(cls, text) {
+      const out = document.getElementById('term-output');
+      const line = document.createElement('div');
+      line.className = 'term-line';
+      const span = document.createElement('span');
+      span.className = 'term-out' + (cls ? ' ' + cls : '');
+      span.textContent = text || '\u00a0';
+      line.appendChild(span);
+      out.appendChild(line);
+      out.scrollTop = out.scrollHeight;
+    }
+
+    function runCmd(cmd) {
+      cmd = (cmd || '').trim();
+      if (!cmd) return;
+      const input = document.getElementById('term-input');
+      input.value = '';
+
+      const out = document.getElementById('term-output');
+      // Show the command
+      const cmdLine = document.createElement('div');
+      cmdLine.className = 'term-line';
+      cmdLine.innerHTML = `<span class="term-prompt">$ </span><span class="term-cmd">${cmd}</span>`;
+      out.appendChild(cmdLine);
+
+      const key = cmd.toLowerCase();
+      const data = COMMANDS[cmd] || COMMANDS[key];
+
+      if (data) {
+        let delay = 0;
+        data.lines.forEach((l, i) => {
+          setTimeout(() => addLine(l.cls, l.text), data.delay ? i * 80 : 0);
+          delay = i * 80;
+        });
+        setTimeout(() => { addLine('', ''); out.scrollTop = out.scrollHeight; }, delay + 100);
+      } else {
+        addLine('r', 'command not found: ' + cmd);
+        addLine('muted', 'Try: pc · cm · cc · tmux ls · tailscale ip · help');
+        addLine('', '');
+      }
+      out.scrollTop = out.scrollHeight;
+    }
+
+    // ── CALCULATOR ──
+    function calcUpdate() {
+      const repos = parseInt(document.getElementById('c-repos').value) || 0;
+      const sites = parseInt(document.getElementById('c-sites').value) || 0;
+      const sessions = parseInt(document.getElementById('c-sessions').value) || 0;
+      const sshMb = parseInt(document.getElementById('c-ssh-mb').value) || 0;
+
+      const sshGbMonth = ((sessions * sshMb * 30) / 1024).toFixed(1);
+      const sessionsYr = (sessions * 365).toLocaleString();
+
+      document.getElementById('r-ssh-data').textContent = sshGbMonth + ' GB';
+      document.getElementById('r-total').textContent = '$100';
+      document.getElementById('r-sessions-yr').textContent = sessionsYr;
+      document.getElementById('r-note').innerHTML =
+        `At ${sessions} sessions/day × ${repos} repos: <strong>${sessionsYr} sessions/year</strong> of development — all directed in plain English, no coding required.`;
+    }
+
+    calcUpdate();
+  </script>
+
+</body>
+</html>

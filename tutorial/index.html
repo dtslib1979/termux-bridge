@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#020404">
+  <meta name="description" content="Turn your Android phone into a real server. Tailscale → SSH → tmux → alias. Copy-paste ready. Failure logs included.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+  <title>Tutorial — termux-bridge</title>
+  <style>
+    :root {
+      --bg: #020404; --card: #0d1410; --card2: #0a0f0d;
+      --gold: #D4AF37; --green: #34D399; --blue: #60A5FA;
+      --purple: #A78BFA; --orange: #FB923C; --red: #F87171;
+      --text: #F8FAF9; --muted: rgba(248,250,249,0.5);
+      --border: rgba(248,250,249,0.07); --border-gold: rgba(212,175,55,0.25);
+      --border-blue: rgba(96,165,250,0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100dvh; padding: 32px 18px 60px;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 36px; font-size: 11px;
+    }
+    .nav-back { color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+    .nav-back:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-cur { color: var(--blue); font-weight: 700; }
+
+    /* HERO */
+    .eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .eyebrow::before {
+      content: ''; display: block; width: 24px; height: 1.5px;
+      background: var(--blue); border-radius: 1px;
+    }
+    .hero-title {
+      font-size: 26px; font-weight: 900; line-height: 1.2;
+      letter-spacing: -0.03em; margin-bottom: 12px;
+    }
+    .hero-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+
+    /* PREREQ */
+    .prereq {
+      background: rgba(212,175,55,0.04); border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 16px; margin-bottom: 28px;
+    }
+    .prereq-label {
+      font-size: 10px; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .prereq-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 12px; margin-bottom: 7px;
+    }
+    .prereq-item:last-child { margin-bottom: 0; }
+    .prereq-icon { font-size: 14px; flex-shrink: 0; }
+    .prereq-text { color: var(--muted); line-height: 1.5; }
+    .prereq-text strong { color: var(--text); }
+
+    /* STEP FLOW */
+    .step-flow {
+      display: flex; gap: 0; margin-bottom: 28px;
+      overflow-x: auto; padding-bottom: 4px;
+    }
+    .sf-step {
+      flex-shrink: 0; font-size: 10px; font-weight: 700;
+      color: var(--muted); background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 5px 9px; white-space: nowrap;
+    }
+    .sf-step.done { color: var(--green); border-color: rgba(52,211,153,0.3); }
+    .sf-arrow { flex-shrink: 0; font-size: 10px; color: var(--muted); padding: 0 4px; line-height: 27px; }
+
+    /* STEP CARDS */
+    .steps { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+
+    .step-card {
+      border-radius: 16px; border: 1px solid var(--border);
+      background: var(--card); overflow: hidden;
+    }
+    .step-card.active { border-color: var(--border-blue); }
+
+    .step-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 18px; border-bottom: 1px solid var(--border);
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3);
+      color: var(--blue); font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-title { font-size: 15px; font-weight: 800; }
+    .step-subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .step-body { padding: 16px 18px; }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .step-desc strong { color: var(--text); }
+    .step-desc a { color: var(--blue); text-decoration: none; }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: #060d0a; border: 1px solid rgba(96,165,250,0.15);
+      border-radius: 10px; padding: 14px; margin-bottom: 10px;
+      position: relative;
+    }
+    .code-label {
+      font-size: 9px; font-weight: 700; color: var(--blue);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .code-line {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; color: var(--green); line-height: 1.6;
+      word-break: break-all;
+    }
+    .code-line .comment { color: var(--muted); }
+    .code-line .flag { color: var(--orange); }
+    .copy-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.2);
+      color: var(--blue); font-size: 10px; font-weight: 700;
+      padding: 4px 8px; border-radius: 6px; cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+    .copy-btn:active { background: rgba(96,165,250,0.25); }
+
+    /* FAILURE LOG */
+    .fail-log {
+      background: rgba(248,113,113,0.04); border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+    }
+    .fail-label {
+      font-size: 9px; font-weight: 700; color: var(--red);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .fail-text {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; color: rgba(248,113,113,0.8); line-height: 1.6;
+    }
+    .fail-fix { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    .fail-fix strong { color: var(--green); }
+
+    /* EXPLAIN BOX */
+    .explain {
+      background: rgba(96,165,250,0.04); border: 1px solid rgba(96,165,250,0.15);
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+    }
+    .explain-label {
+      font-size: 9px; font-weight: 700; color: var(--blue);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .explain-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .explain-text strong { color: var(--text); }
+
+    /* SUCCESS CHECK */
+    .success-check {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 10px; padding: 10px 14px; margin-top: 10px;
+      font-size: 12px; color: var(--green);
+    }
+    .success-check::before { content: '✓'; font-weight: 900; font-size: 14px; }
+
+    /* ALIAS TABLE */
+    .alias-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .alias-table th {
+      font-size: 9px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-align: left; padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .alias-table td {
+      font-size: 12px; padding: 8px 10px;
+      border-bottom: 1px solid rgba(248,250,249,0.04);
+      vertical-align: top;
+    }
+    .alias-table td:first-child {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--green); font-weight: 700; white-space: nowrap;
+    }
+    .alias-table td:last-child { color: var(--muted); line-height: 1.5; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    /* CTA */
+    .cta-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .btn-primary {
+      display: block; text-align: center; text-decoration: none;
+      background: var(--blue); color: #020404;
+      font-size: 14px; font-weight: 800; letter-spacing: 0.02em;
+      border-radius: 14px; padding: 16px 24px;
+    }
+    .btn-secondary {
+      display: block; text-align: center; text-decoration: none;
+      background: transparent; color: var(--text); font-size: 14px; font-weight: 700;
+      border: 1px solid var(--border); border-radius: 14px; padding: 15px 24px;
+    }
+    .btn-label { font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 3px; display: block; }
+
+    /* FOOTER NAV */
+    .footer-nav { display: flex; gap: 10px; }
+    .footer-nav a {
+      flex: 1; display: block; text-align: center; text-decoration: none;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 8px;
+      font-size: 11px; font-weight: 700; color: var(--muted);
+    }
+    .footer-nav a span { display: block; font-size: 9px; font-weight: 500; margin-top: 2px; }
+    .footer-nav a.inv { color: var(--green); border-color: rgba(52,211,153,0.2); }
+    .footer-nav a.app { color: var(--purple); border-color: rgba(167,139,250,0.2); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav">
+    <a class="nav-back" href="../">← termux-bridge</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-cur">02 · Tutorial</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="eyebrow">step-by-step guide</div>
+  <h1 class="hero-title">From a phone to a running server in 4 steps.</h1>
+  <p class="hero-sub">Copy-paste ready. Failure logs included. This is the exact setup that runs 28 repos and monitors 26 sites — every day — from a Galaxy phone.</p>
+
+  <!-- PREREQ -->
+  <div class="prereq">
+    <div class="prereq-label">Before you start</div>
+    <div class="prereq-item">
+      <div class="prereq-icon">💳</div>
+      <div class="prereq-text"><strong>Claude Max ($100/mo)</strong> — This is not optional. It's your developer salary replacement. Without it this tutorial is just reading.</div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">📱</div>
+      <div class="prereq-text"><strong>Android phone + Termux</strong> — Free from F-Droid (not Play Store). Galaxy preferred but any Android works.</div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">🖥️</div>
+      <div class="prereq-text"><strong>A PC running Windows or Linux</strong> — This becomes your real server. It stays on 24/7.</div>
+    </div>
+  </div>
+
+  <!-- STEP FLOW -->
+  <div class="step-flow">
+    <div class="sf-step done">Termux</div>
+    <div class="sf-arrow">›</div>
+    <div class="sf-step done">Tailscale</div>
+    <div class="sf-arrow">›</div>
+    <div class="sf-step done">SSH</div>
+    <div class="sf-arrow">›</div>
+    <div class="sf-step done">tmux</div>
+    <div class="sf-arrow">›</div>
+    <div class="sf-step done">alias</div>
+    <div class="sf-arrow">›</div>
+    <div class="sf-step done">Claude</div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Install Termux</div>
+          <div class="step-subtitle">Your phone's Linux terminal</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">Install Termux from <a href="https://f-droid.org/packages/com.termux/" target="_blank" rel="noopener">F-Droid</a> — NOT the Play Store version (outdated). Then install the base packages:</p>
+        <div class="code-block">
+          <div class="code-label">Termux · Initial setup</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">pkg update && pkg upgrade -y</div>
+          <div class="code-line">pkg install -y git nodejs openssh autossh</div>
+        </div>
+        <div class="explain">
+          <div class="explain-label">Why autossh?</div>
+          <div class="explain-text">Regular SSH dies when your phone switches WiFi→LTE. <strong>autossh</strong> watches the connection and automatically reconnects. Without it, you'll be retyping ssh every 10 minutes.</div>
+        </div>
+        <div class="success-check">pkg list-installed shows git, nodejs, openssh, autossh</div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Set up Tailscale</div>
+          <div class="step-subtitle">Private VPN — phone talks to PC anywhere</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">Install <a href="https://tailscale.com" target="_blank" rel="noopener">Tailscale</a> on <strong>both your phone and your PC</strong>. Sign in with the same account. They'll see each other on a private 100.x.x.x network — no port forwarding needed.</p>
+
+        <div class="code-block">
+          <div class="code-label">PC (WSL2/Ubuntu) · Install Tailscale</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">curl -fsSL https://tailscale.com/install.sh | sh</div>
+          <div class="code-line">sudo tailscale up</div>
+        </div>
+
+        <p class="step-desc">After connecting, get your PC's Tailscale IP:</p>
+        <div class="code-block">
+          <div class="code-label">PC · Get your Tailscale IP</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">tailscale ip -4</div>
+          <div class="code-line"><span class="comment"># Returns something like: 100.90.83.128</span></div>
+          <div class="code-line"><span class="comment"># Save this — you'll use it everywhere</span></div>
+        </div>
+
+        <div class="fail-log">
+          <div class="fail-label">Common failure</div>
+          <div class="fail-text">tailscaled: connection refused</div>
+          <div class="fail-fix">Run <strong>sudo systemctl start tailscaled</strong> (or on WSL2: <strong>sudo tailscaled &amp;</strong> then <strong>sudo tailscale up</strong>)</div>
+        </div>
+
+        <div class="success-check">Both phone and PC appear in Tailscale admin panel</div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">SSH from phone to PC</div>
+          <div class="step-subtitle">The phone becomes a terminal</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">Enable SSH on your PC and connect from Termux using <strong>autossh</strong> for a stable persistent connection:</p>
+
+        <div class="code-block">
+          <div class="code-label">PC · Enable SSH server</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">sudo apt install openssh-server -y</div>
+          <div class="code-line">sudo systemctl enable ssh</div>
+          <div class="code-line">sudo systemctl start ssh</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-label">Termux · Connect with autossh (add to ~/.bashrc)</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">alias pc='autossh <span class="flag">-M 0</span> \</div>
+          <div class="code-line">  <span class="flag">-o</span> "ServerAliveInterval 30" \</div>
+          <div class="code-line">  <span class="flag">-o</span> "ServerAliveCountMax 3" \</div>
+          <div class="code-line">  <span class="flag">-p</span> 2222 \</div>
+          <div class="code-line">  your-username@100.90.83.128'</div>
+        </div>
+
+        <div class="explain">
+          <div class="explain-label">Why port 2222?</div>
+          <div class="explain-text">Port 22 is blocked by many routers and ISPs. Using <strong>2222</strong> avoids those restrictions. Configure it in <strong>/etc/ssh/sshd_config</strong>: set <code>Port 2222</code></div>
+        </div>
+
+        <div class="fail-log">
+          <div class="fail-label">Real failure — 3 months in</div>
+          <div class="fail-text">SSH self-loop: CPU 38% spike
+tailscaled CPU: 29.6% (runaway process)
+Session drops every WiFi→LTE switch</div>
+          <div class="fail-fix"><strong>Fix:</strong> Kill the self-loop PIDs, restart tailscaled, add ServerAliveInterval to SSH config, create ~/.wslconfig with <strong>vmIdleTimeout=-1</strong></div>
+        </div>
+
+        <div class="success-check">Type <code>pc</code> in Termux → PC terminal opens. WiFi→LTE switch reconnects automatically.</div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">tmux — never lose your session</div>
+          <div class="step-subtitle">Sessions that survive disconnects</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc"><strong>The core insight:</strong> without tmux, every time your SSH connection drops, everything stops. With tmux, processes keep running on the PC even if your phone goes offline.</p>
+
+        <div class="code-block">
+          <div class="code-label">PC · Install tmux + auto-attach on SSH login</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">sudo apt install tmux -y</div>
+        </div>
+
+        <p class="step-desc">Add this to your PC's <strong>~/.bashrc</strong> — auto-creates a named session per SSH connection:</p>
+        <div class="code-block">
+          <div class="code-label">PC ~/.bashrc · Auto tmux on SSH login</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line"><span class="comment"># Auto-attach tmux on SSH (named by port)</span></div>
+          <div class="code-line">if [[ -n "$SSH_CONNECTION" ]] && \</div>
+          <div class="code-line">   [[ -z "$TMUX" ]] && [[ -z "$TMUX_PANE" ]]; then</div>
+          <div class="code-line">  CLIENT_PORT=$(echo "$SSH_CONNECTION" | awk '{print $2}')</div>
+          <div class="code-line">  SESSION_NAME="ssh-${CLIENT_PORT}"</div>
+          <div class="code-line">  exec tmux new-session <span class="flag">-A -s</span> "$SESSION_NAME"</div>
+          <div class="code-line">fi</div>
+        </div>
+
+        <p class="step-desc">Named sessions for different contexts:</p>
+        <table class="alias-table">
+          <tr><th>Session</th><th>Purpose</th></tr>
+          <tr><td>claude-main</td><td>Claude Code main workspace</td></tr>
+          <tr><td>tablet</td><td>Tablet SSH client workspace</td></tr>
+          <tr><td>tg-image</td><td>Telegram image bot (runs 24/7)</td></tr>
+          <tr><td>tg-audio</td><td>Telegram audio bot (runs 24/7)</td></tr>
+          <tr><td>watchdog</td><td>Connection monitor</td></tr>
+          <tr><td>ssh-xxxxx</td><td>Auto-created per SSH connection</td></tr>
+        </table>
+
+        <div class="success-check">Disconnect SSH, reconnect → session is still running, all processes intact</div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Aliases — 2-key commands</div>
+          <div class="step-subtitle">The finishing touch</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">Add these aliases to PC <strong>~/.bashrc</strong>. Each one does exactly what its name implies:</p>
+        <div class="code-block">
+          <div class="code-label">PC ~/.bashrc · The full alias set</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line"><span class="comment"># SSH to PC (from phone)</span></div>
+          <div class="code-line">alias pc='autossh <span class="flag">-M 0 -o</span> "ServerAliveInterval=15" \</div>
+          <div class="code-line">  <span class="flag">-p</span> 2222 user@100.90.83.128'</div>
+          <div class="code-line">&nbsp;</div>
+          <div class="code-line"><span class="comment"># Claude Code in termux-bridge dir</span></div>
+          <div class="code-line">alias cc='cd ~/termux-bridge && claude'</div>
+          <div class="code-line">&nbsp;</div>
+          <div class="code-line"><span class="comment"># Jump to termux-bridge dir</span></div>
+          <div class="code-line">alias cb='cd ~/termux-bridge'</div>
+          <div class="code-line">&nbsp;</div>
+          <div class="code-line"><span class="comment"># Switch to (or create) claude-main session</span></div>
+          <div class="code-line">alias cm="tmux switch <span class="flag">-t</span> claude-main 2>/dev/null || \</div>
+          <div class="code-line">  TMUX='' tmux new-session <span class="flag">-A -s</span> claude-main"</div>
+          <div class="code-line">&nbsp;</div>
+          <div class="code-line"><span class="comment"># Switch to (or create) tablet session</span></div>
+          <div class="code-line">alias ct="tmux switch <span class="flag">-t</span> tablet 2>/dev/null || \</div>
+          <div class="code-line">  TMUX='' tmux new-session <span class="flag">-A -s</span> tablet"</div>
+        </div>
+
+        <p class="step-desc">Apply without restarting:</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">source ~/.bashrc</div>
+        </div>
+
+        <div class="success-check">Type <code>cc</code> on PC → Claude Code opens in termux-bridge dir</div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step-card active">
+      <div class="step-head">
+        <div class="step-num">6</div>
+        <div>
+          <div class="step-title">Install Claude Code</div>
+          <div class="step-subtitle">Your engineer is now online</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p class="step-desc">Claude Code runs on the PC via WSL2. Install it globally and it's available in every session:</p>
+
+        <div class="code-block">
+          <div class="code-label">PC (WSL2) · Install Claude Code</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line">npm install <span class="flag">-g</span> @anthropic-ai/claude-code</div>
+        </div>
+
+        <div class="explain">
+          <div class="explain-label">The 십장 model (Foreman model)</div>
+          <div class="explain-text">You don't need to know how to code. <strong>You are the foreman</strong> — you know what the building should look like. <strong>Claude is the engineer</strong> — it knows how to build it. Give directions in plain language. Verify the output. That's the entire job.</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-label">Full workflow in 3 commands</div>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          <div class="code-line"><span class="comment"># On phone:</span></div>
+          <div class="code-line">pc                <span class="comment"># SSH to PC</span></div>
+          <div class="code-line">cm                <span class="comment"># Switch to claude-main tmux session</span></div>
+          <div class="code-line">cc                <span class="comment"># cd to project + open Claude Code</span></div>
+        </div>
+
+        <div class="success-check">Claude Code opens. You can give instructions in plain English. Claude executes.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <div class="cta-group">
+    <a class="btn-primary" href="../app/">
+      Try it in your browser →
+      <span class="btn-label">Terminal simulator · Architecture diagram · Data calculator</span>
+    </a>
+    <a class="btn-secondary" href="https://github.com/dtslib1979/termux-bridge" target="_blank" rel="noopener">
+      View the source on GitHub
+      <span class="btn-label">All logs, all scripts, all failures — public</span>
+    </a>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a class="inv" href="../invitation/">
+      01 · Invitation
+      <span>60-sec story</span>
+    </a>
+    <a class="app" href="../app/">
+      03 · App
+      <span>Try it in browser</span>
+    </a>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const block = btn.closest('.code-block');
+      const lines = block.querySelectorAll('.code-line');
+      const text = Array.from(lines)
+        .map(l => l.textContent.replace(/^\s+/, ''))
+        .filter(l => !l.startsWith('#') || l.length > 1)
+        .join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'COPIED';
+        setTimeout(() => btn.textContent = orig, 1500);
+      });
+    }
+  </script>
+
+</body>
+</html>

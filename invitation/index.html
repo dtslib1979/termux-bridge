@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#020404">
+  <meta name="description" content="A guy who can't code runs a server from his phone. 3 months of real logs. Watch the 60-second story.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png">
+  <title>Invitation — termux-bridge</title>
+  <style>
+    :root {
+      --bg: #020404; --card: #0d1410; --card2: #0a0f0d;
+      --gold: #D4AF37; --green: #34D399; --blue: #60A5FA;
+      --purple: #A78BFA; --orange: #FB923C; --red: #F87171;
+      --text: #F8FAF9; --muted: rgba(248,250,249,0.5);
+      --border: rgba(248,250,249,0.07); --border-gold: rgba(212,175,55,0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100dvh; padding: 32px 18px 60px;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 36px; font-size: 11px;
+    }
+    .nav-back {
+      color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-cur { color: var(--green); font-weight: 700; }
+
+    /* HERO */
+    .eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .eyebrow::before {
+      content: ''; display: block; width: 24px; height: 1.5px;
+      background: var(--green); border-radius: 1px;
+    }
+    .hero-title {
+      font-size: 28px; font-weight: 900; line-height: 1.18;
+      letter-spacing: -0.03em; margin-bottom: 20px;
+    }
+    .hero-title em { color: var(--gold); font-style: normal; }
+    .hero-title .strike {
+      text-decoration: line-through; color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* VIDEO EMBED */
+    .video-wrap {
+      position: relative; width: 100%;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      margin-bottom: 28px;
+      aspect-ratio: 9/16; max-height: 520px;
+    }
+    .video-wrap iframe {
+      width: 100%; height: 100%; border: none; display: block;
+    }
+    .video-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: var(--muted); font-size: 13px; text-align: center;
+      padding: 20px;
+    }
+    .video-placeholder .play-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(212,175,55,0.12); border: 1px solid var(--border-gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .video-placeholder strong { color: var(--text); font-size: 15px; display: block; }
+
+    /* BULLET LIST */
+    .bullets { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .bullet {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px;
+    }
+    .bullet-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .bullet-body {}
+    .bullet-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .bullet-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .bullet-sub strong { color: var(--text); }
+
+    /* CONFESSION BOX */
+    .confession {
+      background: rgba(212,175,55,0.04); border: 1px solid var(--border-gold);
+      border-radius: 14px; padding: 18px; margin-bottom: 28px;
+    }
+    .confession-label {
+      font-size: 10px; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .confession-text {
+      font-size: 13px; color: var(--muted); line-height: 1.7;
+    }
+    .confession-text strong { color: var(--text); }
+    .confession-text .highlight { color: var(--gold); font-weight: 700; }
+
+    /* CTA BUTTONS */
+    .cta-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .btn-primary {
+      display: block; text-align: center; text-decoration: none;
+      background: var(--gold); color: #020404;
+      font-size: 14px; font-weight: 800; letter-spacing: 0.02em;
+      border-radius: 14px; padding: 16px 24px;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:active { opacity: 0.85; }
+    .btn-secondary {
+      display: block; text-align: center; text-decoration: none;
+      background: transparent; color: var(--text);
+      font-size: 14px; font-weight: 700;
+      border: 1px solid var(--border); border-radius: 14px; padding: 15px 24px;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:active { border-color: var(--green); }
+    .btn-label { font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 3px; display: block; }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    /* PROOF STRIP */
+    .proof-strip { display: flex; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
+    .proof-pill {
+      font-size: 11px; font-weight: 600; padding: 5px 12px;
+      border-radius: 20px; background: var(--card); border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .proof-pill.g { color: var(--green); border-color: rgba(52,211,153,0.2); background: rgba(52,211,153,0.06); }
+
+    /* FOOTER NAV */
+    .footer-nav { display: flex; gap: 10px; }
+    .footer-nav a {
+      flex: 1; display: block; text-align: center; text-decoration: none;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 8px;
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      transition: border-color 0.2s;
+    }
+    .footer-nav a span { display: block; font-size: 9px; font-weight: 500; margin-top: 2px; }
+    .footer-nav a.tut { color: var(--blue); border-color: rgba(96,165,250,0.2); }
+    .footer-nav a.app { color: var(--purple); border-color: rgba(167,139,250,0.2); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav">
+    <a class="nav-back" href="../">← termux-bridge</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-cur">01 · Invitation</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="eyebrow">60-second story</div>
+  <h1 class="hero-title">
+    A guy who <span class="strike">can't code</span><br>
+    runs a server<br>
+    <em>from his phone.</em>
+  </h1>
+
+  <!-- VIDEO -->
+  <div class="video-wrap">
+    <div class="video-placeholder">
+      <div class="play-icon">▶</div>
+      <strong>60-second short — coming soon</strong>
+      3 months of SSH loops, zombie processes,<br>
+      and one working server.
+    </div>
+    <!-- Replace this div with iframe when video is ready:
+    <iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+    -->
+  </div>
+
+  <!-- PROOF STRIP -->
+  <div class="proof-strip">
+    <div class="proof-pill g">3 months of real logs</div>
+    <div class="proof-pill g">0 lines coded by hand</div>
+    <div class="proof-pill">Galaxy + Termux</div>
+    <div class="proof-pill">Claude Max</div>
+  </div>
+
+  <!-- BULLETS -->
+  <div class="bullets">
+
+    <div class="bullet">
+      <div class="bullet-icon">📱</div>
+      <div class="bullet-body">
+        <div class="bullet-title">One phone. No laptop needed.</div>
+        <div class="bullet-sub">A Galaxy phone running <strong>Termux</strong> — free Linux terminal. No root. No jailbreak. No cloud fees.</div>
+      </div>
+    </div>
+
+    <div class="bullet">
+      <div class="bullet-icon">🤖</div>
+      <div class="bullet-body">
+        <div class="bullet-title">You direct. Claude executes.</div>
+        <div class="bullet-sub">The <strong>십장 model</strong> — you're the foreman, Claude is the engineer. No coding knowledge required.</div>
+      </div>
+    </div>
+
+    <div class="bullet">
+      <div class="bullet-icon">📊</div>
+      <div class="bullet-body">
+        <div class="bullet-title">28 repos. 26 sites monitored. Daily.</div>
+        <div class="bullet-sub">Real infrastructure. <strong>Not a demo.</strong> GitHub Actions QA, SSH tunnels, tmux sessions — all from a phone.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONFESSION -->
+  <div class="confession">
+    <div class="confession-label">The honest part</div>
+    <div class="confession-text">
+      <strong>This took 3 months of failure.</strong> SSH loops that ate 38% CPU. Five zombie TTS processes that had to be killed manually. A session that died every time the phone switched from WiFi to LTE.<br><br>
+      The <span class="highlight">failures are documented.</span> Every one of them. Because that's how you actually learn — not from tutorials that work the first time.
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-group">
+    <a class="btn-primary" href="../tutorial/">
+      Follow the exact steps →
+      <span class="btn-label">Tutorial · Tailscale → SSH → tmux → alias</span>
+    </a>
+    <a class="btn-secondary" href="https://youtube.com/@dtslib" target="_blank" rel="noopener">
+      Subscribe on YouTube
+      <span class="btn-label">New Shorts every week — real logs, real failures</span>
+    </a>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a class="tut" href="../tutorial/">
+      02 · Tutorial
+      <span>Step-by-step guide</span>
+    </a>
+    <a class="app" href="../app/">
+      03 · App
+      <span>Try it in browser</span>
+    </a>
+  </div>
+
+</body>
+</html>
