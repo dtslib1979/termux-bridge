@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>폰 하나로 AI를 쓴다, 만든다, 움직인다</title>
+<title>One Phone. No Code. Running a Server. — termux-bridge</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -13,176 +13,64 @@
   --border:rgba(248,250,249,0.07);
 }
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
-
-/* ─── CANVAS PARTICLES ─── */
 #canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-
-/* ─── PROGRESS BAR ─── */
-#progress-bar{
-  position:fixed;top:0;left:0;height:3px;z-index:100;
-  background:var(--gold);transition:width .4s cubic-bezier(.4,0,.2,1);
-}
-
-/* ─── TOP HUD ─── */
-#hud{
-  position:fixed;top:0;left:0;right:0;z-index:90;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px;pointer-events:none;
-}
+#progress-bar{position:fixed;top:0;left:0;height:3px;z-index:100;background:var(--gold);transition:width .4s cubic-bezier(.4,0,.2,1)}
+#hud{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;pointer-events:none}
 #hud-chapter{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.7;transition:color .4s}
 #hud-counter{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
-
-/* ─── SLIDE CONTAINER ─── */
 #deck{position:fixed;inset:0;z-index:10}
-
-/* ─── INDIVIDUAL SLIDES ─── */
-.slide{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:80px 40px 100px;
-  opacity:0;pointer-events:none;
-  transition:opacity .05s;
-  overflow:hidden;
-}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 40px 100px;opacity:0;pointer-events:none;transition:opacity .05s;overflow:hidden}
 .slide.active{opacity:1;pointer-events:all}
 .slide.enter-left{animation:slideInLeft .55s cubic-bezier(.22,1,.36,1) forwards}
 .slide.enter-right{animation:slideInRight .55s cubic-bezier(.22,1,.36,1) forwards}
 .slide.exit-left{animation:slideOutLeft .45s cubic-bezier(.4,0,1,1) forwards}
 .slide.exit-right{animation:slideOutRight .45s cubic-bezier(.4,0,1,1) forwards}
-
 @keyframes slideInLeft{from{opacity:0;transform:translateX(80px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes slideInRight{from{opacity:0;transform:translateX(-80px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes slideOutLeft{from{opacity:1;transform:none}to{opacity:0;transform:translateX(-80px) scale(.97)}}
 @keyframes slideOutRight{from{opacity:1;transform:none}to{opacity:0;transform:translateX(80px) scale(.97)}}
-
-/* ─── SLIDE BG GRADIENT ─── */
-.slide::before{
-  content:'';position:absolute;inset:0;z-index:-1;opacity:.07;
-  background:radial-gradient(ellipse 70% 60% at 50% 30%, var(--accent,#D4AF37), transparent);
-  transition:opacity .6s;
-}
+.slide::before{content:'';position:absolute;inset:0;z-index:-1;opacity:.07;background:radial-gradient(ellipse 70% 60% at 50% 30%,var(--accent,#D4AF37),transparent);transition:opacity .6s}
 .slide.active::before{opacity:.12}
-
-/* ─── CONTENT MAX-WIDTH ─── */
 .slide-inner{width:100%;max-width:800px;margin:0 auto}
-
-/* ─── CHAPTER TAG ─── */
-.ch-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--accent,var(--gold));margin-bottom:20px;
-  opacity:0;animation:fadeUp .5s .1s forwards;
-}
+.ch-tag{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent,var(--gold));margin-bottom:20px;opacity:0;animation:fadeUp .5s .1s forwards}
 .ch-tag::before{content:'';display:block;width:28px;height:2px;background:currentColor;border-radius:1px}
-
-/* ─── SLIDE TITLE ─── */
-.slide-title{
-  font-size:clamp(28px,5vw,52px);font-weight:900;line-height:1.1;
-  letter-spacing:-.035em;margin-bottom:24px;
-  opacity:0;animation:fadeUp .5s .18s forwards;
-}
+.slide-title{font-size:clamp(26px,4.5vw,50px);font-weight:900;line-height:1.1;letter-spacing:-.035em;margin-bottom:22px;opacity:0;animation:fadeUp .5s .18s forwards}
 .slide-title em{color:var(--accent,var(--gold));font-style:normal}
-.slide-title .dim{color:var(--muted)}
-
-/* ─── SUBTITLE ─── */
-.slide-sub{
-  font-size:clamp(14px,2vw,18px);color:var(--muted);line-height:1.7;
-  margin-bottom:32px;max-width:600px;
-  opacity:0;animation:fadeUp .5s .26s forwards;
-}
+.slide-sub{font-size:clamp(13px,1.8vw,17px);color:var(--muted);line-height:1.7;margin-bottom:28px;max-width:600px;opacity:0;animation:fadeUp .5s .26s forwards}
 .slide-sub strong{color:var(--text)}
-
-/* ─── CARDS GRID ─── */
 .cards{display:grid;gap:12px;width:100%}
 .cards.c2{grid-template-columns:1fr 1fr}
 .cards.c3{grid-template-columns:1fr 1fr 1fr}
 @media(max-width:640px){.cards.c2,.cards.c3{grid-template-columns:1fr}}
-
-.card{
-  background:rgba(248,250,249,.04);border:1px solid var(--border);
-  border-radius:14px;padding:18px;
-  opacity:0;transform:translateY(16px);
-  transition:transform .3s,background .2s;
-}
+.card{background:rgba(248,250,249,.04);border:1px solid var(--border);border-radius:14px;padding:18px;opacity:0;transform:translateY(16px);transition:transform .3s,background .2s}
 .card:hover{background:rgba(248,250,249,.07);transform:translateY(-2px)}
-
 .card-icon{font-size:24px;margin-bottom:8px}
 .card-title{font-size:14px;font-weight:800;margin-bottom:5px}
 .card-body{font-size:12px;color:var(--muted);line-height:1.6}
 .card-body strong{color:var(--text)}
-
-/* ─── LAYER STACK ─── */
 .layers{display:flex;flex-direction:column;gap:6px;width:100%;max-width:560px}
-.layer{
-  display:flex;align-items:center;gap:14px;
-  background:rgba(248,250,249,.04);border:1px solid var(--border);
-  border-radius:10px;padding:12px 16px;
-  opacity:0;transform:translateX(-20px);
-}
-.layer-num{
-  font-size:10px;font-weight:900;letter-spacing:.06em;
-  color:var(--accent,var(--gold));flex-shrink:0;min-width:20px;
-}
+.layer{display:flex;align-items:center;gap:14px;background:rgba(248,250,249,.04);border:1px solid var(--border);border-radius:10px;padding:12px 16px;opacity:0;transform:translateX(-20px)}
+.layer-num{font-size:10px;font-weight:900;letter-spacing:.06em;color:var(--accent,var(--gold));flex-shrink:0;min-width:20px}
 .layer-name{font-size:13px;font-weight:700;flex:1}
 .layer-desc{font-size:11px;color:var(--muted);text-align:right}
-
-/* ─── CODE BLOCK ─── */
-.code-wrap{
-  background:#060d0a;border:1px solid rgba(52,211,153,.15);
-  border-radius:12px;padding:20px;width:100%;
-  opacity:0;animation:fadeUp .5s .3s forwards;
-  position:relative;
-}
-.code-wrap pre{
-  font-family:'SF Mono','Fira Code',monospace;font-size:13px;
-  color:var(--green);line-height:1.7;white-space:pre-wrap;word-break:break-all;
-}
+.code-wrap{background:#060d0a;border:1px solid rgba(52,211,153,.15);border-radius:12px;padding:20px;width:100%;opacity:0;animation:fadeUp .5s .3s forwards;position:relative}
+.code-wrap pre{font-family:'SF Mono','Fira Code',monospace;font-size:13px;color:var(--green);line-height:1.7;white-space:pre-wrap;word-break:break-all}
 .code-wrap pre .c{color:var(--muted)}
-.code-wrap pre .h{color:var(--gold)}
 .code-wrap pre .o{color:var(--orange)}
-.code-wrap pre .b{color:var(--blue)}
-.code-wrap pre .r{color:var(--red)}
-.code-label{
-  font-size:9px;font-weight:700;color:var(--blue);letter-spacing:.1em;
-  text-transform:uppercase;margin-bottom:10px;display:block;
-}
+.code-label{font-size:9px;font-weight:700;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:block}
 .code-cursor{display:inline-block;width:8px;height:14px;background:var(--green);vertical-align:middle;animation:blink 1.1s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-/* ─── TABLE ─── */
 .tbl{width:100%;border-collapse:collapse;opacity:0;animation:fadeUp .5s .3s forwards}
-.tbl th{
-  font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;
-  text-transform:uppercase;text-align:left;padding:10px 12px;
-  border-bottom:1px solid var(--border);
-}
-.tbl td{
-  font-size:13px;padding:10px 12px;border-bottom:1px solid rgba(248,250,249,.04);
-  vertical-align:top;line-height:1.5;
-}
+.tbl th{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
+.tbl td{font-size:13px;padding:10px 12px;border-bottom:1px solid rgba(248,250,249,.04);vertical-align:top;line-height:1.5}
 .tbl td:first-child{font-weight:700;color:var(--text);white-space:nowrap}
 .tbl td:not(:first-child){color:var(--muted)}
 .tbl td code{font-family:'SF Mono',monospace;font-size:12px;color:var(--green)}
 .tbl tr{opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
-
-/* ─── HIGHLIGHT BOX ─── */
-.hl-box{
-  background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.25);
-  border-radius:12px;padding:18px;width:100%;
-  opacity:0;animation:fadeUp .5s .35s forwards;
-}
-.hl-box.blue{background:rgba(96,165,250,.05);border-color:rgba(96,165,250,.25)}
-.hl-box.green{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.25)}
-.hl-box.red{background:rgba(248,113,113,.05);border-color:rgba(248,113,113,.25)}
-.hl-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-.hl-label.gold{color:var(--gold)}
-.hl-label.blue{color:var(--blue)}
-.hl-label.green{color:var(--green)}
-.hl-label.red{color:var(--red)}
+.hl-box{background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:18px;width:100%;opacity:0;animation:fadeUp .5s .35s forwards}
+.hl-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;color:var(--gold)}
 .hl-text{font-size:13px;color:var(--muted);line-height:1.7}
 .hl-text strong{color:var(--text)}
-
-/* ─── VS COMPARISON ─── */
 .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;width:100%}
 .vs-col{background:rgba(248,250,249,.04);border:1px solid var(--border);border-radius:12px;padding:16px;opacity:0;animation:fadeUp .5s .3s forwards}
 .vs-col.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04)}
@@ -193,1106 +81,801 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .vs-sep{font-size:20px;color:var(--muted);text-align:center;opacity:0;animation:fadeUp .5s .4s forwards}
 .vs-item{font-size:12px;color:var(--muted);padding:4px 0;border-bottom:1px solid rgba(248,250,249,.04);line-height:1.5}
 .vs-item:last-child{border-bottom:none}
-
-/* ─── STAT CHIPS ─── */
-.stats-row{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fadeUp .5s .3s forwards}
-.stat-chip{
-  background:rgba(248,250,249,.05);border:1px solid var(--border);
-  border-radius:12px;padding:14px 20px;text-align:center;min-width:100px;
-}
-.stat-n{font-size:28px;font-weight:900;line-height:1;color:var(--accent,var(--green));margin-bottom:4px}
-.stat-l{font-size:10px;color:var(--muted)}
-
-/* ─── FLOW DIAGRAM ─── */
 .flow{display:flex;flex-direction:column;gap:0;width:100%;max-width:500px}
-.flow-step{
-  display:flex;align-items:center;gap:14px;
-  background:rgba(248,250,249,.04);border:1px solid var(--border);
-  border-radius:10px;padding:12px 16px;
-  opacity:0;transform:translateY(10px);
-}
+.flow-step{display:flex;align-items:center;gap:14px;background:rgba(248,250,249,.04);border:1px solid var(--border);border-radius:10px;padding:12px 16px;opacity:0;transform:translateY(10px)}
 .flow-step.highlight{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
 .flow-icon{font-size:18px;flex-shrink:0}
 .flow-label{font-size:13px;font-weight:700}
 .flow-sub{font-size:11px;color:var(--muted)}
 .flow-arrow{text-align:center;color:var(--muted);font-size:14px;padding:2px 0;opacity:0}
-
-/* ─── COVER SLIDE ─── */
-.cover-title{
-  font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.05;
-  letter-spacing:-.04em;text-align:center;margin-bottom:20px;
-  background:linear-gradient(135deg,var(--gold) 0%,#ffe57a 30%,var(--gold) 60%,#a07a00 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  opacity:0;animation:coverIn .9s .2s cubic-bezier(.22,1,.36,1) forwards;
-}
-.cover-sub{
-  font-size:clamp(14px,2.2vw,20px);color:var(--muted);text-align:center;
-  line-height:1.6;max-width:560px;
-  opacity:0;animation:coverIn .8s .5s forwards;
-}
-.cover-chips{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px;
-  opacity:0;animation:coverIn .8s .7s forwards;
-}
-.cover-chip{
-  font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;
-  border:1px solid rgba(212,175,55,.3);color:var(--gold);
-  background:rgba(212,175,55,.08);
-}
+.cover-title{font-size:clamp(30px,6vw,62px);font-weight:900;line-height:1.05;letter-spacing:-.04em;text-align:center;margin-bottom:20px;background:linear-gradient(135deg,var(--gold) 0%,#ffe57a 30%,var(--gold) 60%,#a07a00 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:coverIn .9s .2s cubic-bezier(.22,1,.36,1) forwards}
+.cover-sub{font-size:clamp(14px,2vw,19px);color:var(--muted);text-align:center;line-height:1.6;max-width:560px;opacity:0;animation:coverIn .8s .5s forwards}
+.cover-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px;opacity:0;animation:coverIn .8s .7s forwards}
+.cover-chip{font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;border:1px solid rgba(212,175,55,.3);color:var(--gold);background:rgba(212,175,55,.08)}
 @keyframes coverIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-
-/* ─── CHAPTER INTRO ─── */
-.ch-num{
-  font-size:clamp(80px,15vw,140px);font-weight:900;letter-spacing:-.05em;
-  line-height:.9;color:var(--accent,var(--gold));opacity:.15;
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:-1;user-select:none;pointer-events:none;
-  animation:numGrow 1s cubic-bezier(.22,1,.36,1) forwards;
-}
+.ch-num{font-size:clamp(80px,15vw,140px);font-weight:900;letter-spacing:-.05em;line-height:.9;color:var(--accent,var(--gold));opacity:.15;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:-1;user-select:none;pointer-events:none;animation:numGrow 1s cubic-bezier(.22,1,.36,1) forwards}
 @keyframes numGrow{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:.15;transform:translate(-50%,-50%) scale(1)}}
-
-/* ─── NAVIGATION ─── */
-#nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:90;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 32px;
-  background:linear-gradient(transparent,rgba(2,4,4,.9));
-}
-.nav-btn{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(248,250,249,.05);border:1px solid var(--border);
-  border-radius:12px;padding:10px 18px;cursor:pointer;
-  font-size:12px;font-weight:700;color:var(--muted);
-  transition:all .2s;user-select:none;
-}
+#nav{position:fixed;bottom:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;padding:20px 32px;background:linear-gradient(transparent,rgba(2,4,4,.9))}
+.nav-btn{display:flex;align-items:center;gap:8px;background:rgba(248,250,249,.05);border:1px solid var(--border);border-radius:12px;padding:10px 18px;cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);transition:all .2s;user-select:none}
 .nav-btn:hover{background:rgba(248,250,249,.1);color:var(--text);border-color:rgba(248,250,249,.15)}
 .nav-btn:active{transform:scale(.96)}
-
 #dots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:400px}
-.dot{
-  width:5px;height:5px;border-radius:50%;background:var(--muted);
-  cursor:pointer;transition:all .3s;flex-shrink:0;
-}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--muted);cursor:pointer;transition:all .3s;flex-shrink:0}
 .dot.active{background:var(--gold);transform:scale(1.6)}
 .dot:hover{background:var(--text)}
-
-/* ─── AUTO-PLAY CONTROL ─── */
-#autoplay-btn{
-  position:fixed;top:14px;right:80px;z-index:95;
-  background:rgba(248,250,249,.05);border:1px solid var(--border);
-  border-radius:8px;padding:6px 12px;cursor:pointer;
-  font-size:10px;font-weight:700;color:var(--muted);
-  transition:all .2s;
-}
+#autoplay-btn{position:fixed;top:14px;right:80px;z-index:95;background:rgba(248,250,249,.05);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:10px;font-weight:700;color:var(--muted);transition:all .2s}
 #autoplay-btn:hover{color:var(--text);background:rgba(248,250,249,.1)}
 #autoplay-btn.on{color:var(--green);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
-
-/* ─── OVERVIEW MODE ─── */
-#overview{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(2,4,4,.97);
-  display:none;padding:60px 24px;overflow-y:auto;
-}
+#back-btn{position:fixed;top:14px;right:160px;z-index:95;background:rgba(248,250,249,.05);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:10px;font-weight:700;color:var(--muted);text-decoration:none;transition:all .2s;display:flex;align-items:center;gap:5px}
+#back-btn:hover{color:var(--text);background:rgba(248,250,249,.1)}
+#overview{position:fixed;inset:0;z-index:200;background:rgba(2,4,4,.97);display:none;padding:60px 24px;overflow-y:auto}
 #overview.open{display:block}
-.overview-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:10px;max-width:1200px;margin:0 auto;
-}
-.ov-thumb{
-  background:rgba(248,250,249,.04);border:1px solid var(--border);
-  border-radius:10px;padding:14px;cursor:pointer;
-  transition:all .2s;aspect-ratio:16/9;
-  display:flex;flex-direction:column;justify-content:center;gap:6px;
-}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-width:1200px;margin:0 auto}
+.ov-thumb{background:rgba(248,250,249,.04);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:center;gap:6px}
 .ov-thumb:hover{border-color:rgba(212,175,55,.4);background:rgba(212,175,55,.06);transform:scale(1.03)}
 .ov-thumb.cur{border-color:var(--gold);background:rgba(212,175,55,.1)}
 .ov-n{font-size:9px;color:var(--muted);font-weight:700}
 .ov-t{font-size:11px;font-weight:800;line-height:1.3}
-.ov-close{
-  position:fixed;top:20px;right:24px;
-  font-size:22px;cursor:pointer;color:var(--muted);
-  background:none;border:none;
-}
-
-/* ─── KEYBOARD HINT ─── */
-#kbd-hint{
-  position:fixed;bottom:70px;right:24px;z-index:90;
-  font-size:9px;color:var(--muted);text-align:right;line-height:1.8;
-  opacity:.4;pointer-events:none;
-}
-#kbd-hint kbd{
-  display:inline-block;background:rgba(248,250,249,.08);
-  border:1px solid var(--border);border-radius:3px;
-  padding:1px 5px;font-size:9px;font-family:inherit;
-}
-
-/* ─── TIMER BAR ─── */
-#timer-bar{
-  position:fixed;bottom:60px;left:0;right:0;height:2px;z-index:89;
-  background:rgba(248,250,249,.05);display:none;
-}
+.ov-close{position:fixed;top:20px;right:24px;font-size:22px;cursor:pointer;color:var(--muted);background:none;border:none}
+#kbd-hint{position:fixed;bottom:70px;right:24px;z-index:90;font-size:9px;color:var(--muted);text-align:right;line-height:1.8;opacity:.4;pointer-events:none}
+#kbd-hint kbd{display:inline-block;background:rgba(248,250,249,.08);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;font-family:inherit}
+#timer-bar{position:fixed;bottom:60px;left:0;right:0;height:2px;z-index:89;background:rgba(248,250,249,.05);display:none}
 #timer-fill{height:100%;background:var(--green);width:0;transition:width .1s linear}
-
-/* ─── TOUCH SWIPE ─── */
 </style>
 </head>
 <body>
-
 <canvas id="canvas"></canvas>
 <div id="progress-bar"></div>
-
 <div id="hud">
   <span id="hud-chapter"></span>
   <span id="hud-counter"></span>
 </div>
-
+<a id="back-btn" href="../">← Back</a>
 <button id="autoplay-btn" onclick="toggleAutoplay()">▶ AUTO</button>
-
 <div id="deck"></div>
-
 <div id="nav">
-  <button class="nav-btn" id="btn-prev" onclick="go(-1)">← 이전</button>
+  <button class="nav-btn" id="btn-prev" onclick="go(-1)">← Prev</button>
   <div id="dots"></div>
-  <button class="nav-btn" id="btn-next" onclick="go(1)">다음 →</button>
+  <button class="nav-btn" id="btn-next" onclick="go(1)">Next →</button>
 </div>
-
 <div id="timer-bar"><div id="timer-fill"></div></div>
-
-<div id="kbd-hint">
-  <kbd>←</kbd><kbd>→</kbd> 이동&nbsp;&nbsp;
-  <kbd>Space</kbd> 자동재생&nbsp;&nbsp;
-  <kbd>O</kbd> 전체보기
-</div>
-
+<div id="kbd-hint"><kbd>←</kbd><kbd>→</kbd> navigate&nbsp;&nbsp;<kbd>Space</kbd> autoplay&nbsp;&nbsp;<kbd>O</kbd> overview</div>
 <div id="overview">
   <button class="ov-close" onclick="closeOverview()">✕</button>
   <div class="overview-grid" id="ov-grid"></div>
 </div>
 
 <script>
-// ─────────────────────────────────────────
-// SLIDE DATA
-// ─────────────────────────────────────────
 const SLIDES = [
 
-// ─── 커버 ───
-{id:0, ch:'', chLabel:'', color:'#D4AF37', type:'cover',
- title:'폰 하나로 AI를\n쓴다, 만든다, 움직인다',
- sub:'Claude Code × Termux 실전 교재\n3개월 동안 일단 썼다. 이제 알고 쓸 타이밍이다.'},
+{id:0,ch:'',chLabel:'',color:'#D4AF37',type:'cover',
+ title:'One Phone.\nNo Code.\nRunning a Server.',
+ sub:'Claude Code × Termux — A real course from 3 months of logs.\nFailures, zombie processes, SSH loops — all documented.'},
 
-// ─── 0장 ───
-{id:1, ch:'0장', chLabel:'전제 조건', color:'#34D399', type:'prereq',
- title:'이 교재에 들어오려면\n<em>3가지</em>만 있으면 됩니다',
+{id:1,ch:'Ch 0',chLabel:'Prerequisites',color:'#34D399',type:'cards',
+ title:'Only <em>3 things</em> required',
  cards:[
-   {icon:'💳', title:'Claude Max · $100/월', body:'토큰 스트레스 없이 써야 흐름이 끊기지 않는다. 개발자 월급 vs Claude Max 15만원. 선택의 문제다.'},
-   {icon:'📱', title:'안드로이드 폰 + Termux', body:'무료 Linux 터미널. 루트 불필요. Galaxy 추천. Termux는 F-Droid에서 설치.'},
-   {icon:'🚫', title:'코딩 지식 0', body:'Python 문법 배울 필요 없다. 지시하는 법만 배우면 된다. 이 교재가 바로 그거다.'},
+   {icon:'💳',title:'Claude Max · $100/mo',body:'No token anxiety = no broken workflow. This is your developer salary replacement. Without it, this course doesn\'t work.'},
+   {icon:'📱',title:'Android phone + Termux',body:'Free Linux terminal on any Android. No root. No jailbreak. Galaxy preferred. Install from F-Droid, not Play Store.'},
+   {icon:'🚫',title:'Zero coding knowledge',body:'You don\'t learn to code. You learn to direct. Claude executes. You decide. That\'s the entire model.'},
  ]},
 
-// ─── 1장 ───
-{id:2, ch:'1장', chLabel:'세계관', color:'#A78BFA', type:'chapter-intro',
- num:'01', title:'세계관\n내가 서 있는 곳', sub:'Termux를 켰을 때 어디에 있는지를 모르면 아무것도 못 한다.'},
+{id:2,ch:'Ch 1',chLabel:'World Model',color:'#A78BFA',type:'chapter-intro',
+ num:'01',title:'The World Model\nWhere you are',sub:'If you don\'t know which layer you\'re on, nothing works.'},
 
-{id:3, ch:'1장', chLabel:'Layer 구조', color:'#A78BFA', type:'layers',
- title:'총 <em>5개 층</em>이 있다',
- sub:'지금 어느 층에 있는지 알아야 명령이 먹힌다.',
+{id:3,ch:'Ch 1',chLabel:'5 Layers',color:'#A78BFA',type:'layers',
+ title:'There are <em>5 layers</em>.\nKnow which one you\'re on.',
+ sub:'Your prompt tells you your location.',
  layers:[
-   {num:'L4', name:'SSH + Tailscale', desc:'집 PC를 원격 제어하는 터널', delay:0},
-   {num:'L3', name:'Claude Code', desc:'AI 에이전트가 작업 실행', delay:80},
-   {num:'L2', name:'tmux', desc:'창 유지, 세션 보존', delay:160},
-   {num:'L1', name:'bash 쉘', desc:'리눅스 명령어 공간', delay:240},
-   {num:'L0', name:'Termux 앱', desc:'안드로이드 위 터미널', delay:320},
+   {num:'L4',name:'SSH + Tailscale',desc:'Tunnel to your home PC',delay:0},
+   {num:'L3',name:'Claude Code',desc:'AI agent executes work',delay:80},
+   {num:'L2',name:'tmux',desc:'Session persistence',delay:160},
+   {num:'L1',name:'bash shell',desc:'Linux command space',delay:240},
+   {num:'L0',name:'Termux app',desc:'Terminal on Android',delay:320},
  ]},
 
-{id:4, ch:'1장', chLabel:'역할 분담', color:'#A78BFA', type:'table',
- title:'2026년 3월, <em>역할이 바뀌었다</em>',
- sub:'핸드폰이 메인이 아니다. 집 PC가 메인이다.',
+{id:4,ch:'Ch 1',chLabel:'Role Shift',color:'#A78BFA',type:'table',
+ title:'March 2026.\n<em>Roles flipped.</em>',
+ sub:'The phone is no longer the server. It\'s the remote control.',
+ cols:['Item','Before','After (now)'],
  rows:[
-   ['메인 기기','핸드폰 Termux','집 PC WSL2'],
-   ['보조 기기','PC (서버)','핸드폰 (SSH 클라이언트)'],
-   ['브라우저 자동화','headless 우회, ADB 체인','PC Chrome 직접'],
-   ['배치 작업','핸드폰 한 세션 묶여있기','tmux 던져놓고 퇴근'],
- ],
- cols:['항목','Before','After (지금)']},
+   ['Main device','Phone + Termux','Home PC + WSL2'],
+   ['Secondary','PC as server','Phone as SSH client'],
+   ['Browser automation','Headless hacks, ADB chains','PC Chrome directly'],
+   ['Batch jobs','One phone session, stuck','tmux + walk away'],
+ ]},
 
-{id:5, ch:'1장', chLabel:'삼중 보험', color:'#A78BFA', type:'triple',
- title:'<em>삼중 보험</em> 구조',
- sub:'자기가 자기를 수술할 수 없다. 그래서 세 개다.',
+{id:5,ch:'Ch 1',chLabel:'Triple Backup',color:'#A78BFA',type:'triple',
+ title:'<em>Triple redundancy</em>.\nYou can\'t operate on yourself.',
+ sub:'If WSL dies, Claude Code inside WSL dies too. So there are three layers.',
  items:[
-   {n:'1차', label:'PC WSL2 Claude Code', desc:'메인 작업', color:'#34D399'},
-   {n:'2차', label:'Windows Claude Code', desc:'WSL이 못하는 것 + 비상복구', color:'#60A5FA'},
-   {n:'3차', label:'Termux (핸드폰)', desc:'둘 다 죽었을 때 SSH 재접속', color:'#A78BFA'},
+   {n:'1st',label:'PC WSL2 · Claude Code',desc:'Main workspace',color:'#34D399'},
+   {n:'2nd',label:'Windows · Claude Code',desc:'What WSL can\'t touch + emergency recovery',color:'#60A5FA'},
+   {n:'3rd',label:'Termux (phone)',desc:'When both are down — SSH reconnect',color:'#A78BFA'},
  ]},
 
-// ─── 2장 ───
-{id:6, ch:'2장', chLabel:'Termux 기초', color:'#34D399', type:'chapter-intro',
- num:'02', title:'Termux 기초\n조작', sub:'물리 버튼이 키보드다.'},
+{id:6,ch:'Ch 2',chLabel:'Termux Basics',color:'#34D399',type:'chapter-intro',
+ num:'02',title:'Termux Basics\nPhysical keys are keyboard',sub:'The volume-down button is your Ctrl key.'},
 
-{id:7, ch:'2장', chLabel:'물리 버튼', color:'#34D399', type:'table',
- title:'볼륨 다운 버튼이\n<em>Ctrl 키</em>다',
- sub:'화면 키보드에 없는 키들을 물리 버튼으로 만든다.',
- cols:['조합','역할'],
+{id:7,ch:'Ch 2',chLabel:'Key Shortcuts',color:'#34D399',type:'table',
+ title:'Volume Down button\nis your <em>Ctrl key</em>',
+ sub:'Physical button on the side of your phone — not the on-screen keyboard.',
+ cols:['Combo','Action'],
  rows:[
-   ['볼륨↓ + C','Ctrl+C — 실행 중단'],
-   ['볼륨↓ + Z','Ctrl+Z — 백그라운드 suspend'],
-   ['볼륨↓ + D','Ctrl+D — 세션 종료'],
-   ['볼륨↓ + L','화면 클리어'],
-   ['볼륨↓ + [','Esc 키'],
-   ['볼륨↓ + T','Tab 자동완성'],
+   ['Vol↓ + C','Ctrl+C — kill running process'],
+   ['Vol↓ + Z','Ctrl+Z — suspend to background'],
+   ['Vol↓ + D','Ctrl+D — end session (EOF)'],
+   ['Vol↓ + L','Clear screen'],
+   ['Vol↓ + [','Escape key'],
+   ['Vol↓ + T','Tab autocomplete'],
  ]},
 
-{id:8, ch:'2장', chLabel:'층 이동', color:'#34D399', type:'code',
- title:'Claude Code ↔ bash\n<em>오가는 법</em>',
- codeLabel:'프롬프트에서 층 이동',
- code:`❯  (Claude Code 안에서)
-exit        # bash 쉘로 복귀
+{id:8,ch:'Ch 2',chLabel:'Layer Switching',color:'#34D399',type:'code',
+ title:'Moving between\n<em>Claude Code ↔ bash</em>',
+ codeLabel:'How to switch layers',
+ code:`❯  (inside Claude Code)
+exit        # return to bash shell
 
-$  (bash 쉘에서)
-fg          # Claude Code 다시 돌아옴
+$  (inside bash)
+fg          # return to Claude Code
 
-# 완전 먹통일 때
-command claude   # alias 무시하고 원본 실행`},
+# When completely frozen:
+command claude   # bypass alias, run directly`},
 
-// ─── 3장 ───
-{id:9, ch:'3장', chLabel:'PC 서버화', color:'#60A5FA', type:'chapter-intro',
- num:'03', title:'집 PC를\n서버로 만들기', sub:'24시간 꺼지면 안 되는 생산공장.'},
+{id:9,ch:'Ch 3',chLabel:'PC Server',color:'#60A5FA',type:'chapter-intro',
+ num:'03',title:'Turn Your PC\nInto a Server',sub:'A production factory that cannot go offline.'},
 
-{id:10, ch:'3장', chLabel:'왜 필요한가', color:'#60A5FA', type:'incident',
- title:'실제 사고 경위',
- sub:'이게 한 번 터지면 3일치 작업이 날아간다.',
+{id:10,ch:'Ch 3',chLabel:'Why It Matters',color:'#60A5FA',type:'incident',
+ title:'The actual incident',
+ sub:'This happened once. 3 days of work environment gone.',
  flow:[
-   {icon:'😴', label:'외출 3일차', sub:'원격 작업 중'},
-   {icon:'🔄', label:'Windows 자동 업데이트 발동', sub:''},
-   {icon:'💥', label:'강제 재부팅', sub:''},
-   {icon:'🔌', label:'SSH 끊김 · WSL 세션 전부 사망', sub:''},
-   {icon:'💀', label:'3일치 원격 작업 환경 날아감', sub:''},
+   {icon:'😴',label:'Day 3 of being out',sub:'Working remotely'},
+   {icon:'🔄',label:'Windows auto-update triggered',sub:''},
+   {icon:'💥',label:'Forced reboot',sub:''},
+   {icon:'🔌',label:'SSH dropped · All WSL sessions dead',sub:''},
+   {icon:'💀',label:'3 days of remote workspace gone',sub:''},
  ]},
 
-{id:11, ch:'3장', chLabel:'서버화 4단계', color:'#60A5FA', type:'steps',
- title:'서버화 <em>4단계</em>',
+{id:11,ch:'Ch 3',chLabel:'4-Step Setup',color:'#60A5FA',type:'steps',
+ title:'Server hardening\nin <em>4 steps</em>',
  steps:[
-   {n:'01', title:'Windows 자동 재부팅 차단', desc:'레지스트리 NoAutoRebootWithLoggedOnUsers = 1'},
-   {n:'02', title:'WSL 자동 종료 방지', desc:'.wslconfig에 vmIdleTimeout=-1 설정'},
-   {n:'03', title:'Windows 자동 로그인', desc:'Sysinternals Autologon — netplwiz는 안 된다'},
-   {n:'04', title:'WSL 재시작 시 자동 초기화', desc:'/etc/wsl.conf boot.command 스크립트'},
+   {n:'01',title:'Block Windows auto-reboot',desc:'Registry: NoAutoRebootWithLoggedOnUsers = 1'},
+   {n:'02',title:'Prevent WSL auto-shutdown',desc:'.wslconfig → vmIdleTimeout=-1'},
+   {n:'03',title:'Windows auto-login',desc:'Sysinternals Autologon — netplwiz does NOT work'},
+   {n:'04',title:'WSL auto-init on restart',desc:'/etc/wsl.conf boot.command script'},
  ]},
 
-{id:12, ch:'3장', chLabel:'복구 체인', color:'#60A5FA', type:'flow',
- title:'정전이 나도\n<em>자동 복구</em>된다',
+{id:12,ch:'Ch 3',chLabel:'Auto-Recovery Chain',color:'#60A5FA',type:'flow',
+ title:'Power outage?\n<em>Auto-recovers.</em>',
  flow:[
-   {icon:'⚡', label:'정전 / Windows 업데이트', sub:'', highlight:false},
-   {icon:'🔌', label:'BIOS AC Power Recovery = On', sub:'자동 켜짐', highlight:false},
-   {icon:'🔑', label:'Sysinternals Autologon', sub:'자동 로그인', highlight:true},
-   {icon:'🐧', label:'WSL + sshd 자동 시작', sub:'wsl.conf boot.command', highlight:true},
-   {icon:'📱', label:'핸드폰에서 SSH 접속 가능', sub:'Tailscale 자동 연결', highlight:true},
+   {icon:'⚡',label:'Power cut / Windows update',sub:'',highlight:false},
+   {icon:'🔌',label:'BIOS AC Power Recovery = On',sub:'Auto power-on',highlight:false},
+   {icon:'🔑',label:'Sysinternals Autologon',sub:'Auto login — bypasses PIN',highlight:true},
+   {icon:'🐧',label:'WSL + sshd auto-start',sub:'wsl.conf boot.command',highlight:true},
+   {icon:'📱',label:'Phone can SSH in again',sub:'Tailscale reconnects automatically',highlight:true},
  ]},
 
-// ─── 4장 ───
-{id:13, ch:'4장', chLabel:'SSH 안정성', color:'#FB923C', type:'chapter-intro',
- num:'04', title:'SSH 안정성\n끊기지 않는 연결', sub:'끊기는 이유를 알아야 막을 수 있다.'},
+{id:13,ch:'Ch 4',chLabel:'SSH Stability',color:'#FB923C',type:'chapter-intro',
+ num:'04',title:'SSH Stability\nConnections that don\'t drop',sub:'You have to know why it drops to stop it.'},
 
-{id:14, ch:'4장', chLabel:'4중 복합 원인', color:'#FB923C', type:'rca',
- title:'실제 발견된\n<em>4중 복합 원인</em>',
- sub:'2026-03-21 장애 RCA (Root Cause Analysis)',
+{id:14,ch:'Ch 4',chLabel:'Root Cause Analysis',color:'#FB923C',type:'rca',
+ title:'The actual <em>4-layer failure</em>\nwe diagnosed',
+ sub:'2026-03-21 incident RCA — all four causes were active simultaneously.',
  items:[
-   {cause:'SSH 자기루프', symptom:'CPU 38% 독식, 세션 드랍', fix:'ps aux | grep ssh → kill'},
-   {cause:'tailscaled CPU 폭주', symptom:'30% CPU 점유, 불안정', fix:'sudo kill [PID] → 재시작'},
-   {cause:'.wslconfig 없음', symptom:'7시간 후 WSL 자동종료', fix:'vmIdleTimeout=-1'},
-   {cause:'TTS 좀비 프로세스 ×5', symptom:'메모리 점유', fix:'pkill -f script'},
+   {cause:'SSH self-loop',symptom:'CPU 38% spike, session drops',fix:'ps aux | grep ssh → kill'},
+   {cause:'tailscaled CPU runaway',symptom:'30% CPU, unstable connection',fix:'sudo kill [PID] → restart'},
+   {cause:'Missing .wslconfig',symptom:'WSL auto-shutdown after 7h',fix:'vmIdleTimeout=-1'},
+   {cause:'5 zombie TTS processes',symptom:'Memory held, system sluggish',fix:'pkill -f script'},
  ]},
 
-{id:15, ch:'4장', chLabel:'autossh', color:'#FB923C', type:'code',
- title:'WiFi ↔ LTE 전환해도\n<em>자동 재접속</em>',
- codeLabel:'폰 ~/.bashrc · pc alias',
+{id:15,ch:'Ch 4',chLabel:'autossh',color:'#FB923C',type:'code',
+ title:'WiFi ↔ LTE switch.\n<em>Stays connected.</em>',
+ codeLabel:'Phone ~/.bashrc · pc alias',
  code:`alias pc='autossh -M 0 \\
   -o "ServerAliveInterval 30" \\
   -o "ServerAliveCountMax 3" \\
   -o "TCPKeepAlive yes" \\
-  -p 2222 dtsli@100.90.83.128 \\
+  -p 2222 user@100.90.83.128 \\
   -t "tmux attach -t claude-main || \\
       tmux new-session -s claude-main"'`},
 
-{id:16, ch:'4장', chLabel:'SSH config', color:'#FB923C', type:'code',
- title:'~/.ssh/config로\n<em>keepalive 설정</em>',
+{id:16,ch:'Ch 4',chLabel:'SSH Config',color:'#FB923C',type:'code',
+ title:'Keepalive config\nin <em>~/.ssh/config</em>',
  codeLabel:'~/.ssh/config',
  code:`Host pc-wsl
     HostName 100.90.83.128
     Port 2222
-    User dtsli
+    User your-username
     ServerAliveInterval 30
     ServerAliveCountMax 3
     TCPKeepAlive yes
     ConnectTimeout 10`},
 
-{id:17, ch:'4장', chLabel:'tmux 절대 규칙', color:'#FB923C', type:'vs',
- title:'tmux 중첩은\n<em>절대 금지</em>',
- bad:['Termux tmux 안에서 SSH','→ PC tmux 중첩','→ 키 바인딩 충돌','→ 화면 깨짐','→ 세션 추적 불가'],
- good:['Termux 맨 bash (tmux 없이)','→ SSH','→ PC WSL2','→ claude-main tmux에 attach']},
+{id:17,ch:'Ch 4',chLabel:'tmux Rule',color:'#FB923C',type:'vs',
+ title:'Nested tmux is\n<em>absolutely forbidden</em>',
+ bad:['Termux tmux session','→ SSH into PC','→ nested PC tmux','→ key binding collisions','→ broken display','→ can\'t track sessions'],
+ good:['Plain Termux bash (no tmux)','→ SSH','→ PC WSL2','→ attach to claude-main tmux']},
 
-{id:18, ch:'4장', chLabel:'긴급 탈출', color:'#FB923C', type:'escape',
- title:'SSH 완전 먹통일 때\n<em>탈출법</em>',
+{id:18,ch:'Ch 4',chLabel:'Emergency Escape',color:'#FB923C',type:'escape',
+ title:'Completely frozen SSH.\n<em>The escape hatch.</em>',
  key:'~.',
- desc:'물결표(~) 누르고 바로 마침표(.) — SSH 강제 종료\n아무 키도 안 먹힐 때 이게 유일한 탈출구다.'},
+ desc:'Tilde (~) then period (.) — force-close SSH.\nNothing else responds. This always works.'},
 
-// ─── 5장 ───
-{id:19, ch:'5장', chLabel:'tmux 세션', color:'#A78BFA', type:'sessions',
- title:'항상 살아있어야 할\n<em>5개 세션</em>',
+{id:19,ch:'Ch 5',chLabel:'tmux Sessions',color:'#A78BFA',type:'sessions',
+ title:'5 sessions that must\n<em>always be alive</em>',
  sessions:[
-   {name:'claude-main', role:'Claude Code 메인 작업', alias:'cm', color:'#34D399'},
-   {name:'tablet', role:'태블릿 전용 세션', alias:'ct', color:'#60A5FA'},
-   {name:'tg-image', role:'이미지 텔레그램 봇', alias:'—', color:'#A78BFA'},
-   {name:'tg-audio', role:'오디오 텔레그램 봇', alias:'—', color:'#FB923C'},
-   {name:'watchdog', role:'봇/SSH/Tailscale 감시', alias:'—', color:'#F87171'},
+   {name:'claude-main',role:'Claude Code — main workspace',alias:'cm',color:'#34D399'},
+   {name:'tablet',role:'Tablet-dedicated session',alias:'ct',color:'#60A5FA'},
+   {name:'tg-image',role:'Telegram image bot (24/7)',alias:'—',color:'#A78BFA'},
+   {name:'tg-audio',role:'Telegram audio bot (24/7)',alias:'—',color:'#FB923C'},
+   {name:'watchdog',role:'Monitor bots/SSH/Tailscale',alias:'—',color:'#F87171'},
  ]},
 
-{id:20, ch:'5장', chLabel:'alias 목록', color:'#A78BFA', type:'code',
- title:'2글자로\n<em>모든 걸 한다</em>',
- codeLabel:'PC ~/.bashrc · 전체 alias',
- code:`# PC로 SSH 접속
-alias pc='ssh -o ServerAliveInterval=15 -p 2222 dtsli@100.90.83.128'
+{id:20,ch:'Ch 5',chLabel:'Aliases',color:'#A78BFA',type:'code',
+ title:'2 characters.\n<em>Everything happens.</em>',
+ codeLabel:'PC ~/.bashrc · full alias set',
+ code:`# SSH to PC from phone
+alias pc='ssh -o ServerAliveInterval=15 -p 2222 user@100.90.83.128'
 
-# termux-bridge에서 Claude Code 실행
+# Open Claude Code in termux-bridge
 alias cc='cd ~/termux-bridge && claude'
 
-# termux-bridge 디렉토리로 이동
+# Jump to termux-bridge dir
 alias cb='cd ~/termux-bridge'
 
-# claude-main 세션으로 전환 (또는 생성)
+# Switch to (or create) claude-main session
 alias cm="tmux switch -t claude-main 2>/dev/null || TMUX='' tmux new-session -A -s claude-main"
 
-# tablet 세션으로 전환 (또는 생성)
+# Switch to (or create) tablet session
 alias ct="tmux switch -t tablet 2>/dev/null || TMUX='' tmux new-session -A -s tablet"`},
 
-// ─── 6장 ───
-{id:21, ch:'6장', chLabel:'자동화 도구', color:'#60A5FA', type:'chapter-intro',
- num:'06', title:'자동화 도구\n어떤 걸 언제 쓰는가', sub:'순서를 지키지 않으면 헌법 위반이다.'},
+{id:21,ch:'Ch 6',chLabel:'Automation Tools',color:'#60A5FA',type:'chapter-intro',
+ num:'06',title:'Automation Tools\nWhich one, when',sub:'Follow this order. Skipping it is a violation.'},
 
-{id:22, ch:'6장', chLabel:'도구 우선순위', color:'#60A5FA', type:'priority',
- title:'이 순서를\n<em>반드시</em> 따를 것',
+{id:22,ch:'Ch 6',chLabel:'Priority Order',color:'#60A5FA',type:'priority',
+ title:'This order is\n<em>mandatory</em>',
  steps:[
-   {n:'0순위', label:'API / 터미널', desc:'항상 먼저 확인. 되면 끝. 아래로 내려가지 않는다.', color:'#34D399'},
-   {n:'1순위', label:'Claude in Chrome', desc:'GUI 클릭 필수 작업. YouTube Studio, OAuth 등.', color:'#60A5FA'},
-   {n:'2순위', label:'Playwright MCP', desc:'Claude가 브라우저 외부에서 직접 조작.', color:'#A78BFA'},
-   {n:'3순위', label:'CDP / 스크립트', desc:'반복 배치. 사람 없이 야간 자동 실행.', color:'#FB923C'},
+   {n:'Priority 0',label:'API / Terminal',desc:'Always check first. If it works, stop here. Never go lower.',color:'#34D399'},
+   {n:'Priority 1',label:'Claude in Chrome',desc:'GUI-click required tasks — YouTube Studio, OAuth, console UI.',color:'#60A5FA'},
+   {n:'Priority 2',label:'Playwright MCP',desc:'Claude controls browser directly from outside.',color:'#A78BFA'},
+   {n:'Priority 3',label:'CDP / Scripts',desc:'Repeat batch jobs. Runs overnight without a human.',color:'#FB923C'},
  ]},
 
-{id:23, ch:'6장', chLabel:'Termux 한계', color:'#60A5FA', type:'table',
- title:'Termux에서\n<em>안 되는 것들</em>',
- cols:['도구','이유','대안'],
+{id:23,ch:'Ch 6',chLabel:'Termux Limits',color:'#60A5FA',type:'table',
+ title:'What <em>doesn\'t work</em>\nin Termux',
+ cols:['Tool','Why','Alternative'],
  rows:[
-   ['Playwright','Android 미지원','GitHub Actions'],
-   ['Puppeteer','Android 미지원','CDP 직접 연결'],
-   ['OpenCV','aarch64 빌드 실패','Pillow'],
-   ['scipy','빌드 실패','numpy'],
-   ['Docker','커널 제약','불가'],
+   ['Playwright','Android not supported','GitHub Actions'],
+   ['Puppeteer','Android not supported','Direct CDP'],
+   ['OpenCV','aarch64 build fails','Pillow'],
+   ['scipy','Build fails','numpy'],
+   ['Docker','Kernel restrictions','Not possible'],
  ]},
 
-// ─── 7장 ───
-{id:24, ch:'7장', chLabel:'지시하는 법', color:'#D4AF37', type:'chapter-intro',
- num:'07', title:'지시하는 법\n십장 모델', sub:'십장은 못질 안 해도 된다.'},
+{id:24,ch:'Ch 7',chLabel:'How to Direct',color:'#D4AF37',type:'chapter-intro',
+ num:'07',title:'How to Direct\nThe Foreman Model',sub:'A foreman doesn\'t swing a hammer. They just know where the wall goes.'},
 
-{id:25, ch:'7장', chLabel:'십장 모델', color:'#D4AF37', type:'foreman',
- title:'당신은 <em>십장</em>이다',
+{id:25,ch:'Ch 7',chLabel:'The Foreman Model',color:'#D4AF37',type:'foreman',
+ title:'You are the <em>foreman</em>',
  items:[
-   {a:'기존 교육', b:'다리 만드는 법 가르침'},
-   {a:'이 교재', b:'다리 건너는 법 가르침'},
-   {a:'프로그래밍 언어', b:'배울 필요 없음'},
-   {a:'Claude에게 지시하는 법', b:'이것만 배우면 됨'},
+   {a:'Old education',b:'Teach you how to build bridges'},
+   {a:'This course',b:'Teach you how to cross bridges'},
+   {a:'Programming languages',b:'Don\'t need to learn'},
+   {a:'How to direct Claude',b:'This is the only skill you need'},
  ]},
 
-{id:26, ch:'7장', chLabel:'지시 방법', color:'#D4AF37', type:'vs',
- title:'나쁜 지시 vs\n<em>좋은 지시</em>',
- bad:['"이거 고쳐줘"','"잘 안 돼"','"좀 더 좋게 만들어"'],
- good:['"파일/위치 + 증상 + 원하는 결과 + 처리방식"','claude-tts.sh에서 tts_filter grep이','Invalid collation character 에러 도배돼.','grep 한글 정규식을 LC_ALL=C 안 타는 방식으로 고쳐. 푸시해.']},
+{id:26,ch:'Ch 7',chLabel:'Good vs Bad',color:'#D4AF37',type:'vs',
+ title:'Bad directions vs\n<em>Good directions</em>',
+ bad:['"Fix this"','"It doesn\'t work"','"Make it better"'],
+ good:['"file/location + symptom + expected result + action"','"In claude-tts.sh, the tts_filter grep","spams Invalid collation character errors.","Fix the Korean regex to bypass LC_ALL=C. Push."']},
 
-{id:27, ch:'7장', chLabel:'Claude 역할', color:'#D4AF37', type:'roles',
- title:'Claude도\n<em>역할이 다르다</em>',
+{id:27,ch:'Ch 7',chLabel:'Claude Roles',color:'#D4AF37',type:'roles',
+ title:'Claude has\n<em>different roles</em>',
  roles:[
-   {model:'Opus', role:'설계/기획', tasks:'전략, 아키텍처, 방향', color:'#D4AF37'},
-   {model:'Sonnet', role:'실행/구현', tasks:'코드 작성, 파일 수정, 커밋', color:'#34D399'},
-   {model:'박씨', role:'회장', tasks:'판단, 우선순위, 최종 결정', color:'#A78BFA'},
+   {model:'Opus',role:'Strategy',tasks:'Architecture, direction, planning',color:'#D4AF37'},
+   {model:'Sonnet',role:'Execution',tasks:'Write code, edit files, commit',color:'#34D399'},
+   {model:'You',role:'Chairman',tasks:'Judgment, priorities, final call',color:'#A78BFA'},
  ]},
 
-{id:28, ch:'7장', chLabel:'맥락 넘기기', color:'#D4AF37', type:'code',
- title:'새 세션은\n<em>아무것도 모른다</em>',
- codeLabel:'맥락을 던져주는 실제 예시',
- code:`"termux-bridge에 claude-tts.sh 만들어놨잖아.
- PC WSL .bashrc에
+{id:28,ch:'Ch 7',chLabel:'Passing Context',color:'#D4AF37',type:'code',
+ title:'New session.\n<em>Knows nothing.</em>',
+ codeLabel:'How to hand off context — real example',
+ code:`"We built claude-tts.sh in termux-bridge.
+ Register this in PC WSL .bashrc:
  alias claude='~/termux-bridge/claude-tts.sh'
- 등록해.
 
- 그리고 TTS가 폰으로 reverse tunnel
- 타고 가는 구조 확인해."`},
+ Then verify the TTS reverse-tunnel
+ structure going back to the phone."`},
 
-// ─── 8장 ───
-{id:29, ch:'8장', chLabel:'결과 검증', color:'#34D399', type:'chapter-intro',
- num:'08', title:'결과 검증\n잘 됐는지 어떻게 아는가', sub:'안 되면 git revert. reset --hard는 절대 금지.'},
+{id:29,ch:'Ch 8',chLabel:'Verification',color:'#34D399',type:'chapter-intro',
+ num:'08',title:'Verifying Results\nHow do you know it worked?',sub:'If it fails: git revert. Never reset --hard.'},
 
-{id:30, ch:'8장', chLabel:'검증 3원칙', color:'#34D399', type:'cards',
- title:'검증 <em>3원칙</em>',
+{id:30,ch:'Ch 8',chLabel:'3 Principles',color:'#34D399',type:'cards',
+ title:'Verification\n<em>3 principles</em>',
  cards:[
-   {icon:'👁️', title:'눈으로 확인', body:'화면에 오류 없이 원하는 결과가 보이는가'},
-   {icon:'🔁', title:'재현 테스트', body:'껐다 켜도 똑같이 동작하는가'},
-   {icon:'↩️', title:'실패 시 롤백', body:'안 되면 git revert. reset --hard 금지.'},
+   {icon:'👁️',title:'See it with your eyes',body:'Is the result on screen, error-free, exactly as expected?'},
+   {icon:'🔁',title:'Reproduce it',body:'Turn it off and back on. Does it still work the same way?'},
+   {icon:'↩️',title:'Rollback on failure',body:'Use git revert to undo. reset --hard is permanently banned.'},
  ]},
 
-{id:31, ch:'8장', chLabel:'상태 확인', color:'#34D399', type:'code',
- title:'자주 확인해야 할\n<em>진단 명령어</em>',
+{id:31,ch:'Ch 8',chLabel:'Diagnostic Commands',color:'#34D399',type:'code',
+ title:'Commands to run\n<em>when things feel off</em>',
  codeLabel:'PC WSL2 bash',
- code:`# SSH 루프 확인 (CPU 폭주 원인)
+ code:`# Check for SSH loop (cause of CPU spike)
 ps aux | grep ssh
 
-# tailscaled 상태
+# Tailscale daemon status
 systemctl status tailscaled
 
-# WSL 설정 확인
-cat /mnt/c/Users/dtsli/.wslconfig
+# Verify WSL config
+cat /mnt/c/Users/username/.wslconfig
 
-# 포트 점유 확인
+# Check port occupation
 lsof -i :9876
 
-# tmux 세션 목록
+# List tmux sessions
 tmux ls`},
 
-// ─── 9장 ───
-{id:32, ch:'9장', chLabel:'삽질 사전', color:'#F87171', type:'chapter-intro',
- num:'09', title:'삽질 사전\n실전에서 만난 것들', sub:'이미 겪어봤다. 덕분에 당신은 안 겪어도 된다.'},
+{id:32,ch:'Ch 9',chLabel:'Failure Dictionary',color:'#F87171',type:'chapter-intro',
+ num:'09',title:'The Failure\nDictionary',sub:'We already hit these. You don\'t have to.'},
 
-{id:33, ch:'9장', chLabel:'tmux 화면 깨짐', color:'#F87171', type:'code',
- title:'tmux 화면이\n<em>깨졌을 때</em>',
- codeLabel:'점선 도배 / 글자 겹침 / 입력 안 됨',
- code:`# 핵 방법 (세션 전부 종료)
+{id:33,ch:'Ch 9',chLabel:'Broken tmux Display',color:'#F87171',type:'code',
+ title:'tmux display\n<em>completely broken</em>',
+ codeLabel:'Symptom: dotted lines, overlapping text, no input',
+ code:`# Nuclear option (kills all sessions)
 tmux kill-server
 tmux new -s work
 
-# 살려서 다시 붙기
+# Or detach and reattach cleanly
 tmux detach
-tmux attach -t [세션명]`},
+tmux attach -t [session-name]`},
 
-{id:34, ch:'9장', chLabel:'SSH 끊길 때', color:'#F87171', type:'checklist',
- title:'SSH가 계속\n<em>끊길 때 체크리스트</em>',
+{id:34,ch:'Ch 9',chLabel:'SSH Keeps Dropping',color:'#F87171',type:'checklist',
+ title:'SSH keeps dropping.\n<em>Checklist.</em>',
  items:[
-   'ps aux | grep ssh → SSH 루프 있는지 확인 → kill [PID]',
-   'systemctl status tailscaled → CPU 폭주 시 재시작',
-   '.wslconfig에 vmIdleTimeout=-1 있는지 확인',
-   'Windows 절전모드 차단 됐는지 확인',
+   'ps aux | grep ssh — check for SSH loop → kill [PID]',
+   'systemctl status tailscaled — if CPU spike, restart it',
+   '.wslconfig — confirm vmIdleTimeout=-1 is set',
+   'Windows power settings — confirm sleep/hibernate is disabled',
  ]},
 
-{id:35, ch:'9장', chLabel:'기타 삽질', color:'#F87171', type:'table',
- title:'나머지\n<em>삽질 모음</em>',
- cols:['증상','원인','해결'],
+{id:35,ch:'Ch 9',chLabel:'More Failures',color:'#F87171',type:'table',
+ title:'The rest of\nthe <em>failure collection</em>',
+ cols:['Symptom','Cause','Fix'],
  rows:[
-   ['레지스트리 권한 거부','WSL powershell = 관리자 권한 없음','Windows에서 관리자 PowerShell 실행'],
-   ['포트 충돌 :9876','다른 프로세스 점유','lsof -i :9876 → kill'],
-   ['git pull 충돌','로컬 수정 있음','git checkout -- [파일] → pull'],
-   ['Claude 맥락 모름','새 세션 = 이전 대화 없음','CLAUDE.md + 직접 맥락 던지기'],
+   ['Registry permission denied','WSL PowerShell has no admin rights','Run PowerShell as Administrator in Windows'],
+   ['Port conflict :9876','Another process holds the port','lsof -i :9876 → kill'],
+   ['git pull conflict','Local changes exist','git checkout -- [file] → pull'],
+   ['Claude knows nothing','New session = no memory','CLAUDE.md + pass context manually'],
  ]},
 
-// ─── 10장 ───
-{id:36, ch:'10장', chLabel:'아키텍처', color:'#D4AF37', type:'arch',
- title:'전체\n<em>아키텍처</em>',
+{id:36,ch:'Ch 10',chLabel:'Full Architecture',color:'#D4AF37',type:'arch',
+ title:'The complete\n<em>architecture</em>',
  layers:[
-   {label:'핸드폰 Termux (맨 bash)', color:'#34D399'},
-   {label:'autossh → Tailscale (100.90.83.128:2222)', color:'#60A5FA'},
-   {label:'WSL2 tmux claude-main', color:'#A78BFA'},
-   {label:'Claude Code (Sonnet / Opus)', color:'#D4AF37'},
+   {label:'Phone · Termux (plain bash, no tmux)',color:'#34D399'},
+   {label:'autossh → Tailscale (100.90.83.128:2222)',color:'#60A5FA'},
+   {label:'WSL2 · tmux claude-main session',color:'#A78BFA'},
+   {label:'Claude Code (Sonnet / Opus)',color:'#D4AF37'},
  ]},
 
-// ─── 부록 ───
-{id:37, ch:'부록 A', chLabel:'PC 복구', color:'#muted', type:'code',
- title:'PC가 날아갔을 때\n<em>복구 순서</em>',
- codeLabel:'부록 A · 8단계 복구',
- code:`1. Windows 설치
-2. Windows Claude Code 설치 (관리자 PowerShell)
-3. 로컬 PC 시스템 권한 MCP 붙이기
-4. GitHub 토큰 주기
-5. "나머지 다 세팅해" → 자동 업데이트 차단, SSH, Tailscale
-6. WSL 설치 시키기
-7. WSL 안에 Claude Code 설치 시키기
-8. WSL 환경 세팅 (termux-bridge setup.sh)
+{id:37,ch:'Appendix A',chLabel:'PC Recovery',color:'#muted',type:'code',
+ title:'Full PC wiped.\n<em>Recovery order.</em>',
+ codeLabel:'Appendix A · 8-step recovery',
+ code:`1. Install Windows
+2. Install Windows Claude Code (Admin PowerShell)
+3. Attach local PC system-access MCP
+4. Give GitHub token
+5. "Set everything else up" — auto-update block, SSH, Tailscale
+6. Install WSL
+7. Install Claude Code inside WSL
+8. Run WSL environment setup (termux-bridge setup.sh)
 
-Windows Claude Code가 산파 역할이다.
-WSL을 낳아주고, 환경까지 세팅해준다.`},
+Windows Claude Code is the midwife.
+It births WSL, then births WSL Claude Code,
+then configures the whole environment.`},
 
-{id:38, ch:'부록 B', chLabel:'폰 세팅', color:'#34D399', type:'code',
- title:'새 폰 원클릭\n<em>세팅</em>',
- codeLabel:'부록 B · 새 폰 또는 Termux 초기화 후',
- code:`# 1. 유니버설 인스톨러 실행
+{id:38,ch:'Appendix B',chLabel:'Phone Setup',color:'#34D399',type:'code',
+ title:'New phone.\n<em>One-command setup.</em>',
+ codeLabel:'Appendix B · New phone or Termux reset',
+ code:`# Step 1: Run the universal installer
 curl -fsSL https://raw.githubusercontent.com/\\
   dtslib1979/termux-bridge/main/setup.sh | bash
 
 source ~/.bashrc
 
-# 2. 그 다음 이것만 외우면 됨
-pc      # PC 접속
-cm      # claude-main 세션으로
-ct      # tablet 세션으로
-cc      # termux-bridge에서 claude 실행`},
+# Step 2: These 4 commands are all you need to know
+pc      # SSH to PC
+cm      # switch to claude-main session
+ct      # switch to tablet session
+cc      # open Claude Code in termux-bridge`},
 
-{id:39, ch:'부록 C', chLabel:'자동화 경계', color:'#muted', type:'boundary',
- title:'자동화 경계\n<em>선언</em>',
+{id:39,ch:'Appendix C',chLabel:'Automation Boundary',color:'#muted',type:'boundary',
+ title:'The Automation\n<em>Boundary Declaration</em>',
  quote:'termux-bridge produces evidence.\nHumans produce decisions.',
- auto:['스크린샷, 링크체크, 에러수집','JSON 리포트 생성, git 커밋'],
- human:['broken link 분류','수정 구현, 우선순위 결정'],
- never:['자동 수정 (blast radius)','GUI 클릭 자동화 (플랫폼 TOS)','로그인 페이지 체크 (credential 보안)']},
+ auto:['Screenshots, link checks, error collection','JSON reports generated, git commits'],
+ human:['Classify broken links','Implement fixes, set priorities'],
+ never:['Auto-fix (blast radius)','GUI click automation (platform TOS)','Login page checks (credential security)']},
 
 ];
 
-// ─────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────
-let cur = 0, prev = -1, autoplay = false, autoTimer = null, autoInterval = 6000;
-let touchStartX = 0, touchStartY = 0;
+let cur=0,autoplay=false,autoTimer=null,autoInterval=6000;
+let touchStartX=0,touchStartY=0;
 
-// ─────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────
-function renderAll() {
-  const deck = document.getElementById('deck');
-  SLIDES.forEach((s,i) => {
-    const el = document.createElement('div');
-    el.className = 'slide';
-    el.id = 'slide-' + i;
-    el.style.setProperty('--accent', s.color);
-    el.innerHTML = buildSlide(s);
+function renderAll(){
+  const deck=document.getElementById('deck');
+  SLIDES.forEach((s,i)=>{
+    const el=document.createElement('div');
+    el.className='slide';el.id='slide-'+i;
+    el.style.setProperty('--accent',s.color);
+    el.innerHTML=buildSlide(s);
     deck.appendChild(el);
   });
-
-  // DOTS
-  const dots = document.getElementById('dots');
-  SLIDES.forEach((_,i) => {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    d.onclick = () => goTo(i);
-    dots.appendChild(d);
+  const dots=document.getElementById('dots');
+  SLIDES.forEach((_,i)=>{
+    const d=document.createElement('div');d.className='dot';
+    d.onclick=()=>goTo(i);dots.appendChild(d);
   });
-
-  // OVERVIEW GRID
-  const grid = document.getElementById('ov-grid');
-  SLIDES.forEach((s,i) => {
-    const t = document.createElement('div');
-    t.className = 'ov-thumb';
-    t.style.borderColor = s.color + '40';
-    t.innerHTML = `<div class="ov-n" style="color:${s.color}">${s.ch || 'COVER'}</div><div class="ov-t">${stripTags(s.title)}</div>`;
-    t.onclick = () => { goTo(i); closeOverview(); };
-    t.id = 'ov-' + i;
-    grid.appendChild(t);
+  const grid=document.getElementById('ov-grid');
+  SLIDES.forEach((s,i)=>{
+    const t=document.createElement('div');t.className='ov-thumb';
+    t.style.borderColor=s.color+'40';
+    t.innerHTML=`<div class="ov-n" style="color:${s.color}">${s.ch||'INTRO'}</div><div class="ov-t">${stripTags(s.title)}</div>`;
+    t.onclick=()=>{goTo(i);closeOverview();};t.id='ov-'+i;grid.appendChild(t);
   });
 }
 
-function buildSlide(s) {
-  if (s.type === 'cover') return buildCover(s);
-  if (s.type === 'chapter-intro') return buildChapterIntro(s);
-  if (s.type === 'layers') return buildLayers(s);
-  if (s.type === 'table') return buildTable(s);
-  if (s.type === 'triple') return buildTriple(s);
-  if (s.type === 'code') return buildCode(s);
-  if (s.type === 'incident') return buildFlow(s);
-  if (s.type === 'flow') return buildFlow(s);
-  if (s.type === 'steps') return buildSteps(s);
-  if (s.type === 'prereq') return buildCards(s);
-  if (s.type === 'cards') return buildCards(s);
-  if (s.type === 'rca') return buildRCA(s);
-  if (s.type === 'sessions') return buildSessions(s);
-  if (s.type === 'priority') return buildPriority(s);
-  if (s.type === 'foreman') return buildForeman(s);
-  if (s.type === 'vs') return buildVS(s);
-  if (s.type === 'roles') return buildRoles(s);
-  if (s.type === 'checklist') return buildChecklist(s);
-  if (s.type === 'escape') return buildEscape(s);
-  if (s.type === 'arch') return buildArch(s);
-  if (s.type === 'boundary') return buildBoundary(s);
-  return `<div class="slide-inner"><div class="ch-tag">${s.ch}</div><h2 class="slide-title">${s.title}</h2></div>`;
+function buildSlide(s){
+  if(s.type==='cover')return buildCover(s);
+  if(s.type==='chapter-intro')return buildChapterIntro(s);
+  if(s.type==='layers')return buildLayers(s);
+  if(s.type==='table')return buildTable(s);
+  if(s.type==='triple')return buildTriple(s);
+  if(s.type==='code')return buildCode(s);
+  if(s.type==='incident'||s.type==='flow')return buildFlow(s);
+  if(s.type==='steps')return buildSteps(s);
+  if(s.type==='cards')return buildCards(s);
+  if(s.type==='rca')return buildRCA(s);
+  if(s.type==='sessions')return buildSessions(s);
+  if(s.type==='priority')return buildPriority(s);
+  if(s.type==='foreman')return buildForeman(s);
+  if(s.type==='vs')return buildVS(s);
+  if(s.type==='roles')return buildRoles(s);
+  if(s.type==='checklist')return buildChecklist(s);
+  if(s.type==='escape')return buildEscape(s);
+  if(s.type==='arch')return buildArch(s);
+  if(s.type==='boundary')return buildBoundary(s);
+  return`<div class="slide-inner"><h2 class="slide-title">${s.title}</h2></div>`;
 }
 
-function buildCover(s) {
-  return `<div style="text-align:center;position:relative;z-index:1">
-    <div class="cover-title">${s.title}</div>
-    <div class="cover-sub">${s.sub}</div>
-    <div class="cover-chips">
-      <span class="cover-chip">38 슬라이드</span>
-      <span class="cover-chip">3개월 실전 로그</span>
-      <span class="cover-chip">Claude Code × Termux</span>
+function buildCover(s){return`<div style="text-align:center;position:relative;z-index:1">
+  <div class="cover-title">${s.title}</div>
+  <div class="cover-sub">${s.sub}</div>
+  <div class="cover-chips">
+    <span class="cover-chip">39 slides</span>
+    <span class="cover-chip">3 months of real logs</span>
+    <span class="cover-chip">Claude Code × Termux</span>
+  </div></div>`;}
+
+function buildChapterIntro(s){return`<div class="slide-inner" style="position:relative">
+  <div class="ch-num">${s.num}</div>
+  <div class="ch-tag" style="color:${s.color}">${s.ch}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="slide-sub">${s.sub}</div></div>`;}
+
+function buildLayers(s){
+  const ls=s.layers.map(l=>`<div class="layer" style="animation-delay:${l.delay}ms">
+    <span class="layer-num">${l.num}</span>
+    <span class="layer-name">${l.name}</span>
+    <span class="layer-desc">${l.desc}</span></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="slide-sub">${s.sub}</div>
+  <div class="layers">${ls}</div></div>`;}
+
+function buildTable(s){
+  const head=s.cols.map(c=>`<th>${c}</th>`).join('');
+  const body=s.rows.map((r,i)=>`<tr style="animation-delay:${i*60+300}ms">${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  ${s.sub?`<div class="slide-sub">${s.sub}</div>`:''}
+  <table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;}
+
+function buildCards(s){
+  const css=s.cards.length===3?'c3':s.cards.length===2?'c2':'';
+  const cs=s.cards.map((c,i)=>`<div class="card" style="animation-delay:${i*100+300}ms">
+    <div class="card-icon">${c.icon}</div>
+    <div class="card-title">${c.title}</div>
+    <div class="card-body">${c.body}</div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  ${s.sub?`<div class="slide-sub">${s.sub}</div>`:''}
+  <div class="cards ${css}">${cs}</div></div>`;}
+
+function buildCode(s){return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="code-wrap">
+    <span class="code-label">${s.codeLabel}</span>
+    <pre id="codepre-${s.id}"></pre>
+  </div></div>`;}
+
+function buildTriple(s){
+  const items=s.items.map((it,i)=>`<div class="card" style="animation-delay:${i*100+300}ms;border-color:${it.color}33">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:22px;font-weight:900;color:${it.color};opacity:.6">${it.n}</span>
+      <span class="card-title" style="margin-bottom:0">${it.label}</span>
     </div>
-  </div>`;
-}
+    <div class="card-body">${it.desc}</div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="slide-sub">${s.sub}</div>
+  <div class="cards c3">${items}</div></div>`;}
 
-function buildChapterIntro(s) {
-  return `<div class="slide-inner" style="position:relative">
-    <div class="ch-num">${s.num}</div>
-    <div class="ch-tag" style="color:${s.color}">${s.ch}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="slide-sub">${s.sub}</div>
-  </div>`;
-}
-
-function buildLayers(s) {
-  const ls = s.layers.map((l,i) => `
-    <div class="layer" style="animation-delay:${l.delay}ms;--accent:${s.color}">
-      <span class="layer-num">${l.num}</span>
-      <span class="layer-name">${l.name}</span>
-      <span class="layer-desc">${l.desc}</span>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="slide-sub">${s.sub}</div>
-    <div class="layers" id="layers-${s.id}">${ls}</div>
-  </div>`;
-}
-
-function buildTable(s) {
-  const head = s.cols.map(c=>`<th>${c}</th>`).join('');
-  const body = s.rows.map((r,i)=>`<tr style="animation-delay:${i*60+300}ms">${r.map((c,j)=>`<td>${c}</td>`).join('')}</tr>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="slide-sub">${s.sub}</div>
-    <table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>
-  </div>`;
-}
-
-function buildCards(s) {
-  const css = s.cards.length === 3 ? 'c3' : s.cards.length === 2 ? 'c2' : '';
-  const cs = s.cards.map((c,i)=>`
-    <div class="card" style="animation-delay:${i*100+300}ms">
-      <div class="card-icon">${c.icon}</div>
-      <div class="card-title">${c.title}</div>
-      <div class="card-body">${c.body}</div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    ${s.sub?`<div class="slide-sub">${s.sub}</div>`:''}
-    <div class="cards ${css}">${cs}</div>
-  </div>`;
-}
-
-function buildCode(s) {
-  const colored = s.code
-    .replace(/^(#.*)/gm, `<span class="c">$1</span>`)
-    .replace(/(-[a-zA-Z0-9]+)/g, `<span class="o">$1</span>`);
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="code-wrap" id="code-${s.id}">
-      <span class="code-label">${s.codeLabel}</span>
-      <pre id="codepre-${s.id}"></pre>
-    </div>
-  </div>`;
-}
-
-function buildTriple(s) {
-  const items = s.items.map((it,i)=>`
-    <div class="card" style="animation-delay:${i*100+300}ms;border-color:${it.color}33">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <span style="font-size:22px;font-weight:900;color:${it.color};opacity:.6">${it.n}</span>
-        <span class="card-title" style="margin-bottom:0">${it.label}</span>
-      </div>
-      <div class="card-body">${it.desc}</div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="slide-sub">${s.sub}</div>
-    <div class="cards c3">${items}</div>
-  </div>`;
-}
-
-function buildFlow(s) {
-  const steps = s.flow.map((f,i)=>`
+function buildFlow(s){
+  const steps=s.flow.map((f,i)=>`
     <div class="flow-step${f.highlight?' highlight':''}" style="animation-delay:${i*80+300}ms">
       <span class="flow-icon">${f.icon}</span>
       <div><div class="flow-label">${f.label}</div>${f.sub?`<div class="flow-sub">${f.sub}</div>`:''}</div>
+    </div>${i<s.flow.length-1?`<div class="flow-arrow" style="animation-delay:${i*80+360}ms">↓</div>`:''}`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  ${s.sub?`<div class="slide-sub">${s.sub}</div>`:''}
+  <div class="flow">${steps}</div></div>`;}
+
+function buildSteps(s){
+  const items=s.steps.map((st,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:14px;align-items:flex-start">
+    <span style="font-size:11px;font-weight:900;color:${s.color};flex-shrink:0;margin-top:2px">${st.n}</span>
+    <div><div class="card-title">${st.title}</div><div class="card-body">${st.desc}</div></div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="cards">${items}</div></div>`;}
+
+function buildRCA(s){
+  const items=s.items.map((it,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;border-left:3px solid #F87171">
+    <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
+      <span class="card-title" style="color:#F87171">${it.cause}</span>
+      <span style="font-size:10px;color:var(--green);font-weight:700;white-space:nowrap">${it.fix}</span>
     </div>
-    ${i<s.flow.length-1?`<div class="flow-arrow" style="animation-delay:${i*80+360}ms">↓</div>`:''}`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    ${s.sub?`<div class="slide-sub">${s.sub}</div>`:''}
-    <div class="flow">${steps}</div>
-  </div>`;
-}
+    <div class="card-body">${it.symptom}</div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="slide-sub">${s.sub}</div>
+  <div class="cards">${items}</div></div>`;}
 
-function buildSteps(s) {
-  const items = s.steps.map((st,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:14px;align-items:flex-start">
-      <span style="font-size:11px;font-weight:900;color:${s.color};flex-shrink:0;margin-top:2px">${st.n}</span>
-      <div>
-        <div class="card-title">${st.title}</div>
-        <div class="card-body">${st.desc}</div>
-      </div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="cards">${items}</div>
-  </div>`;
-}
+function buildSessions(s){
+  const items=s.sessions.map((se,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;border-color:${se.color}33;display:flex;align-items:center;gap:14px">
+    <code style="font-family:'SF Mono',monospace;font-size:13px;font-weight:800;color:${se.color};flex-shrink:0">${se.name}</code>
+    <div style="flex:1"><div class="card-title" style="margin-bottom:2px">${se.role}</div></div>
+    <code style="font-size:11px;background:rgba(248,250,249,.06);padding:3px 8px;border-radius:6px;color:var(--muted)">${se.alias}</code>
+  </div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="cards">${items}</div></div>`;}
 
-function buildRCA(s) {
-  const items = s.items.map((it,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;border-left:3px solid #F87171">
-      <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px">
-        <span class="card-title" style="color:#F87171">${it.cause}</span>
-        <span style="font-size:10px;color:var(--green);font-weight:700;white-space:nowrap">${it.fix}</span>
-      </div>
-      <div class="card-body">${it.symptom}</div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="slide-sub">${s.sub}</div>
-    <div class="cards">${items}</div>
-  </div>`;
-}
+function buildPriority(s){
+  const items=s.steps.map((st,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;border-left:3px solid ${st.color};display:flex;gap:14px;align-items:flex-start">
+    <span style="font-size:10px;font-weight:900;color:${st.color};flex-shrink:0;min-width:60px">${st.n}</span>
+    <div><div class="card-title">${st.label}</div><div class="card-body">${st.desc}</div></div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="cards">${items}</div></div>`;}
 
-function buildSessions(s) {
-  const items = s.sessions.map((se,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;border-color:${se.color}33;display:flex;align-items:center;gap:14px">
-      <code style="font-family:'SF Mono',monospace;font-size:13px;font-weight:800;color:${se.color};flex-shrink:0">${se.name}</code>
-      <div style="flex:1">
-        <div class="card-title" style="margin-bottom:2px">${se.role}</div>
-      </div>
-      <code style="font-size:11px;background:rgba(248,250,249,.06);padding:3px 8px;border-radius:6px;color:var(--muted)">${se.alias}</code>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="cards">${items}</div>
-  </div>`;
-}
+function buildVS(s){
+  const badItems=s.bad.map(b=>`<div class="vs-item">${b}</div>`).join('');
+  const goodItems=s.good.map(g=>`<div class="vs-item">${g}</div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="vs">
+    <div class="vs-col bad"><div class="vs-label bad">❌ Bad</div>${badItems}</div>
+    <div class="vs-sep">VS</div>
+    <div class="vs-col good"><div class="vs-label good">✅ Good</div>${goodItems}</div>
+  </div></div>`;}
 
-function buildPriority(s) {
-  const items = s.steps.map((st,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;border-left:3px solid ${st.color};display:flex;gap:14px;align-items:flex-start">
-      <span style="font-size:10px;font-weight:900;color:${st.color};flex-shrink:0;min-width:44px">${st.n}</span>
-      <div>
-        <div class="card-title">${st.label}</div>
-        <div class="card-body">${st.desc}</div>
-      </div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="cards">${items}</div>
-  </div>`;
-}
+function buildForeman(s){
+  const items=s.items.map((it,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:12px;align-items:center">
+    <span style="font-size:11px;color:var(--muted);flex-shrink:0;min-width:110px">${it.a}</span>
+    <span style="color:var(--muted);flex-shrink:0">→</span>
+    <span style="font-size:13px;font-weight:700;color:${s.color}">${it.b}</span></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="hl-box" style="margin-bottom:16px">
+    <div style="font-size:15px;font-weight:800;color:var(--gold);line-height:1.6">A foreman doesn't swing a hammer.<br>They just know where the wall goes.</div>
+  </div>
+  <div class="cards">${items}</div></div>`;}
 
-function buildVS(s) {
-  const badItems = s.bad.map(b=>`<div class="vs-item">${b}</div>`).join('');
-  const goodItems = s.good.map(g=>`<div class="vs-item">${g}</div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="vs">
-      <div class="vs-col bad"><div class="vs-label bad">❌ 나쁜 예</div>${badItems}</div>
-      <div class="vs-sep">VS</div>
-      <div class="vs-col good"><div class="vs-label good">✅ 좋은 예</div>${goodItems}</div>
-    </div>
-  </div>`;
-}
+function buildRoles(s){
+  const items=s.roles.map((r,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;text-align:center;border-color:${r.color}33">
+    <div style="font-size:10px;font-weight:800;color:${r.color};letter-spacing:.1em;margin-bottom:6px">${r.model}</div>
+    <div class="card-title">${r.role}</div>
+    <div class="card-body">${r.tasks}</div></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="cards c3">${items}</div></div>`;}
 
-function buildForeman(s) {
-  const items = s.items.map((it,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:12px;align-items:center">
-      <span style="font-size:11px;color:var(--muted);flex-shrink:0;min-width:100px">${it.a}</span>
-      <span style="color:var(--muted);flex-shrink:0">→</span>
-      <span style="font-size:13px;font-weight:700;color:${s.color}">${it.b}</span>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="hl-box" style="background:rgba(212,175,55,.05);border-color:rgba(212,175,55,.2);margin-bottom:16px">
-      <div style="font-size:15px;font-weight:800;color:var(--gold);line-height:1.6">십장은 못질 안 해도 된다.<br>어디에 뭘 지어야 하는지 알면 된다.</div>
-    </div>
-    <div class="cards">${items}</div>
-  </div>`;
-}
+function buildChecklist(s){
+  const items=s.items.map((it,i)=>`<div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:12px;align-items:flex-start">
+    <span style="color:${s.color};font-weight:900;flex-shrink:0">${i+1}</span>
+    <span class="card-body" style="color:var(--text)">${it}</span></div>`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="cards">${items}</div></div>`;}
 
-function buildRoles(s) {
-  const items = s.roles.map((r,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;text-align:center;border-color:${r.color}33">
-      <div style="font-size:10px;font-weight:800;color:${r.color};letter-spacing:.1em;margin-bottom:6px">${r.model}</div>
-      <div class="card-title">${r.role}</div>
-      <div class="card-body">${r.tasks}</div>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="cards c3">${items}</div>
-  </div>`;
-}
+function buildEscape(s){return`<div class="slide-inner" style="text-align:center">
+  <div class="ch-tag" style="justify-content:center">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div style="opacity:0;animation:fadeUp .5s .3s forwards">
+    <div style="font-size:clamp(60px,12vw,100px);font-weight:900;font-family:'SF Mono',monospace;
+      color:var(--orange);letter-spacing:.1em;margin:24px 0;
+      text-shadow:0 0 40px rgba(251,146,60,.4)">${s.key}</div>
+    <div class="slide-sub" style="text-align:center;white-space:pre-line">${s.desc}</div>
+  </div></div>`;}
 
-function buildChecklist(s) {
-  const items = s.items.map((it,i)=>`
-    <div class="card" style="animation-delay:${i*80+300}ms;display:flex;gap:12px;align-items:flex-start">
-      <span style="color:${s.color};font-weight:900;flex-shrink:0">${i+1}</span>
-      <span class="card-body" style="color:var(--text)">${it}</span>
-    </div>`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="cards">${items}</div>
-  </div>`;
-}
-
-function buildEscape(s) {
-  return `<div class="slide-inner" style="text-align:center">
-    <div class="ch-tag" style="justify-content:center">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div style="opacity:0;animation:fadeUp .5s .3s forwards">
-      <div style="font-size:clamp(60px,12vw,100px);font-weight:900;font-family:'SF Mono',monospace;
-        color:var(--orange);letter-spacing:.1em;margin:24px 0;
-        text-shadow:0 0 40px rgba(251,146,60,.4)">${s.key}</div>
-      <div class="slide-sub" style="text-align:center;white-space:pre-line">${s.desc}</div>
-    </div>
-  </div>`;
-}
-
-function buildArch(s) {
-  const ls = s.layers.map((l,i)=>`
+function buildArch(s){
+  const ls=s.layers.map((l,i)=>`
     <div class="layer" style="animation-delay:${i*80+300}ms;border-color:${l.color}44">
       <span class="layer-num">${i}</span>
       <span class="layer-name" style="color:${l.color}">${l.label}</span>
+    </div>${i<s.layers.length-1?`<div class="flow-arrow" style="animation-delay:${i*80+360}ms;text-align:center">↓</div>`:''}`).join('');
+  return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="layers">${ls}</div></div>`;}
+
+function buildBoundary(s){return`<div class="slide-inner">
+  <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
+  <h2 class="slide-title">${s.title}</h2>
+  <div class="hl-box" style="margin-bottom:16px">
+    <div style="font-size:15px;font-weight:800;color:var(--gold);line-height:1.7;white-space:pre-line">${s.quote}</div>
+  </div>
+  <div class="cards c2" style="opacity:0;animation:fadeUp .5s .35s forwards">
+    <div class="card" style="border-color:rgba(52,211,153,.2)">
+      <div class="card-title" style="color:var(--green);margin-bottom:8px">Automate ✓</div>
+      ${s.auto.map(a=>`<div class="card-body" style="padding:3px 0;border-bottom:1px solid var(--border)">${a}</div>`).join('')}
     </div>
-    ${i<s.layers.length-1?`<div class="flow-arrow" style="animation-delay:${i*80+360}ms;text-align:center">↓</div>`:''}`).join('');
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="layers">${ls}</div>
-  </div>`;
-}
-
-function buildBoundary(s) {
-  return `<div class="slide-inner">
-    <div class="ch-tag">${s.ch} · ${s.chLabel}</div>
-    <h2 class="slide-title">${s.title}</h2>
-    <div class="hl-box" style="margin-bottom:16px;opacity:0;animation:fadeUp .5s .2s forwards">
-      <div style="font-size:15px;font-weight:800;color:var(--gold);line-height:1.7;white-space:pre-line">${s.quote}</div>
+    <div class="card" style="border-color:rgba(96,165,250,.2)">
+      <div class="card-title" style="color:var(--blue);margin-bottom:8px">Human decides ✓</div>
+      ${s.human.map(h=>`<div class="card-body" style="padding:3px 0;border-bottom:1px solid var(--border)">${h}</div>`).join('')}
     </div>
-    <div class="cards c2" style="opacity:0;animation:fadeUp .5s .35s forwards">
-      <div class="card" style="border-color:rgba(52,211,153,.2)">
-        <div class="card-title" style="color:var(--green);margin-bottom:8px">자동화 O</div>
-        ${s.auto.map(a=>`<div class="card-body" style="padding:3px 0;border-bottom:1px solid var(--border)">${a}</div>`).join('')}
-      </div>
-      <div class="card" style="border-color:rgba(96,165,250,.2)">
-        <div class="card-title" style="color:var(--blue);margin-bottom:8px">사람 판단 O</div>
-        ${s.human.map(h=>`<div class="card-body" style="padding:3px 0;border-bottom:1px solid var(--border)">${h}</div>`).join('')}
-      </div>
-    </div>
-    <div class="card" style="margin-top:10px;border-color:rgba(248,113,113,.2);opacity:0;animation:fadeUp .5s .5s forwards">
-      <div class="card-title" style="color:var(--red);margin-bottom:8px">의도적으로 하지 않는 것</div>
-      ${s.never.map(n=>`<div class="card-body" style="padding:2px 0">${n}</div>`).join('')}
-    </div>
-  </div>`;
-}
+  </div>
+  <div class="card" style="margin-top:10px;border-color:rgba(248,113,113,.2);opacity:0;animation:fadeUp .5s .5s forwards">
+    <div class="card-title" style="color:var(--red);margin-bottom:8px">Intentionally NOT automated</div>
+    ${s.never.map(n=>`<div class="card-body" style="padding:2px 0">${n}</div>`).join('')}
+  </div></div>`;}
 
-function stripTags(str) {
-  return (str||'').replace(/<[^>]+>/g,'').replace(/\n/g,' ');
-}
+function stripTags(str){return(str||'').replace(/<[^>]+>/g,'').replace(/\n/g,' ')}
 
-// ─────────────────────────────────────────
-// NAVIGATION
-// ─────────────────────────────────────────
-function goTo(n, dir) {
-  if (n < 0 || n >= SLIDES.length) return;
-  if (n === cur) return;
-
-  const direction = dir !== undefined ? dir : (n > cur ? 1 : -1);
-  const prevEl = document.getElementById('slide-' + cur);
-  const nextEl = document.getElementById('slide-' + n);
-
+function goTo(n,dir){
+  if(n<0||n>=SLIDES.length||n===cur)return;
+  const direction=dir!==undefined?dir:(n>cur?1:-1);
+  const prevEl=document.getElementById('slide-'+cur);
+  const nextEl=document.getElementById('slide-'+n);
   prevEl.classList.remove('active','enter-left','enter-right');
-  prevEl.classList.add(direction > 0 ? 'exit-left' : 'exit-right');
-
-  nextEl.style.opacity = 0;
+  prevEl.classList.add(direction>0?'exit-left':'exit-right');
+  nextEl.style.opacity=0;
   nextEl.classList.remove('exit-left','exit-right','enter-left','enter-right');
-
-  setTimeout(() => {
+  setTimeout(()=>{
     nextEl.classList.add('active');
-    nextEl.classList.add(direction > 0 ? 'enter-left' : 'enter-right');
-    nextEl.style.opacity = '';
-
-    // animate children
-    nextEl.querySelectorAll('.layer,.card,.flow-step,.flow-arrow,.tbl tr').forEach(el => {
-      const d = el.style.animationDelay || '0ms';
-      el.style.animation = 'none';
-      requestAnimationFrame(() => {
-        el.style.animation = '';
-        el.style.animationDelay = d;
-        el.style.animationFillMode = 'forwards';
-      });
+    nextEl.classList.add(direction>0?'enter-left':'enter-right');
+    nextEl.style.opacity='';
+    nextEl.querySelectorAll('.layer,.card,.flow-step,.flow-arrow,.tbl tr').forEach(el=>{
+      const d=el.style.animationDelay||'0ms';
+      el.style.animation='none';
+      requestAnimationFrame(()=>{el.style.animation='';el.style.animationDelay=d;el.style.animationFillMode='forwards';});
     });
-
-    // typewriter for code
-    const s = SLIDES[n];
-    if (s.type === 'code' && s.code) {
-      typewriterCode('codepre-' + s.id, s.code);
-    }
-  }, 20);
-
-  setTimeout(() => { prevEl.classList.remove('active','exit-left','exit-right'); }, 500);
-
-  cur = n;
-  updateHUD();
-  if (autoplay) resetAutoTimer();
+    const s=SLIDES[n];
+    if(s.type==='code'&&s.code)typewriterCode('codepre-'+s.id,s.code);
+  },20);
+  setTimeout(()=>{prevEl.classList.remove('active','exit-left','exit-right');},500);
+  cur=n;updateHUD();
+  if(autoplay)resetAutoTimer();
 }
 
-function go(delta) { goTo(cur + delta, delta); }
+function go(delta){goTo(cur+delta,delta)}
 
-function updateHUD() {
-  const s = SLIDES[cur];
-  const hc = document.getElementById('hud-chapter');
-  hc.textContent = s.ch ? `${s.ch} · ${s.chLabel}` : 'INTRO';
-  hc.style.color = s.color;
-
-  document.getElementById('hud-counter').textContent = `${cur + 1} / ${SLIDES.length}`;
-  document.getElementById('progress-bar').style.width = ((cur+1)/SLIDES.length * 100) + '%';
-  document.getElementById('progress-bar').style.background = s.color;
-
-  document.querySelectorAll('.dot').forEach((d,i) => {
-    d.classList.toggle('active', i === cur);
-    if (i === cur) d.style.background = s.color;
-    else d.style.background = '';
+function updateHUD(){
+  const s=SLIDES[cur];
+  const hc=document.getElementById('hud-chapter');
+  hc.textContent=s.ch?`${s.ch} · ${s.chLabel}`:'INTRO';
+  hc.style.color=s.color;
+  document.getElementById('hud-counter').textContent=`${cur+1} / ${SLIDES.length}`;
+  document.getElementById('progress-bar').style.width=((cur+1)/SLIDES.length*100)+'%';
+  document.getElementById('progress-bar').style.background=s.color;
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===cur);
+    if(i===cur)d.style.background=s.color; else d.style.background='';
   });
-
-  document.querySelectorAll('.ov-thumb').forEach((t,i) => {
-    t.classList.toggle('cur', i === cur);
-  });
-
-  document.getElementById('btn-prev').style.opacity = cur === 0 ? '.3' : '1';
-  document.getElementById('btn-next').style.opacity = cur === SLIDES.length-1 ? '.3' : '1';
+  document.querySelectorAll('.ov-thumb').forEach((t,i)=>t.classList.toggle('cur',i===cur));
+  document.getElementById('btn-prev').style.opacity=cur===0?'.3':'1';
+  document.getElementById('btn-next').style.opacity=cur===SLIDES.length-1?'.3':'1';
 }
 
-// ─────────────────────────────────────────
-// TYPEWRITER
-// ─────────────────────────────────────────
-const typeTimers = {};
-function typewriterCode(id, code) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (typeTimers[id]) clearTimeout(typeTimers[id]);
-  el.innerHTML = '';
-  let i = 0;
-  function tick() {
-    if (i > code.length) { el.innerHTML += '<span class="code-cursor"></span>'; return; }
-    el.textContent = code.slice(0, i);
-    i += 2;
-    typeTimers[id] = setTimeout(tick, 12);
-  }
-  tick();
+const typeTimers={};
+function typewriterCode(id,code){
+  const el=document.getElementById(id);if(!el)return;
+  if(typeTimers[id])clearTimeout(typeTimers[id]);
+  el.innerHTML='';let i=0;
+  function tick(){
+    if(i>code.length){el.innerHTML+='<span class="code-cursor"></span>';return;}
+    el.textContent=code.slice(0,i);i+=2;
+    typeTimers[id]=setTimeout(tick,12);
+  }tick();
 }
 
-// ─────────────────────────────────────────
-// AUTOPLAY
-// ─────────────────────────────────────────
-function toggleAutoplay() {
-  autoplay = !autoplay;
-  const btn = document.getElementById('autoplay-btn');
-  const bar = document.getElementById('timer-bar');
-  btn.classList.toggle('on', autoplay);
-  btn.textContent = autoplay ? '⏸ PAUSE' : '▶ AUTO';
-  bar.style.display = autoplay ? 'block' : 'none';
-  if (autoplay) resetAutoTimer();
-  else { clearInterval(autoTimer); document.getElementById('timer-fill').style.width = '0'; }
+function toggleAutoplay(){
+  autoplay=!autoplay;
+  const btn=document.getElementById('autoplay-btn');
+  const bar=document.getElementById('timer-bar');
+  btn.classList.toggle('on',autoplay);
+  btn.textContent=autoplay?'⏸ PAUSE':'▶ AUTO';
+  bar.style.display=autoplay?'block':'none';
+  if(autoplay)resetAutoTimer();
+  else{clearInterval(autoTimer);document.getElementById('timer-fill').style.width='0';}
 }
 
-function resetAutoTimer() {
+function resetAutoTimer(){
   clearInterval(autoTimer);
-  const fill = document.getElementById('timer-fill');
-  fill.style.transition = 'none';
-  fill.style.width = '0';
-  setTimeout(() => {
-    fill.style.transition = `width ${autoInterval}ms linear`;
-    fill.style.width = '100%';
-  }, 50);
-  autoTimer = setTimeout(() => {
-    if (cur < SLIDES.length - 1) go(1);
-    else { toggleAutoplay(); }
-  }, autoInterval);
+  const fill=document.getElementById('timer-fill');
+  fill.style.transition='none';fill.style.width='0';
+  setTimeout(()=>{fill.style.transition=`width ${autoInterval}ms linear`;fill.style.width='100%';},50);
+  autoTimer=setTimeout(()=>{if(cur<SLIDES.length-1)go(1);else toggleAutoplay();},autoInterval);
 }
 
-// ─────────────────────────────────────────
-// OVERVIEW
-// ─────────────────────────────────────────
-function openOverview() { document.getElementById('overview').classList.add('open'); }
-function closeOverview() { document.getElementById('overview').classList.remove('open'); }
+function openOverview(){document.getElementById('overview').classList.add('open')}
+function closeOverview(){document.getElementById('overview').classList.remove('open')}
 
-// ─────────────────────────────────────────
-// KEYBOARD
-// ─────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') go(1);
-  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') go(-1);
-  else if (e.key === ' ') { e.preventDefault(); toggleAutoplay(); }
-  else if (e.key === 'o' || e.key === 'O') openOverview();
-  else if (e.key === 'Escape') closeOverview();
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown')go(1);
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp')go(-1);
+  else if(e.key===' '){e.preventDefault();toggleAutoplay();}
+  else if(e.key==='o'||e.key==='O')openOverview();
+  else if(e.key==='Escape')closeOverview();
 });
 
-// ─────────────────────────────────────────
-// TOUCH SWIPE
-// ─────────────────────────────────────────
-document.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-}, {passive:true});
-document.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-    if (dx < 0) go(1); else go(-1);
-  }
-}, {passive:true});
+document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  const dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){if(dx<0)go(1);else go(-1);}
+},{passive:true});
 
-// ─────────────────────────────────────────
-// PARTICLE CANVAS
-// ─────────────────────────────────────────
-(function() {
-  const c = document.getElementById('canvas');
-  const ctx = c.getContext('2d');
-  let pts = [];
-  function resize() { c.width = innerWidth; c.height = innerHeight; init(); }
-  function init() {
-    pts = Array.from({length:50}, () => ({
-      x: Math.random() * c.width, y: Math.random() * c.height,
-      vx: (Math.random()-.5) * .3, vy: (Math.random()-.5) * .3,
-      r: Math.random() * 1.5 + .5, a: Math.random()
-    }));
-  }
-  function draw() {
+(function(){
+  const c=document.getElementById('canvas');const ctx=c.getContext('2d');let pts=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight;init();}
+  function init(){pts=Array.from({length:50},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()}));}
+  function draw(){
     ctx.clearRect(0,0,c.width,c.height);
-    const col = SLIDES[cur]?.color || '#D4AF37';
-    pts.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > c.width) p.vx *= -1;
-      if (p.y < 0 || p.y > c.height) p.vy *= -1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = col + Math.floor(p.a * 40).toString(16).padStart(2,'0');
-      ctx.fill();
+    const col=SLIDES[cur]?.color||'#D4AF37';
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=col+Math.floor(p.a*40).toString(16).padStart(2,'0');ctx.fill();
     });
-    pts.forEach((p,i) => pts.slice(i+1).forEach(q => {
-      const d = Math.hypot(p.x-q.x, p.y-q.y);
-      if (d < 120) {
-        ctx.beginPath();
-        ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-        ctx.strokeStyle = col + Math.floor((1-d/120)*.08*255).toString(16).padStart(2,'0');
-        ctx.lineWidth = .5;
-        ctx.stroke();
-      }
+    pts.forEach((p,i)=>pts.slice(i+1).forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle=col+Math.floor((1-d/120)*.08*255).toString(16).padStart(2,'0');
+        ctx.lineWidth=.5;ctx.stroke();}
     }));
     requestAnimationFrame(draw);
   }
-  addEventListener('resize', resize);
-  resize(); draw();
+  addEventListener('resize',resize);resize();draw();
 })();
 
-// ─────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────
 renderAll();
 document.getElementById('slide-0').classList.add('active');
 updateHUD();
