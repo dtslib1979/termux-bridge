@@ -423,6 +423,20 @@ phoneparis/tools/baptism/config/packages.json (상품 BOM)
 브라우저 자동화 → Windows Chrome Playwright headless=False
 ```
 
+### 듀얼 레인 아키텍처 (2026-03-26 확정)
+```
+LANE 1: Phone (S25 Ultra)
+  삼성 온디바이스 (대체 불가): STT 키보드, 통화녹음, 그리기 어시스트
+  시스템/자동화: SSH → PC WSL2 경유
+
+LANE 2: Tablet (Tab S9)
+  대화면 방송 키트: 화면녹화, S Pen, RustDesk
+
+LANE 3 (공기계): 폐기
+  SSH+PC 구조로 존재 이유 소멸
+  보안 분리 → 용도 분리로 재정의됨
+```
+
 ### SCM 자동화 개발 시퀀스 (진행 중)
 ```
 1. 텔레그램 봇        ✅ 완료 (2026-03-16)
