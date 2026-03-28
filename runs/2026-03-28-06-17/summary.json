@@ -1,0 +1,73 @@
+{
+  "runId": "2026-03-28-06-17",
+  "timestamp": "2026-03-28T06:19:10.187Z",
+  "duration": 91,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 7,
+    "warn": 16,
+    "fail": 4
+  },
+  "brokenLinks": 20,
+  "ignoredLinks": 15,
+  "consoleErrors": 13,
+  "docQA": {
+    "pass": 136,
+    "warn": 20,
+    "fail": 6
+  },
+  "topBroken": [
+    {
+      "id": "eae-kr",
+      "name": "EAE.kr",
+      "count": 8
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "count": 2
+    },
+    {
+      "id": "cloud-appstore",
+      "name": "Cloud Appstore",
+      "count": 2
+    },
+    {
+      "id": "namone",
+      "name": "Namone",
+      "count": 2
+    },
+    {
+      "id": "dongseon-studio",
+      "name": "Dongseon Studio",
+      "count": 2
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 2173
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 2152
+    },
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 2018
+    },
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 1929
+    },
+    {
+      "id": "phoneparis",
+      "name": "Phoneparis",
+      "ms": 1448
+    }
+  ]
+}
