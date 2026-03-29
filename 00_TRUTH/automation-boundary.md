@@ -39,7 +39,8 @@
 | GUI click automation | Platform ban risk (YouTube/Google TOS) | Red Line |
 | Login-gated page checks | Credential storage in Actions = security risk | Red Line |
 | Termux:API notifications | Repo-centric OS doesn't need device hooks | Over-engineering |
-| Shizuku/ADB automation | QA 파이프라인에 device hooks 불필요. **단, 개발 도구로는 사용** (`local/shizuku.sh`) | QA 제외 (도구는 유효) |
+| Shizuku | PC 24/7 환경 불필요 — PC 없는 사람을 위한 ADB급 권한 우회 도구. 박씨는 PC가 있으므로 이 도구가 해결하는 문제 자체가 없음. | **전면 배제** |
+| 좌표 하드코딩 ADB 자동화 | 화면 해상도/레이아웃 바뀌면 깨짐. PC Chrome Playwright로 대체. ※ ADB 브릿지 채널 자체는 PC↔폰 직접 제어용으로 적극 사용 중 | 죽은 패턴 ❌ |
 | SEO/Lighthouse scoring | Scope Boundary (this is health check, not optimization) | Scope Boundary |
 | Uptime monitoring | GitHub Pages has its own uptime; we check content, not availability | Scope Boundary |
 
