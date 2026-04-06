@@ -1,0 +1,73 @@
+{
+  "runId": "2026-04-06-06-33",
+  "timestamp": "2026-04-06T06:34:55.839Z",
+  "duration": 101,
+  "sitesChecked": 27,
+  "totals": {
+    "pass": 7,
+    "warn": 16,
+    "fail": 4
+  },
+  "brokenLinks": 20,
+  "ignoredLinks": 15,
+  "consoleErrors": 13,
+  "docQA": {
+    "pass": 136,
+    "warn": 20,
+    "fail": 6
+  },
+  "topBroken": [
+    {
+      "id": "eae-kr",
+      "name": "EAE.kr",
+      "count": 8
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "count": 2
+    },
+    {
+      "id": "cloud-appstore",
+      "name": "Cloud Appstore",
+      "count": 2
+    },
+    {
+      "id": "namone",
+      "name": "Namone",
+      "count": 2
+    },
+    {
+      "id": "dongseon-studio",
+      "name": "Dongseon Studio",
+      "count": 2
+    }
+  ],
+  "topSlow": [
+    {
+      "id": "espiritu-tango",
+      "name": "Espiritu Tango",
+      "ms": 2102
+    },
+    {
+      "id": "gohsy",
+      "name": "Gohsy",
+      "ms": 1995
+    },
+    {
+      "id": "gohsy-production",
+      "name": "Gohsy Production",
+      "ms": 1994
+    },
+    {
+      "id": "dtslib-branch",
+      "name": "Branch HQ",
+      "ms": 1941
+    },
+    {
+      "id": "dtslib-com",
+      "name": "DTSLIB HQ",
+      "ms": 1379
+    }
+  ]
+}
