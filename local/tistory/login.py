@@ -143,7 +143,7 @@ def login(email, password):
         # 리다이렉트 수동 처리
         redirect_m = re.search(r'location\.href\s*=\s*["\']([^"\']+)["\']', html2)
         if not redirect_m:
-            redirect_m = re.search(r'<meta[^>]+refresh[^>]+url=([^\s"\']+)', html2, re.I)
+            redirect_m = re.search(r'<meta[^>]+refresh[^>]+url=([^\s"\'\']+)', html2, re.I)
         if redirect_m:
             redir = redirect_m.group(1)
             print(f"[4] 리다이렉트 수동 처리: {redir[:80]}")
@@ -169,7 +169,7 @@ def login(email, password):
 if __name__ == "__main__":
     import sys
     email    = sys.argv[1] if len(sys.argv) > 1 else "dtslib1k@kakao.com"
-    password = sys.argv[2] if len(sys.argv) > 2 else "think4good*"
+    password = sys.argv[2] if len(sys.argv) > 2 else "REDACTED_PASSWORD"
 
     result = login(email, password)
     if result:
