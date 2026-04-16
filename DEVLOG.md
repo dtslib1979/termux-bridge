@@ -2,6 +2,78 @@
 
 > **구 이름:** playwright-bot (2026-01-04 ~ 2026-02-26)
 
+## 2026-04-16 | 윈도우 강제 업데이트 → 폰 단독 세션 — 환경 진단 및 정리
+
+### 배경
+4월 14일 마이크로소프트 패치 화요일 (KB5083769) 대규모 배포.
+167개 취약점 수정 + Secure Boot 변경으로 **이틀 연속 강제 재부팅** 발생.
+WSL2 세션 강제 종료 → 폰 단독으로 Claude Code 세션 진행.
+
+2026-03-16 패러다임 전환 이후 폰이 SSH 클라이언트로만 쓰이다 보니,
+폰 직접 Claude Code 환경이 오래간만이었다. 환경 자체를 다시 점검하는 계기가 됨.
+
+### 진단 결과 (시작 시점)
+
+| 항목 | 수치 | 판정 |
+|------|------|------|
+| RAM 여유 | 2.4GB / 11GB (21%) | ✅ |
+| Swap 사용 | 6.5GB / 12GB (53%) | ⚠️ 과부하 |
+| 배터리 | 58%, 32.6°C | ✅ |
+| 전류 드레인 | -2.0A | ⚠️ 높음 |
+| 온도 | 32.6°C | ✅ |
+
+### 원인 파악
+- **Termux:GUI** — 쓰지 않는데 백그라운드에서 32% 배터리 잡아먹고 있었음
+- **tts-server.sh** — PC 꺼진 상태에서 `nc -l 9876` 무한루프 대기 중
+  - TTS 서버는 텔레그램 봇 → PC → SSH 역터널 → 폰 TTS 구조
+  - PC 꺼지면 연결 안 오는데도 루프 살아있음
+
+### 조치
+```
+am start -a android.intent.action.DELETE -d package:com.termux.gui
+→ Termux:GUI 삭제
+```
+KDE Connect도 이번에 불필요함 확인 → 삭제 결정 (PC 켜지면 ADB로 처리)
+
+### 삭제 후 결과
+
+| 항목 | 삭제 전 | 삭제 후 | 변화 |
+|------|---------|---------|------|
+| RAM 여유 | 2.4GB | 3.7GB | +1.3GB ✅ |
+| Swap 사용 | 53% | 24% | 절반 ✅ |
+| 온도 | 32.6°C | 29.1°C | -3.5°C ✅ |
+| 전류 | -2.0A | -1.1A | ✅ |
+
+### 앱 티어 정리 (이번 세션에서 확립)
+
+| 티어 | 도구 |
+|------|------|
+| S — 핵심 인프라 | Tailscale, RustDesk, ADB, Termux |
+| A — 접속 레이어 | Mosh, SSH |
+| B — AI 작업 | Claude Code, Aider, DeepSeek |
+| C — GPU 인프라 | Vast.ai, RunPod |
+| Samsung 레이어 | Good Lock, Galaxy AI, 그리기 어시스트, Samsung 키보드+STT, 통화녹음+텍스트변환, 화면녹화 |
+
+### 확인된 Termux 단독 한계
+- `pm list packages`, `dumpsys`, `/data/data/` — 전부 권한 차단
+- Android 앱 레벨 프로세스 목록 불가
+- ADB 없이 앱 삭제 불가 (Intent 트리거로 UI 호출만 가능)
+- 저장공간 수치 접근 불가
+
+### PC 켜지면 할 것
+- `adb shell pm uninstall com.android.chrome` — Chrome 삭제
+- `adb shell pm uninstall com.kde.kdeconnect_tp` — KDE Connect 삭제
+- `apt upgrade` — 30개+ 패키지 업그레이드
+- `pip install --upgrade` — 8개 패키지 업그레이드
+- `adb shell pm list packages -3` — 앱 전체 목록 뽑아서 불필요한 거 정리
+
+### 소결
+WSL+ADB 환경과 폰 직접 환경은 완전히 다른 세계.
+패러다임 전환(2026-03-16) 이후 폰이 클라이언트로만 쓰이다 보니
+폰 단독 Claude Code가 낯설어진 것. 오늘이 좋은 재점검 기회였다.
+
+---
+
 ## 2026-03-27 | 태블릿 (Tab S9) ADB 무선 연결 개통
 
 ### 목표
