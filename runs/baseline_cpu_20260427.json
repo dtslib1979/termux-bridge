@@ -1,0 +1,14 @@
+{
+  "model": "/root/parksy/onnx/onnx/parksy_v2pp_fixed/prompt_encoder_fp32.onnx",
+  "provider": "CPUExecutionProvider",
+  "n_runs": 100,
+  "warmup": 5,
+  "latency_ms": {
+    "min": 2.45,
+    "p50": 2.93,
+    "p90": 5.14,
+    "p99": 10.83,
+    "max": 10.83,
+    "mean": 3.57
+  }
+}
