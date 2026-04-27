@@ -1,0 +1,20 @@
+{
+  "n_trials": 20,
+  "outputs": {
+    "ge": {
+      "cosine_similarity_mean": 0.988017,
+      "cosine_similarity_min": 0.936662,
+      "max_absolute_error_mean": 61.518455,
+      "max_absolute_error_max": 188.253845,
+      "max_relative_error_mean": 246335.5241
+    },
+    "ge_advanced": {
+      "cosine_similarity_mean": 0.997472,
+      "cosine_similarity_min": 0.988743,
+      "max_absolute_error_mean": 25.718219,
+      "max_absolute_error_max": 70.078461,
+      "max_relative_error_mean": 41.6901
+    }
+  },
+  "verdict": "❌ 손상 큼 (<0.99) — 정적 양자화 또는 부분 양자화 권장"
+}
