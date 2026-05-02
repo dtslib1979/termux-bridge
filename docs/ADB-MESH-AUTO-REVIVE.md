@@ -183,6 +183,50 @@ adb_revive.sh         # 둘 다 (또는 all)
 - 메모리: `~/.claude/projects/-home-dtsli/memory/project_tablet_adb_setup.md`
 - 스크립트: `~/.local/bin/adb_revive.sh`
 
+## 커뮤니티 선례 비교 (2026-05-03 리서치)
+
+박씨 명령으로 객관적 검증함. 개별 부품은 흔한데 통합본은 드묾.
+
+### 개별 부품 (이미 있음)
+
+| 기술 | 출처 |
+|------|------|
+| nmap 포트 스캔으로 무선디버깅 포트 발견 | [Max Ammann 2022](https://maxammann.org/posts/2022/01/android11-adb-automatic/), [openHAB Issue #14194](https://github.com/openhab/openhab-addons/issues/14194), [Moha-df/adb-port-finder](https://github.com/Moha-df/adb-port-finder) |
+| ADB 자동 페어링 Python (QR 기반) | [adb-wifi-py](https://github.com/Vazgen005/adb-wifi-py), [extmkv/ADB-Wifi](https://github.com/extmkv/ADB-Wifi) |
+| 5555 고정 포트 자동 활성화 (mDNS+root) | [mouldybread/adb-auto-enable](https://github.com/mouldybread/adb-auto-enable) |
+| Phone-to-Phone ADB (USB 케이블 기반) | [kosborn/p2p-adb](https://github.com/kosborn/p2p-adb) |
+
+### 본 솔루션의 고유 조합 (검색 미발견)
+
+1. **Tailscale 위에서 mDNS 죽은 환경** — 대부분 가이드는 같은 LAN 가정
+2. **3노드 무선-only mesh (PC ↔ 폰 ↔ 탭)** — kosborn/p2p-adb는 USB 필수, 무선 mesh 사례 거의 없음
+3. **UI 덤프 + 좌표 tap으로 60초 페어링 자동 우회** — QR/수동 코드 입력 가정 솔루션이 대부분
+4. **STT 사용자 동기** — 모든 솔루션이 키보드 입력 가정
+5. **WSL + 백업 단말 운영 철학 결합** — 박씨 고유
+
+### 객관적 등급
+
+| 항목 | 평가 |
+|------|------|
+| 기술 천재성 | 중. 부품 짜집기 |
+| 통합 완성도 | 상. 통째 솔루션 거의 없음 |
+| 실전 운영 가치 | 상. 박씨 같은 시나리오엔 8초 복구 |
+| 콘텐츠 가치 | 중상. 각도가 고유 (WSL+Tailscale+STT+mesh) |
+
+가장 가까운 선례인 Max Ammann 2022 글에 거의 같은 한 줄이 있음:
+```bash
+adb connect $IP:$(sudo nmap $IP -p 37000-44000 -sS -oG - --defeat-rst-ratelimit | awk "/open/{print \$5}" | cut -d/ -f1)
+```
+
+## 운영 철학 (2026-05-03 박씨 확정)
+
+> **mesh는 가능 옵션일 뿐. 강박적으로 redundancy 추구할 필요 없음.**
+> 하나 죽으면 쉬고 딴 거 하면 됨. 집요하게 자동화 추구 금지.
+
+이 솔루션은 **있어서 든든한 안전망**이지, 항상 작동시켜야 할 의무 시스템이 아님.
+재발 안 해도 박씨 일상 안 망가짐 — 그래서 8초 복구가 의미 있는 거지, 0초 무중단 추구할 동기 없음.
+
 ## 변경 이력
 
 - 2026-05-03: mesh 페어링 + adb_revive.sh 스크립트 확정
+- 2026-05-03: 커뮤니티 선례 비교 + 운영 철학 추가
