@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A1A0F">
+<meta property="og:title" content="AI 기능인 백서 v2 — 27 무료 런타임 × 7 스테이션">
+<meta property="og:type" content="article">
+<title>AI 기능인 백서 v2 — 27 무료 런타임 × 7 스테이션</title>
+
+<!-- Parksy v2: Stripe Docs-grade interactive tutorial — WCAG 2.2 AAA -->
+<!-- Performance: preconnect + DNS prefetch (cuts RTT) -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<!-- Prism CSS only (lightweight, prevents FOUC); JS is deferred -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      crossorigin="anonymous">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A1A0F;--bg2:#0D2214;--gold:#EEC864;--yellow:#F5C542;--green:#5DD9A5;
+  --blue:#7FB3FF;--purple:#B59CFF;
+  --muted:rgba(255,255,255,0.62);--muted2:rgba(255,255,255,0.40);--text:#FFFFFF;
+  --border:rgba(212,175,55,0.15);--border2:rgba(52,211,153,0.15);
+  --card-bg:rgba(13,34,20,0.8);--code-bg:#061209;
+  --card-r:10px;--badge-r:6px;--border-w:1.5px;
+  --anim:0.4s;--anim-fast:0.25s;--ease:cubic-bezier(0.25,0.46,0.45,0.94);
+  --stagger:0.08;
+  --font:system-ui,-apple-system,'SF Pro Display',sans-serif;--mono:'SF Mono','Fira Code','Consolas',monospace;--body-sz:13px;--body-lh:1.65;
+}
+
+html,body{
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  height:100vh;overflow:hidden;
+}
+
+/* ── Cinematic filter overlay ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% -5%,rgba(212,175,55,0.07),transparent 60%),
+    radial-gradient(ellipse 40% 60% at 95% 50%,rgba(96,165,250,0.04),transparent 60%),
+    radial-gradient(ellipse 40% 60% at 5%  50%,rgba(167,139,250,0.03),transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+}
+
+/* ── Particle canvas ── */
+#particle-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6;
+}
+
+/* ── Header ── */
+#art-header{
+  position:fixed;top:0;left:0;right:240px;z-index:800;
+  background:rgba(10,26,15,.88);
+  backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
+  border-bottom:var(--border-w) solid var(--border);
+  padding:14px 20px 14px 32px;
+}
+.art-header-inner{display:flex;align-items:center;gap:14px;max-width:1100px;margin:0 auto;}
+.art-badge{
+  font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);border:1.5px solid rgba(212,175,55,.35);
+  border-radius:var(--badge-r);padding:3px 10px;white-space:nowrap;flex-shrink:0;
+}
+#art-h1{
+  font-size:clamp(13px,1.5vw,19px);font-weight:800;letter-spacing:-.02em;
+  color:var(--text);
+  display:-webkit-inline-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  flex:1;line-height:1.3;word-break:break-all;
+}
+.art-meta-row{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.art-slide-counter{
+  font-size:12px;color:var(--gold);font-family:var(--mono);font-weight:700;
+  border:1px solid rgba(212,175,55,.3);border-radius:var(--badge-r);padding:4px 10px;
+}
+.art-slide-counter .art-slide-total{color:var(--muted);}
+
+/* ── TOC sidebar ── */
+#toc-sidebar{
+  position:fixed;top:0;right:0;width:240px;height:100vh;z-index:700;
+  background:rgba(10,26,15,.75);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-left:var(--border-w) solid var(--border);
+  padding:70px 0 100px;
+  overflow-y:auto;
+  transition:transform .35s var(--ease);
+}
+#toc-sidebar.toc-hidden{transform:translateX(100%);}
+#toc-sidebar::-webkit-scrollbar{width:3px;}
+#toc-sidebar::-webkit-scrollbar-track{background:transparent;}
+#toc-sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.toc-label{
+  font-size:8.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);opacity:.7;padding:0 20px;margin-bottom:12px;
+}
+.toc-list{list-style:none;}
+.toc-item a{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 20px;font-size:12px;
+  color:var(--muted);text-decoration:none;
+  border-left:2px solid transparent;
+  transition:color .2s,border-color .2s,background .2s;
+  line-height:1.4;
+}
+.toc-item a .toc-dot{
+  width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;
+  transition:background .2s,transform .2s;
+}
+.toc-item a:hover{color:var(--text);background:rgba(212,175,55,.05);}
+.toc-item a:hover .toc-dot{background:var(--gold);}
+.toc-item.active a{
+  color:var(--gold);border-left-color:var(--gold);
+  background:rgba(212,175,55,.07);font-weight:700;
+}
+.toc-item.active a .toc-dot{background:var(--gold);transform:scale(1.4);}
+
+/* ── Slide container ── */
+#slide-container{
+  position:fixed;top:56px;left:0;right:240px;bottom:64px;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-y:auto;
+}
+#slide-container::-webkit-scrollbar{width:4px;}
+#slide-container::-webkit-scrollbar-track{background:transparent;}
+#slide-container::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.slide{
+  display:none;
+  width:100%;max-width:800px;margin:0 auto 40px;
+  padding:40px 48px;
+  flex-direction:column;
+  animation:slideFadeIn .4s ease both;
+  flex-shrink:0;
+}
+.slide:last-child{margin-bottom:0;}
+.slide.active{display:flex;}
+@keyframes slideFadeIn{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── Hero slide ── */
+.slide-hero{text-align:center;align-items:center;}
+.slide-hero .art-hero-title{
+  font-size:clamp(28px,4.5vw,52px);font-weight:900;letter-spacing:-.035em;
+  line-height:1.12;color:var(--text);margin-bottom:20px;
+}
+.slide-hero .art-hero-title em{color:var(--gold);font-style:normal;}
+.slide-hero .art-hero-lead{
+  font-size:clamp(14px,1.8vw,18px);color:var(--muted);
+  line-height:1.8;max-width:600px;
+}
+
+/* ── Section slide ── */
+.section-num{
+  font-size:10px;font-weight:800;letter-spacing:.12em;font-family:var(--mono);
+  color:rgba(212,175,55,.4);margin-bottom:8px;
+}
+.art-heading{
+  font-size:clamp(17px,2.2vw,24px);font-weight:800;
+  color:var(--gold);letter-spacing:-.02em;
+  margin-bottom:16px;padding-bottom:10px;
+  border-bottom:var(--border-w) solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.art-heading::before{
+  content:'';display:inline-block;
+  width:3px;height:1em;
+  background:linear-gradient(180deg,var(--gold),var(--yellow));
+  border-radius:2px;flex-shrink:0;
+}
+.art-body{
+  font-size:var(--body-sz);line-height:var(--body-lh);
+  color:var(--text);word-break:keep-all;
+}
+.art-body strong,.art-body b{color:var(--yellow);font-weight:700;}
+.art-body code{
+  font-family:var(--mono);font-size:.88em;
+  background:var(--code-bg);padding:1px 6px;border-radius:4px;color:var(--green);
+}
+
+/* ── Highlight box ── */
+.art-highlight{
+  position:relative;
+  background:var(--card-bg);
+  border:var(--border-w) solid var(--border);
+  border-left:3px solid var(--gold);
+  border-radius:var(--card-r);
+  padding:14px 40px 14px 18px;
+  font-size:13px;line-height:var(--body-lh);
+  color:var(--muted);margin-top:14px;
+  cursor:pointer;overflow:hidden;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease);
+}
+.art-highlight:hover{
+  border-color:rgba(212,175,55,.45);
+  border-left-color:var(--gold);
+  box-shadow:0 0 24px rgba(212,175,55,.1);
+  background:rgba(212,175,55,.04);
+}
+.art-highlight strong,.art-highlight b{color:var(--gold);font-weight:700;}
+.hl-expand-icon{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:14px;color:rgba(212,175,55,.4);
+  transition:transform .3s var(--ease),color .2s;
+  user-select:none;
+}
+.art-highlight.expanded{
+  padding-bottom:18px;
+  box-shadow:0 0 28px rgba(212,175,55,.12);
+  background:rgba(212,175,55,.05);
+  border-color:rgba(212,175,55,.5);
+}
+.art-highlight.expanded .hl-expand-icon{
+  transform:translateY(-50%) rotate(45deg);
+  color:var(--gold);
+}
+.hl-extra{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s var(--ease),opacity .4s var(--ease);
+  opacity:0;font-size:12.5px;color:rgba(232,245,233,.55);line-height:1.75;
+}
+.art-highlight.expanded .hl-extra{max-height:200px;opacity:1;margin-top:10px;}
+.art-quote{
+  border-left:3px solid var(--purple);
+  padding:10px 14px;margin:12px 0;
+  background:rgba(167,139,250,.06);
+  border-radius:0 var(--card-r) var(--card-r) 0;
+  font-size:13px;color:rgba(232,245,233,.7);line-height:1.75;font-style:italic;
+}
+
+/* ── Bottom nav bar ── */
+#slide-nav{
+  position:fixed;bottom:0;left:0;right:240px;z-index:900;
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  padding:12px 24px;
+  background:rgba(10,26,15,.88);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-top:var(--border-w) solid var(--border);
+}
+#slide-nav button{
+  background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);
+  color:var(--gold);font-size:13px;font-weight:700;
+  padding:7px 20px;border-radius:20px;cursor:pointer;
+  transition:background .2s,opacity .2s;
+  font-family:var(--font);
+}
+#slide-nav button:hover{background:rgba(212,175,55,.25);}
+#slide-nav button:disabled{opacity:0.3;cursor:default;background:transparent;}
+#slide-nav .counter{
+  font-family:var(--mono);font-size:14px;font-weight:700;color:var(--gold);min-width:60px;text-align:center;
+}
+#slide-nav .counter .sep{color:var(--muted);font-weight:400;margin:0 4px;}
+#slide-nav .counter .total{color:var(--muted);font-weight:400;}
+
+/* ── Right progress dots ── */
+#slide-dots{
+  position:fixed;right:256px;top:50%;transform:translateY(-50%);z-index:500;
+  display:none;flex-direction:column;gap:8px;
+}
+#slide-dots.show{display:flex;}
+.slide-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--border);cursor:pointer;
+  transition:all .25s;
+}
+.slide-dot:hover{background:var(--muted2);}
+.slide-dot.active{
+  background:var(--gold);transform:scale(1.6);
+  box-shadow:0 0 8px rgba(212,175,55,.5);
+}
+
+/* ── TOC toggle button ── */
+#toc-toggle{
+  position:fixed;top:14px;right:12px;z-index:801;
+  background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);
+  color:var(--gold);font-size:11px;font-weight:700;
+  padding:5px 12px;border-radius:var(--badge-r);cursor:pointer;
+  font-family:var(--font);letter-spacing:.05em;
+  transition:background .2s;
+}
+#toc-toggle:hover{background:rgba(212,175,55,.25);}
+
+/* ── Keyboard hint ── */
+#kbd-hint{
+  position:fixed;bottom:60px;right:256px;z-index:500;
+  font-size:10px;color:var(--muted2);opacity:.4;
+  font-family:var(--mono);pointer-events:none;
+  text-align:right;line-height:1.6;
+}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  #toc-sidebar{display:none;}
+  #slide-container{right:0;}
+  #slide-nav{right:0;}
+  #slide-dots{display:none!important;}
+  #kbd-hint{display:none;}
+  .slide{padding:24px 20px;}
+  #art-header{right:0;padding:12px 16px;}
+  #toc-toggle{display:none;}
+  /* D-030 v3: 모바일 일반 모드 헤로 심플화 (record-mode와 같은 룩) */
+  .slide-hero{min-height:auto !important;padding:60px 20px 50px !important;text-align:center;}
+  .art-hero-title{font-size:36px !important;line-height:1.18 !important;margin-bottom:16px !important;letter-spacing:-.025em !important;font-weight:900;}
+  .art-hero-lead{font-size:15px !important;line-height:1.65 !important;margin:0 0 22px !important;color:rgba(232,245,233,.78);}
+  /* 헤로 메타: chip 풀세트 + 키 안내 hide. 메타 한 줄 + 시작 버튼만 살림 */
+  .slide-hero > div:last-child{margin-top:18px !important;gap:10px !important;}
+  .slide-hero > div:last-child > div:first-child{font-size:10px !important;opacity:.55 !important;letter-spacing:.14em !important;}
+  .slide-hero > div:last-child > div:nth-child(2){display:none !important;}
+  #hero-start-btn{font-size:13px !important;padding:11px 22px !important;}
+  .slide-hero > div:last-child > div:last-child > div:last-child{display:none !important;}
+}
+
+/* ════════════════════════════════════════════════════════════════
+   v2 AAA additions — WCAG 2.2 AAA + Stripe Docs-grade interactions
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Skip link (WCAG 2.4.1) ── */
+.skip-link{
+  position:absolute;top:-100px;left:0;
+  background:var(--gold);color:#000;padding:12px 16px;
+  z-index:9999;text-decoration:none;font-weight:700;
+  border-radius:0 0 6px 0;
+}
+.skip-link:focus{top:0;}
+
+/* ── Focus-visible (WCAG 2.4.7 AAA) ── */
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid var(--gold) !important;
+  outline-offset:2px !important;
+  border-radius:4px;
+}
+
+/* ── Touch targets ≥44×44 (WCAG 2.5.5 AAA) ── */
+#slide-nav button,#toc-toggle{
+  min-width:44px;min-height:44px;padding:10px 24px;
+}
+.toc-item a,.slide-dot{
+  min-width:44px;min-height:44px;
+  display:flex;align-items:center;
+}
+.slide-dot{justify-content:center;}
+
+/* ── Reduced motion (WCAG 2.3.3 AAA) ── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  #particle-canvas{display:none;}
+}
+
+/* ── Code blocks v2 (Prism + line numbers + copy button) ── */
+.art-codeblock{
+  position:relative;background:var(--code-bg);
+  border:1.5px solid var(--border);border-radius:var(--card-r);
+  margin:14px 0;overflow:hidden;
+}
+.art-codeblock-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:rgba(212,175,55,.08);
+  border-bottom:1px solid var(--border);font-size:11px;
+  font-family:var(--mono);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.art-codeblock-lang{color:var(--gold);font-weight:700;}
+.art-codeblock-actions{display:flex;gap:6px;}
+.art-codeblock-btn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:4px 10px;border-radius:4px;
+  cursor:pointer;font-size:10px;font-family:var(--mono);
+  transition:all .15s;
+}
+.art-codeblock-btn:hover{
+  background:var(--gold);color:#000;border-color:var(--gold);
+}
+.art-codeblock pre{
+  margin:0;padding:12px;overflow-x:auto;
+  font-family:var(--mono);font-size:13px;line-height:1.6;
+  background:transparent;
+}
+.art-codeblock pre code{
+  background:transparent;padding:0;color:var(--text);
+}
+.art-codeblock .line-highlight{
+  background:rgba(212,175,55,.18) !important;
+  margin-left:-12px;padding-left:12px;
+  border-left:3px solid var(--gold);
+}
+.art-codeblock-runnable .art-codeblock-output{
+  background:#000;color:var(--green);
+  padding:8px 12px;font-family:var(--mono);font-size:12px;
+  border-top:1px dashed var(--border);
+  white-space:pre-wrap;line-height:1.4;
+}
+
+/* ── Variable input form ── */
+.art-input-group{
+  background:rgba(212,175,55,.06);
+  border:1px solid rgba(212,175,55,.25);
+  border-radius:var(--card-r);
+  padding:14px;margin:14px 0;
+}
+.art-input-group label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--gold);text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:6px;
+}
+.art-input-group input[type=text],
+.art-input-group input[type=number]{
+  width:100%;padding:10px;font-size:13px;
+  background:rgba(0,0,0,.3);color:var(--text);
+  border:1px solid rgba(212,175,55,.3);border-radius:4px;
+  font-family:var(--mono);min-height:44px;
+}
+.art-input-group input:focus{
+  outline:none;border-color:var(--gold);
+  box-shadow:0 0 8px rgba(212,175,55,.3);
+}
+
+/* ── CTA buttons ── */
+.art-cta{
+  display:inline-block;margin:8px 8px 8px 0;padding:12px 24px;
+  background:var(--gold);color:#000;font-weight:700;font-size:13px;
+  text-decoration:none;border-radius:6px;border:none;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.08em;
+  min-height:44px;min-width:44px;
+  transition:all .2s;
+}
+.art-cta:hover{
+  filter:brightness(1.08);transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(212,175,55,.3);
+}
+.art-cta-secondary{
+  background:transparent;color:var(--gold);
+  border:1.5px solid var(--gold);
+}
+
+/* ── Infographic container ── */
+.art-infographic{
+  margin:18px 0;padding:14px;
+  background:var(--card-bg);
+  border:1.5px solid var(--border);border-left:3px solid var(--gold);
+  border-radius:var(--card-r);
+  min-height:200px;overflow:auto;
+}
+.art-infographic[data-infographic="stat_counter"]{display:grid;}
+
+/* ── Cost transparency footer (Parksy differentiator #4) ── */
+.art-cost-footer{
+  position:fixed;bottom:8px;left:8px;z-index:400;
+  font-size:10px;color:var(--muted2);opacity:.5;
+  font-family:var(--mono);pointer-events:auto;
+  background:rgba(10,26,15,.7);padding:4px 8px;border-radius:4px;
+  cursor:pointer;
+}
+.art-cost-footer:hover{opacity:1;}
+
+/* ── ARIA live region ── */
+.sr-only{
+  position:absolute !important;width:1px !important;height:1px !important;
+  padding:0 !important;margin:-1px !important;overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;
+}
+
+/* ── slide-mode (extractor capture) ── */
+body.slide-mode #art-header,
+body.slide-mode #toc-sidebar,
+body.slide-mode #slide-nav,
+body.slide-mode #slide-dots,
+body.slide-mode #toc-toggle,
+body.slide-mode #kbd-hint,
+body.slide-mode .art-cost-footer,
+body.slide-mode .skip-link{display:none !important;}
+body.slide-mode #slide-container{top:0;right:0;}
+
+/* ── narrate-mode (scroll-based lecture) ── */
+body.narrate-mode .slide{display:block !important;opacity:1 !important;}
+body.narrate-mode #slide-dots,
+body.narrate-mode #slide-nav{display:none;}
+</style>
+</head>
+<body>
+
+<!-- WCAG 2.4.1: Skip link -->
+<a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+<!-- ARIA live region for slide changes (4.1.3 AA) -->
+<div id="a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<!-- ── Header ── -->
+<header id="art-header" role="banner">
+  <div class="art-header-inner">
+    <span class="art-badge">PARKSY 슬라이드</span>
+    <div id="art-h1">AI 기능인 백서 v2 — 27 무료 런타임 × 7 스테이션</div>
+    <div class="art-meta-row">
+      <span class="art-slide-counter" id="slide-counter-2b0e3d13">
+        <span id="slide-cur-2b0e3d13">1</span>
+        <span class="sep">/</span>
+        <span class="total" id="slide-total-2b0e3d13">—</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ── TOC toggle ── -->
+<button id="toc-toggle" onclick="toggleToc()" aria-label="목차">☰ 목차</button>
+
+<!-- ── TOC sidebar ── -->
+<nav id="toc-sidebar" aria-label="목차 사이드바">
+  <div class="toc-label">CONTENTS</div>
+  <ul class="toc-list" id="toc-list-2b0e3d13"></ul>
+</nav>
+
+<!-- ── Slide container ── -->
+<main id="main-content" role="main" aria-label="기사 본문">
+<div id="slide-container">
+  <div id="slide-wrapper-2b0e3d13" role="region" aria-live="polite"></div>
+</div>
+</main>
+
+<!-- ── Cost transparency footer (Parksy differentiator) ── -->
+<div class="art-cost-footer" id="cost-footer" role="contentinfo"
+     title="빌드 비용 상세 보기">
+  ⚡ AI로 빌드됨 (비용 보기)
+</div>
+
+<!-- ── Right progress dots ── -->
+<div id="slide-dots"></div>
+
+<!-- ── Bottom navigation ── -->
+<nav id="slide-nav" aria-label="슬라이드 이동">
+  <button id="btn-prev-2b0e3d13" onclick="goSlide(-1)" aria-label="이전">◀ 이전</button>
+  <span class="counter">
+    <span id="nav-cur-2b0e3d13">1</span>
+    <span class="sep">/</span>
+    <span class="total" id="nav-total-2b0e3d13">—</span>
+  </span>
+  <button id="btn-next-2b0e3d13" onclick="goSlide(1)" aria-label="다음">다음 ▶</button>
+</nav>
+
+<!-- ── Keyboard hint (axe-core: regions must be in landmarks) ── -->
+<aside id="kbd-hint" role="complementary" aria-label="키보드 단축키">→ Space 다음 · ← 이전<br>Esc 목차 · Home End</aside>
+
+<script>
+(function(){
+'use strict';
+
+/* ─── slide-mode auto-apply (?mode=slide URL param) ────────────────────
+   Hide header/TOC/footer so web2video extractor can capture clean fullscreen.
+   Compatible with action_mapper.py `div.slide.active` selector.
+*/
+(function _initSlideMode(){
+  try {
+    var qs = new URLSearchParams(window.location.search);
+    if (qs.get('mode') === 'slide') {
+      document.body.classList.add('slide-mode');
+      var styleEl = document.createElement('style');
+      styleEl.textContent =
+        'body.slide-mode #art-header,'+
+        'body.slide-mode #art-toc,'+
+        'body.slide-mode #art-footer,'+
+        'body.slide-mode #art-progress,'+
+        'body.slide-mode #art-dots,'+
+        'body.slide-mode #art-nav,'+
+        'body.slide-mode #kbd-hint { display: none !important; }'+
+        'body.slide-mode #slide-wrapper-2b0e3d13 { padding-top: 0 !important; }';
+      document.head.appendChild(styleEl);
+    }
+  } catch(_e) { /* IE ... ... */ }
+})();
+
+var SECTIONS = [{"heading": "27 무료 런타임 × 7 스테이션 워크센터 × 4대 공리", "body": "27 무료 런타임 × 7 스테이션 워크센터 × 4대 공리 섹션 · 원본 페이지에서 추출 · 상세 콘텐츠는 원문 참조", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "27 무료 런타임 × 7 스테이션 워크센터 × 4대 공리", "value": "1", "unit": ""}]}}}, {"heading": "서문 — 왜 이 백서를 다시 쓰는가", "body": "v1 백서(2026-05-03)는 7 스테이션 파이프라인을 정의했다. 그러나 v1에는 결정적 결손이 하나 있었다. 각 스테이션이 어떤 실행 자원 위에서 도느냐가 명시되지 않았다. 7 스테이션은 조립 설계도고, 무료 런타임은 부품 카탈로그다. 설계도만 있으면 무엇으로 만들지를 모르고, 부품만 있으면 무엇을 만들지를 모른다. v2는 이 둘을 한 권으로 합친다. 27개 무료 런타임을 베이스라인 개론(Layer 0)으로, 7 스테이션을 응용 아키텍처(Layer 2)로, 그 사이의 환원·합성 관계를 명시한다.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "서문 — 왜 이 백서를 다시 쓰는가", "value": "1", "unit": ""}]}}}, {"heading": "정체성 선언", "body": "나는 AI 기능인(AI Functioner)이다. 모든 작업은 말(STT)로 시작해, 27개 무료 런타임 위에 배치된 7 스테이션을 거쳐, 마지막에는 웹페이지·디지털 콘텐츠·IoT 장난감 같은 실제 물건으로 굳어진다. 레이어 위계: Layer 0: 27개 무료 런타임 → \"뭐가 있나\" (도구 개론) Layer 1: 각 런타임 운용법 → \"어떻게 쓰나\" (도구 각론) Layer 2: 7 스테이션 워크센터 → \"어떻게 엮나\" (시스템 아키텍처) Layer 3: AI 기능인 자기 시스템 → \"내 것 만들기\" (개인 주권 인프라)", "infographic": {"type": "pipeline_stack", "data": {"layers": [{"label": "Layer 1", "items": [{"name": "Layer 0: 27개 무료 런타임 → \"뭐가 있나\" (도구 개론)", "desc": ""}, {"name": "Layer 1: 각 런타임 운용법 → \"어떻게 쓰나\" (도구 각론)", "desc": ""}, {"name": "Layer 2: 7 스테이션 워크센터 → \"어떻게 엮나\" (시스템 아키텍처)", "desc": ""}, {"name": "Layer 3: AI 기능인 자기 시스템 → \"내 것 만들기\" (개인 주권 인프라)", "desc": ""}]}]}}}, {"heading": "무료 런타임 27 — 분류와 목록", "body": "무료 런타임: 일정 조건 안에서 금전 비용 없이 실행 자원을 확보할 수 있는 환경. 로컬(내 전기)과 클라우드(남의 전기)로 나뉜다. 로컬(7): 브라우저, Termux, WSL, Python, Node.js, Bun, Deno 클라우드 정적/웹(4): GitHub Pages, Vercel, Netlify, Cloudflare Workers 클라우드 컨테이너(4): Railway, Render, Google Cloud Run, Fly.io 클라우드 CI/VM(3): GitHub Actions, Oracle Cloud VM, Replit AI/LLM(8): Groq, Gemini, OpenRouter, HF Spaces, HF Inference, Colab, Kaggle, Modal, Lightning.ai", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "무료 런타임 27 — 분류와 목록", "value": "1", "unit": ""}]}}}, {"heading": "7 스테이션 워크센터", "body": "파이프라인: 말(STT) → 로그 캡처 → GitHub 허브 → 에이전트·MCP → 멀티 노드 인프라 → 모델·웹·영상 → IoT·장난감 입구1 STT: 폰과 태블릿에서 음성 입력. 키보드는 예외. 브라우저 STT API + Termux. 입구2 로그 캡처: LLM 대화·작업 히스토리를 로데이터로. APK → Download → GitHub 동기화. Station A GitHub 허브: 28개 레포 = 마이크로서비스. GitHub Pages + Actions. Station B 에이전트·MCP: Claude Code + DeepSeek Aider. 멀티 LLM 병렬 검증. Station C 멀티 노드: 폰·태블릿·PC 상호 복구. WSL + Termux + ADB. Station D 모델·웹·영상: RunPod 학습 + HF Spaces 서빙 + Vercel/Railway 배포. 출구 IoT: ESP32 → MQTT → Cloudflare Workers → GitHub Pages.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "7 스테이션 워크센터", "value": "1", "unit": ""}]}}}, {"heading": "결정 함수 — 작업 → 런타임 매핑", "body": "항시 가동 필요 → Oracle VM / Fly.io / Cloudflare Workers GPU 필요 → Colab/Kaggle(프로토타입) → RunPod(본학습) 정적 웹 → GitHub Pages API 엔드포인트 → Cloudflare Workers(Edge) / Vercel(풀스택) / Railway(컨테이너) LLM 추론 → Groq(빠름) / Gemini(긴 컨텍스트) / OpenRouter(멀티) 모델 데모 → Hugging Face Spaces 로컬 처리 → Termux(폰) / WSL(PC)", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "결정 함수 — 작업 → 런타임 매핑", "value": "1", "unit": ""}]}}}, {"heading": "4대 공리 + v2 추가 공리", "body": "제1공리 입력: STT First — 생각의 속도 유지, 모든 입력은 말로. 제2공리 공정: 7 Stations — 아이디어→물성 7단계 필수 통과. 제3공리 주권: Philosophy Over Tech — 인간은 방향과 결정만. 제4공리 검증: Parallel Consensus — 2개 이상 LLM 교차 검증. 제5공리 실행 바닥(v2): Free Runtime First — 무료가 기본값, 유료는 예외.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "4대 공리 + v2 추가 공리", "value": "1", "unit": ""}]}}}, {"heading": "전략적 배제", "body": "보안: 결제·회원·민감 데이터가 필요한 기능은 만들지 않음. 코드는 GitHub, 결과물은 YouTube = 무상 백업. 알고리즘: 사람은 검증 시스템 설계, 에이전트가 구현. 멀티 LLM 병렬 검증. 협업: 1인 모듈 완결. 성능 지표 = 내 손에 붙는 정도. 유료 범위: GPU 학습(RunPod)으로만 한정.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "전략적 배제", "value": "1", "unit": ""}]}}}, {"heading": "역귀납적 학습", "body": "실행(AI 결과물) → 관찰 → 이론 추출. 일반적인 이론→실행의 역순. AI를 블랙박스 탐침처럼 사용해 패턴과 감각을 바텀업으로 축적.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "역귀납적 학습", "value": "1", "unit": ""}]}}}, {"heading": "커버리지 평가", "body": "정통 CS 이론: 30~40% (의도적 얕음) AI 실전 CS/IT: 70~80% (돌아가는 시스템 기준) 무료 런타임 생태계: 90% (6개 사용 + 21개 인지)", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "커버리지 평가", "value": "1", "unit": ""}]}}}, {"heading": "개론서·각론서·계론서 위계", "body": "개론서: 너비와 지형도 — 이 백서 각론서: 항목별 운용 매뉴얼 — 28개 레포 README 계론서: 닫힌 체계·관계망 — 미발간 AI 시대 제너럴리스트 = 도구 지형 전체를 인지하고, 작업에 맞는 도구를 골라 조립하는 사람.", "infographic": {"type": "stat_counter", "data": {"stats": [{"label": "개론서·각론서·계론서 위계", "value": "1", "unit": ""}]}}}];
+var uid = '2b0e3d13';
+var _$ = function(id){ return document.getElementById(id); };
+var TOTAL = SECTIONS.length;
+
+/* ─── D-028: ?mode=record (chrome 숨김 + 모든 슬라이드 동시 표시) ─── */
+var __MODE = (new URLSearchParams(location.search).get('mode')) || '';
+var __RECORD = (__MODE === 'record' || __MODE === 'scroll');
+if(__RECORD){
+  var hideStyle = document.createElement('style');
+  hideStyle.id = 'record-mode-style';
+  // Pretendard 폰트 link (박씨 PSE base font)
+  var fontLink = document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css';
+  document.head.appendChild(fontLink);
+
+  hideStyle.textContent = ''
+    /* D-028 v10: TOC 사이드바는 살림 + chrome 나머지만 제거 */
+    + 'header,#slide-nav,#toc-toggle,#kbd-hint,#toc-' + uid + ',.toc-rail,.toc-overlay,.cost-badge,#progress-dots-' + uid + ',a.skip-link,[role=complementary],[role=contentinfo],[aria-label*="단축키"],[aria-label*="키보드"],[aria-label*="슬라이드 이동"],[aria-label*="Slide nav"],footer{display:none !important;visibility:hidden !important;width:0 !important;height:0 !important;overflow:hidden !important}'
+    /* TOC 강제 표시 + 강의 영상용 너비 확장 + 폰트 가독성 */
+    + '#toc-sidebar{display:block !important;visibility:visible !important;transform:translateX(0) !important;width:340px !important;background:rgba(10,26,15,.92) !important;backdrop-filter:blur(16px) !important;border-left:1.5px solid rgba(212,175,55,.25) !important;padding:50px 0 60px !important;z-index:800 !important;overflow-y:auto !important;height:100vh !important;position:fixed !important;top:0 !important;right:0 !important}'
+    + '#toc-sidebar .toc-label{font-size:13px !important;color:var(--gold) !important;padding:0 24px !important;margin-bottom:18px !important;letter-spacing:.2em !important;font-weight:800 !important;opacity:.9 !important}'
+    + '#toc-sidebar .toc-list{list-style:none !important;padding:0 !important;margin:0 !important}'
+    + '#toc-sidebar .toc-list li{margin:0 !important;padding:0 !important}'
+    + '#toc-sidebar .toc-list a,#toc-sidebar .toc-list li a{display:block !important;padding:11px 24px !important;font-size:15px !important;line-height:1.5 !important;color:rgba(232,245,233,.7) !important;text-decoration:none !important;border-left:3px solid transparent !important;transition:all .3s !important;word-break:keep-all !important}'
+    + '#toc-sidebar .toc-list a:hover,#toc-sidebar .toc-list .active a,#toc-sidebar .toc-list li.active a{color:var(--gold) !important;border-left-color:var(--gold) !important;background:rgba(212,175,55,.06) !important}'
+    /* 본문 영역은 우측 TOC만큼 빼고 max-width 박음 */
+    /* D-028 v8: 좌우 여백 제거 (max-width 1880) + Pretendard 폰트 + 한국어 가독성 최적화 */
+    + 'html,body,*{font-family:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif !important}'
+    + 'code,pre,.art-infographic code{font-family:"JetBrains Mono","Cascadia Code","Pretendard Variable",monospace !important}'
+    + '.slide{display:block !important;opacity:1 !important;min-height:auto !important;max-height:none !important;padding:80px 60px !important;border-bottom:1px solid rgba(212,175,55,.15) !important;max-width:1500px !important;word-break:keep-all !important;text-wrap:pretty !important;margin-right:340px !important}'
+    + '.art-heading{font-size:64px !important;line-height:1.22 !important;margin-bottom:40px !important;font-weight:800 !important;padding-left:28px !important;letter-spacing:-.025em !important;word-break:keep-all !important;font-feature-settings:"ss01","cv11" !important}'
+    + '.art-heading::before{width:6px !important;top:10px !important;bottom:10px !important}'
+    + '.section-num{font-size:18px !important;letter-spacing:.2em !important;margin-bottom:18px !important;color:var(--gold) !important;opacity:.85 !important;font-weight:600 !important}'
+    + '.art-body{font-size:32px !important;line-height:1.85 !important;letter-spacing:-.015em !important;margin-bottom:42px !important;color:rgba(232,245,233,.95) !important;word-break:keep-all !important;text-wrap:pretty !important;font-weight:400 !important;font-feature-settings:"ss01","cv11" !important}'
+    + '.art-body strong{color:var(--gold) !important;font-weight:700 !important}'
+    + '.art-highlight{font-size:26px !important;line-height:1.7 !important;padding:22px 26px !important;border-radius:14px !important;margin:32px 0 !important;word-break:keep-all !important}'
+    + '.art-infographic{margin-top:36px !important;font-size:20px !important;padding:36px !important;border-radius:20px !important;background:rgba(212,175,55,.04) !important;border:1.5px solid rgba(212,175,55,.2) !important;box-shadow:0 0 50px rgba(212,175,55,.1) !important;word-break:keep-all !important}'
+    + '.art-infographic *{font-size:inherit !important;word-break:keep-all !important}'
+    + '.art-infographic strong,.art-infographic b{font-size:24px !important;font-weight:700 !important}'
+    + '.art-infographic [style*="font-size:11px"],.art-infographic [style*="font-size: 11px"]{font-size:16px !important}'
+    + '.art-infographic [style*="font-size:12px"],.art-infographic [style*="font-size: 12px"]{font-size:17px !important}'
+    + '.art-infographic [style*="font-size:13px"],.art-infographic [style*="font-size: 13px"]{font-size:18px !important}'
+    + '.art-infographic [style*="font-size:10px"],.art-infographic [style*="font-size: 10px"]{font-size:15px !important}'
+    + '.art-hero-title{font-size:104px !important;line-height:1.1 !important;margin-bottom:40px !important;letter-spacing:-.035em !important;word-break:keep-all !important;font-weight:900 !important;background:linear-gradient(135deg,var(--gold),#fff) !important;-webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important}'
+    + '.art-hero-lead{font-size:32px !important;line-height:1.7 !important;max-width:1280px !important;margin:0 auto 48px !important;word-break:keep-all !important;color:rgba(232,245,233,.82) !important}'
+    + '.slide-hero{padding:160px 60px 140px !important;text-align:center !important;min-height:90vh !important;display:flex !important;flex-direction:column !important;justify-content:center !important;align-items:center !important}'
+    + '#slide-container,#slide-wrapper-' + uid + ',.slide-container,.slide-wrapper{height:auto !important;max-height:none !important;min-height:auto !important;overflow:visible !important;display:block !important;position:static !important}'
+    + 'main,article,#main-content{max-width:1880px !important;margin:0 !important;padding:0 !important;height:auto !important;max-height:none !important;overflow:visible !important;position:static !important;display:block !important}'
+    + 'html,body{height:auto !important;max-height:none !important;overflow-y:auto !important;overflow-x:hidden !important;position:static !important;background:var(--bg) !important;font-feature-settings:"ss01","cv11" !important;-webkit-font-smoothing:antialiased !important;-moz-osx-font-smoothing:grayscale !important;text-rendering:optimizeLegibility !important}'
+    /* D-030: 모바일 record-mode 분기 (viewport <= 820px) */
+    + '@media (max-width: 820px){'
+    +   '#toc-sidebar{display:none !important}'
+    +   'main,article,#main-content{margin:0 !important;padding:0 !important}'
+    +   '.slide{padding:48px 20px !important;max-width:100% !important;margin-right:0 !important;border-bottom:1px solid rgba(212,175,55,.12) !important}'
+    +   '.slide-hero{padding:80px 20px 60px !important;min-height:80vh !important}'
+    +   '.art-heading{font-size:30px !important;line-height:1.3 !important;margin-bottom:20px !important;padding-left:14px !important}'
+    +   '.art-heading::before{width:4px !important;top:5px !important;bottom:5px !important}'
+    +   '.section-num{font-size:13px !important;letter-spacing:.16em !important;margin-bottom:10px !important}'
+    +   '.art-body{font-size:18px !important;line-height:1.7 !important;letter-spacing:-.01em !important;margin-bottom:22px !important}'
+    +   '.art-highlight{font-size:16px !important;padding:14px 16px !important;margin:18px 0 !important}'
+    +   '.art-infographic{margin-top:20px !important;padding:18px !important;font-size:14px !important;border-radius:14px !important}'
+    +   '.art-infographic strong,.art-infographic b{font-size:16px !important}'
+    +   '.art-infographic [style*="font-size:11px"],.art-infographic [style*="font-size: 11px"]{font-size:13px !important}'
+    +   '.art-infographic [style*="font-size:12px"],.art-infographic [style*="font-size: 12px"]{font-size:13px !important}'
+    +   '.art-hero-title{font-size:42px !important;line-height:1.18 !important;margin-bottom:18px !important;letter-spacing:-.025em !important}'
+    +   '.art-hero-lead{font-size:17px !important;line-height:1.65 !important;max-width:100% !important;margin:0 0 24px !important}'
+    +   '.custom-info,.custom-info *{font-size:14px !important}'
+    +   '.custom-info strong{font-size:15px !important}'
+    /* 모바일 헤로 카탈로그 더 심플 — 박씨 거추장 명령 */
+    +   '.slide-hero{min-height:auto !important;padding:60px 20px 50px !important}'
+    +   '.slide-hero > div:last-child{margin-top:18px !important;gap:10px !important}'
+    +   '.slide-hero > div:last-child > div:first-child{font-size:10px !important;opacity:.55 !important;letter-spacing:.14em !important}'
+    +   '.slide-hero > div:last-child > div:nth-child(2){display:none !important}'  /* chip 풀세트 hide */
+    +   '#hero-start-btn{font-size:13px !important;padding:11px 22px !important}'
+    +   '.slide-hero > div:last-child > div:last-child > div:last-child{display:none !important}'  /* 키 안내 hide (모바일에 키 없음) */
+    + '}';
+  document.head.appendChild(hideStyle);
+  // CSS specificity 우회: JS로 직접 inline height 박음 (DOMContentLoaded 후)
+  function forceRecordLayout(){
+    ['html','body'].forEach(function(s){var el=document.querySelector(s); if(el){el.style.cssText += ';height:auto !important;max-height:none !important;overflow-y:auto !important'}});
+    document.querySelectorAll('main,article,#main-content,#slide-container,[id^=slide-wrapper-],.slide-container,.slide-wrapper').forEach(function(el){
+      el.style.cssText += ';height:auto !important;max-height:none !important;min-height:auto !important;overflow:visible !important;display:block !important;position:static !important';
+    });
+    document.querySelectorAll('.slide').forEach(function(el){
+      el.style.cssText += ';display:block !important;opacity:1 !important;position:static !important';
+      // 모바일에서는 본문이 TOC 자리(margin-right 340)까지 풀폭 사용
+      if(window.matchMedia('(max-width: 820px)').matches){
+        el.style.cssText += ';margin-right:0 !important;max-width:100% !important;padding-left:20px !important;padding-right:20px !important';
+      }
+      el.classList.add('in-view');
+    });
+    // chrome JS 강제 제거 — TOC 사이드바는 살림 (박씨 명령)
+    var chromeIds = ['toc-toggle','kbd-hint','slide-nav'];
+    chromeIds.forEach(function(id){var el=document.getElementById(id); if(el) el.remove();});
+    document.querySelectorAll('[role=complementary],[role=contentinfo],footer,header,.cost-badge,.toc-rail,.toc-overlay').forEach(function(el){el.remove();});
+    document.querySelectorAll('[id^=progress-dots-]').forEach(function(el){el.remove();});
+    // TOC 사이드바 — PC만 살림. 모바일(<= 820px)은 강제 제거 (박씨 명령)
+    var toc = document.getElementById('toc-sidebar');
+    var isMobile = window.matchMedia('(max-width: 820px)').matches;
+    if(toc){
+      if(isMobile){
+        toc.remove();  // 모바일은 DOM에서 통째로 제거
+      } else {
+        toc.classList.remove('toc-hidden');
+        toc.style.cssText += ';transform:translateX(0) !important;display:block !important;visibility:visible !important;width:340px !important';
+      }
+    }
+    // IntersectionObserver로 현재 슬라이드 → TOC active 박씨가 영상 보면서 진행 위치 알 수 있게
+    setTimeout(function(){
+      var slides = document.querySelectorAll('.slide');
+      var tocItems = document.querySelectorAll('#toc-sidebar .toc-list a, #toc-sidebar .toc-list li');
+      if(!slides.length || !tocItems.length) return;
+      var io2 = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){
+            var idx = parseInt(e.target.dataset.index || '0', 10);
+            // 헤로(0) → toc 0번, content slides → toc i-1
+            var tocIdx = Math.max(0, idx - 1);
+            tocItems.forEach(function(t,i){
+              t.classList.toggle('active', i === tocIdx);
+              if(i === tocIdx){
+                // 자동 스크롤 (TOC 안)
+                t.scrollIntoView({behavior:'smooth', block:'center'});
+              }
+            });
+          }
+        });
+      }, {threshold:[0.4,0.6], rootMargin:'-30% 0px -30% 0px'});
+      slides.forEach(function(s){io2.observe(s);});
+    }, 600);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){setTimeout(forceRecordLayout, 100); setTimeout(forceRecordLayout, 800);});
+  } else { setTimeout(forceRecordLayout, 100); setTimeout(forceRecordLayout, 800); }
+}
+
+/* ─── Current slide index ─── */
+var currentSlide = 0;
+var slideEls = [];
+
+/* ─── DOM refs ─── */
+var wrapper = _$('slide-wrapper-' + uid);
+
+/* ─── Section render ─── */
+function renderSlides(){
+  wrapper.innerHTML = '';
+
+  // Hero slide
+  var heroSlide = document.createElement('div');
+  heroSlide.className = 'slide slide-hero';
+  heroSlide.dataset.index = 0;
+
+  var heroTitle = document.createElement('h1');
+  heroTitle.className = 'art-hero-title';
+  heroTitle.innerHTML = (document.title || 'AI 기능인 백서 v2 — 27 무료 런타임 × 7 스테이션').replace(/\*\*(.*?)\*\*/g,'<em>$1</em>');
+  heroSlide.appendChild(heroTitle);
+
+  if(SECTIONS[0] && SECTIONS[0].body){
+    var heroLead = document.createElement('p');
+    heroLead.className = 'art-hero-lead';
+    var lead = SECTIONS[0].body.replace(/\*\*/g,'').substring(0,140);
+    if(lead.length===140) lead += '…';
+    heroLead.textContent = lead;
+    heroSlide.appendChild(heroLead);
+  }
+
+  // D-027 BUG-018 fix: 헤로 슬라이드 빈 화면 → 인포그래픽 카탈로그 + CTA
+  // 박씨가 첫 슬라이드 열면 "빈 검은 화면" 인식 방지
+  var heroMeta = document.createElement('div');
+  heroMeta.style.cssText = 'margin-top:32px;display:flex;flex-direction:column;gap:16px;align-items:center;';
+  // D-030 fix: 페이지 lang에 따라 라벨 다르게. custom_svg는 chip 안 박음 (D-029는 챕터마다 고유 디자인)
+  var pageLang = (document.documentElement.lang || 'ko').toLowerCase();
+  var L = {
+    ko: {chapters:'챕터', kinds:'종 인포그래픽', start:'▶ 1챕터부터 시작',
+         hint:'→ ↓ Space  ◀ ▶  목차에서 점프', custom:'챕터별 맞춤 디자인'},
+    en: {chapters:'Chapters', kinds:'styles', start:'▶ Start from Chapter 1',
+         hint:'→ ↓ Space  ◀ ▶  jump from TOC', custom:'Per-chapter custom design'},
+    ja: {chapters:'章', kinds:'種類', start:'▶ 第1章から開始',
+         hint:'→ ↓ Space  ◀ ▶  目次から', custom:'章ごとのカスタムデザイン'},
+    zh: {chapters:'章节', kinds:'种', start:'▶ 从第1章开始',
+         hint:'→ ↓ Space  ◀ ▶  从目录跳转', custom:'每章定制设计'}
+  };
+  var t = L[pageLang] || L.ko;
+  var typeCounts = {};
+  var customCount = 0;
+  SECTIONS.forEach(function(s){
+    if(s.infographic && s.infographic.type){
+      if(s.infographic.type === 'custom_svg') customCount++;
+      else typeCounts[s.infographic.type] = (typeCounts[s.infographic.type]||0)+1;
+    }
+  });
+  var typeLabels = (pageLang === 'ko') ? {
+    flowchart:'프로세스', timeline:'타임라인', vs_compare:'비교',
+    pipeline_stack:'레이어', orbit_diagram:'생태계', node_map:'관계도',
+    matrix_grid:'매트릭스', accordion:'펼침', stat_counter:'지표',
+    zoom_detail:'코드'
+  } : {
+    flowchart:'flowchart', timeline:'timeline', vs_compare:'compare',
+    pipeline_stack:'layers', orbit_diagram:'orbit', node_map:'graph',
+    matrix_grid:'matrix', accordion:'accordion', stat_counter:'stats',
+    zoom_detail:'code'
+  };
+  var chipParts = Object.keys(typeCounts).map(function(k){
+    return (typeLabels[k]||k)+' ×'+typeCounts[k];
+  });
+  if(customCount > 0) chipParts.unshift('⭐ '+t.custom+' ×'+customCount);
+  var chips = chipParts.map(function(label){
+    return '<span style="display:inline-block;padding:6px 12px;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--gold);background:rgba(212,175,55,.06);">'+label+'</span>';
+  }).join(' ');
+  var totalKinds = Object.keys(typeCounts).length + (customCount > 0 ? 1 : 0);
+  heroMeta.innerHTML = ''
+    + '<div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;">'
+    + SECTIONS.length+' '+t.chapters+' · '+totalKinds+' '+t.kinds+'</div>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:520px;">'+chips+'</div>'
+    + '<div style="margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:6px;">'
+    +   '<button id="hero-start-btn" onclick="window.goSlide&&window.goSlide(1)" style="background:var(--gold);color:#0A1A0F;border:none;border-radius:24px;padding:12px 28px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.05em;">'+t.start+'</button>'
+    +   '<div style="font-size:10px;color:var(--muted);">'+t.hint+'</div>'
+    + '</div>';
+  heroSlide.appendChild(heroMeta);
+
+  wrapper.appendChild(heroSlide);
+  slideEls.push(heroSlide);
+
+  // Content slides
+  SECTIONS.forEach(function(s, i){
+    var sec = document.createElement('div');
+    sec.className = 'slide';
+    sec.dataset.index = i + 1;
+
+    var numEl = document.createElement('div');
+    numEl.className = 'section-num';
+    numEl.textContent = String(i+1).padStart(2,'0') + ' ——';
+    sec.appendChild(numEl);
+
+    if(s.heading){
+      var h2 = document.createElement('h2');
+      h2.className = 'art-heading';
+      h2.textContent = s.heading;
+      sec.appendChild(h2);
+    }
+
+    if(s.body){
+      var bodyContainer = document.createElement("div");
+      bodyContainer.className = "art-body";
+      var bodyHtml = s.body;
+      var codeblockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+      var lastIdx = 0, frags = [];
+      var m;
+      while((m = codeblockRegex.exec(bodyHtml)) !== null){
+        if(m.index > lastIdx){
+          frags.push("<span class=\"art-body-text\">"
+            + bodyHtml.slice(lastIdx, m.index)
+              .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")
+              .replace(/`(.*?)`/g,"<code>$1</code>")
+            + "</span>");
+        }
+        var lang = m[1] || "text";
+        var code = m[2].replace(/\n+$/, "");
+        frags.push("<div class=\"art-codeblock\" data-lang=\""+lang+"\">"
+          + "<div class=\"art-codeblock-header\">"
+          + "  <span class=\"art-codeblock-lang\">"+lang+"</span>"
+          + "  <div class=\"art-codeblock-actions\">"
+          + "    <button class=\"art-codeblock-btn\" onclick=\"copyCodeBlock(this)\">복사</button>"
+          + "  </div>"
+          + "</div>"
+          + "<pre><code class=\"language-"+lang+"\">"+escapeHtml(code)+"</code></pre>"
+          + "</div>");
+        lastIdx = m.index + m[0].length;
+      }
+      if(lastIdx < bodyHtml.length){
+        frags.push("<span class=\"art-body-text\">"
+          + bodyHtml.slice(lastIdx)
+            .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")
+            .replace(/`(.*?)`/g,"<code>$1</code>")
+          + "</span>");
+      }
+      bodyContainer.innerHTML = frags.join('\n');
+      sec.appendChild(bodyContainer);
+    }
+
+    if(s.highlight){
+      var hl = document.createElement('div');
+      hl.className = 'art-highlight';
+      var hlText = document.createElement('span');
+      hlText.innerHTML = s.highlight.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+      hl.appendChild(hlText);
+      var icon = document.createElement('span');
+      icon.className = 'hl-expand-icon';
+      icon.innerHTML = '&#43;';
+      hl.appendChild(icon);
+      var extra = document.createElement('div');
+      extra.className = 'hl-extra';
+      if(s.body && s.body.length > 80){
+        var extraTxt = s.body.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`(.*?)`/g,'<code>$1</code>');
+        extra.innerHTML = '<div class="art-quote">' + extraTxt + '</div>';
+      }
+      hl.appendChild(extra);
+      hl.addEventListener('click', function(){ this.classList.toggle('expanded'); });
+      sec.appendChild(hl);
+    }
+
+    /* BUG-017 fix: emit data-infographic div so embedInfographics() can render
+       all 13 types. Previously renderSlides() ignored s.infographic entirely → div
+       never existed in DOM → "인포그래픽이 화려하지 않다" symptom. */
+    if(s.infographic && s.infographic.type){
+      var ig = document.createElement('div');
+      ig.dataset.infographic = s.infographic.type;
+      ig.dataset.payload = JSON.stringify(s.infographic.data || {});
+      sec.appendChild(ig);
+    }
+
+    wrapper.appendChild(sec);
+    slideEls.push(sec);
+  });
+
+  // TOC
+  var tocList = _$('toc-list-' + uid);
+  if(tocList){
+    SECTIONS.forEach(function(s, i){
+      if(!s.heading) return;
+      var li = document.createElement('li');
+      li.className = 'toc-item';
+      li.dataset.slideIdx = i + 1;
+      var a = document.createElement('a');
+      a.href = '#/' + (i + 1);
+      var dot = document.createElement('span');
+      dot.className = 'toc-dot';
+      a.appendChild(dot);
+      a.appendChild(document.createTextNode(s.heading));
+      li.appendChild(a);
+      tocList.appendChild(li);
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        showSlide(parseInt(this.parentNode.dataset.slideIdx));
+      });
+    });
+  }
+
+  // Progress dots
+  var dotsContainer = _$('slide-dots');
+  if(dotsContainer && TOTAL > 1){
+    dotsContainer.classList.add('show');
+    for(var di = 0; di <= TOTAL; di++){
+      var dot = document.createElement('div');
+      dot.className = 'slide-dot';
+      dot.dataset.idx = di;
+      dot.addEventListener('click', function(){ showSlide(parseInt(this.dataset.idx)); });
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  // Update counters
+  var totalEls = document.querySelectorAll('.total');
+  for(var te = 0; te < totalEls.length; te++){
+    totalEls[te].textContent = TOTAL + 1;
+  }
+
+  // BUG-015 fix: ensure first slide is active on initial render.
+  // showSlide(0) early-returns when currentSlide is already 0,
+  // so we MUST add .active here or screen stays blank.
+  if (slideEls.length > 0 && !slideEls[0].classList.contains('active')) {
+    slideEls[0].classList.add('active');
+  }
+}
+
+/* ─── slide navigation ─── */
+function showSlide(index){
+  if(index < 0 || index >= slideEls.length) return;
+  // BUG-015 fix: was 'if(index === currentSlide) return;' which blocked
+  // first showSlide(0) call. Now bail only when target is already active.
+  if(index === currentSlide && slideEls[index].classList.contains('active')) return;
+
+  // Hide current
+  slideEls[currentSlide].classList.remove('active');
+
+  // Show new
+  currentSlide = index;
+  slideEls[currentSlide].classList.add('active');
+
+  // Re-trigger animation
+  slideEls[currentSlide].style.animation = 'none';
+  void slideEls[currentSlide].offsetHeight;
+  slideEls[currentSlide].style.animation = '';
+
+  // Update UI
+  updateUI();
+  updateHash();
+}
+
+function goSlide(delta){
+  showSlide(currentSlide + delta);
+}
+
+/* BUG-016 fix: inline onclick="goSlide(±1)" handlers on prev/next buttons
+   resolve against global scope, but goSlide/showSlide are IIFE-local.
+   Expose to window so the buttons actually navigate. */
+window.goSlide = goSlide;
+window.showSlide = showSlide;
+
+/* ─── UI ... ─── */
+function updateUI(){
+  var cur = currentSlide + 1;
+  var tot = slideEls.length;
+
+  // Counter
+  var curEls = document.querySelectorAll('#slide-cur-' + uid + ', #nav-cur-' + uid);
+  for(var i = 0; i < curEls.length; i++) curEls[i].textContent = cur;
+
+  // Buttons
+  var btnP = _$('btn-prev-' + uid);
+  var btnN = _$('btn-next-' + uid);
+  if(btnP) btnP.disabled = currentSlide === 0;
+  if(btnN) btnN.disabled = currentSlide >= tot - 1;
+
+  // TOC active
+  var tocItems = document.querySelectorAll('.toc-item');
+  for(var ti = 0; ti < tocItems.length; ti++){
+    tocItems[ti].classList.toggle('active', parseInt(tocItems[ti].dataset.slideIdx) === currentSlide);
+  }
+
+  // Dots active
+  var dots = document.querySelectorAll('.slide-dot');
+  for(var di = 0; di < dots.length; di++){
+    dots[di].classList.toggle('active', parseInt(dots[di].dataset.idx) === currentSlide);
+  }
+}
+
+/* ─── URL ... ─── */
+function updateHash(){
+  var h = currentSlide === 0 ? '' : '#/' + currentSlide;
+  if(location.hash !== h && !h && location.hash) history.replaceState(null, '', h || '.');
+  else if(location.hash !== h) history.pushState(null, '', h || '.');
+}
+
+function parseHash(){
+  try{
+    var m = location.hash.match(/#\/(\d+)/);
+    if(m){
+      var idx = parseInt(m[1]);
+      if(idx > 0 && idx < slideEls.length) showSlide(idx);
+    }
+  } catch(e){}
+}
+
+/* ─── TOC ... ─── */
+window.toggleToc = function(){
+  var sidebar = _$('toc-sidebar');
+  if(sidebar) sidebar.classList.toggle('toc-hidden');
+};
+
+/* ─── ... ─── */
+document.addEventListener('keydown', function(e){
+  var tag = (e.target || {}).tagName || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+  switch(e.key){
+    case 'ArrowRight':
+    case ' ':
+      e.preventDefault();
+      goSlide(1);
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      goSlide(-1);
+      break;
+    case 'Home':
+      e.preventDefault();
+      showSlide(0);
+      break;
+    case 'End':
+      e.preventDefault();
+      showSlide(slideEls.length - 1);
+      break;
+    case 'Escape':
+      e.preventDefault();
+      toggleToc();
+      break;
+  }
+});
+
+/* ─── ... ... ─── */
+(function(){
+  var tx = 0;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 50) goSlide(dx < 0 ? 1 : -1);
+  });
+})();
+
+/* ─── ... ... ─── */
+window.addEventListener('popstate', function(){
+  parseHash();
+});
+
+/* ─── Particle system ─── */
+(function(){
+  var canvas = _$('particle-canvas');
+  if(!canvas) return;
+  // Performance gate (Article 13 wrapper duty): kill in slide/narrate mode
+  // and respect prefers-reduced-motion + low-end devices.
+  var qs = new URLSearchParams(window.location.search);
+  var mode = qs.get('mode');
+  var reducedMotion = window.matchMedia &&
+                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var slowDevice = (navigator.deviceMemory && navigator.deviceMemory < 4) ||
+                   (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4);
+  if (mode === 'slide' || mode === 'narrate' || reducedMotion || slowDevice) {
+    canvas.style.display = 'none';
+    canvas.remove();  // free CPU completely
+    return;
+  }
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var W, H;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  var COLORS = ['rgba(212,175,55,', 'rgba(52,211,153,', 'rgba(96,165,250,'];
+  function Particle(){ this.reset(); }
+  Particle.prototype.reset = function(){
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.r = Math.random() * 1.4 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.18;
+    this.vy = (Math.random() - 0.5) * 0.14 - 0.05;
+    this.a = Math.random() * 0.5 + 0.1;
+    this.da = (Math.random() - 0.5) * 0.003;
+    this.col = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.pulse = Math.random() * Math.PI * 2;
+  };
+  Particle.prototype.update = function(){
+    this.x += this.vx; this.y += this.vy; this.a += this.da; this.pulse += 0.02;
+    if(this.a < 0.04 || this.a > 0.65) this.da *= -1;
+    if(this.x < -10) this.x = W + 10; if(this.x > W+10) this.x = -10;
+    if(this.y < -10) this.y = H + 10; if(this.y > H+10) this.y = -10;
+  };
+  Particle.prototype.draw = function(){
+    var r = this.r * (1 + Math.sin(this.pulse) * 0.25);
+    ctx.beginPath(); ctx.arc(this.x, this.y, r, 0, Math.PI*2);
+    ctx.fillStyle = this.col + this.a + ')'; ctx.fill();
+  };
+
+  var N = Math.min(60, Math.floor(W * H / 16000));
+  for(var pi=0; pi<N; pi++) particles.push(new Particle());
+
+  function drawLines(){
+    var MAX_D = 120;
+    for(var i=0;i<particles.length;i++){
+      for(var j=i+1;j<particles.length;j++){
+        var dx = particles[i].x - particles[j].x;
+        var dy = particles[i].y - particles[j].y;
+        var d = Math.sqrt(dx*dx+dy*dy);
+        if(d < MAX_D){
+          var alpha = (1 - d/MAX_D) * 0.08;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(212,175,55,' + alpha + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  var raf;
+  function animLoop(){
+    ctx.clearRect(0,0,W,H); drawLines();
+    particles.forEach(function(p){ p.update(); p.draw(); });
+    raf = requestAnimationFrame(animLoop);
+  }
+  animLoop();
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) cancelAnimationFrame(raf);
+    else animLoop();
+  });
+})();
+
+/* ─── Init ─── */
+renderSlides();
+showSlide(0);
+setTimeout(parseHash, 100);
+
+/* ════════════════════════════════════════════════════════════════
+   Parksy v2 enhancements — runs AFTER renderSlides()
+   ════════════════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', function _v2Init(){
+  // Enhance all .art-body elements: ``` code blocks → Prism, **bold**, variables
+  enhanceArticleBodies();
+  // Embed infographics (data-infographic markup)
+  embedInfographics();
+  // Wire variable inputs (data-var → reactive)
+  wireVariableInputs();
+  // Wire cost-footer click
+  wireCostFooter();
+  // Wire skip link focus jump
+  wireSkipLink();
+  // Update slide-mode aria-live
+  hookSlideAnnouncer();
+});
+
+function enhanceArticleBodies(){
+  /* Simplified: codeblock conversion moved to renderSlides().
+     This function now only triggers Prism highlighting on existing
+     art-codeblock elements. No textContent re-processing needed. */
+  if(window.Prism){
+    document.querySelectorAll('.art-codeblock pre code').forEach(function(c){
+      try{ Prism.highlightElement(c); }catch(e){}
+    });
+  }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+window.copyCodeBlock = function(btn){
+  var pre = btn.closest('.art-codeblock').querySelector('pre code');
+  var text = pre.textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    var orig = btn.textContent;
+    btn.textContent = '복사됨';
+    setTimeout(function(){ btn.textContent = orig; }, 1500);
+  }).catch(function(){
+    btn.textContent = '복사 실패';
+  });
+};
+
+function embedInfographics(){
+  document.querySelectorAll('[data-infographic]').forEach(function(el){
+    if(el.dataset.v2Embedded) return;
+    el.dataset.v2Embedded = '1';
+    var type = el.dataset.infographic;
+    var dataAttr = el.dataset.payload || '{}';
+    var data;
+    try{ data = JSON.parse(dataAttr); }catch(e){ data = {}; }
+    el.classList.add('art-infographic');
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', 'Infographic: ' + type);
+    renderInfographic(el, type, data);
+  });
+}
+
+/* Inline render — all 13 infographic types (Constitution D-010 phase-2 complete). */
+function renderInfographic(container, type, data){
+  if(type === 'custom_svg')     return renderCustomSvg(container, data);
+  if(type === 'stat_counter')   return renderStatCounter(container, data);
+  if(type === 'flowchart')      return renderFlowchart(container, data);
+  if(type === 'vs_compare')     return renderVsCompare(container, data);
+  if(type === 'zoom_detail')    return renderZoomDetail(container, data);
+  if(type === 'timeline')       return renderTimeline(container, data);
+  if(type === 'node_map')       return renderNodeMapSimple(container, data);
+  if(type === 'orbit_diagram')  return renderOrbitDiagram(container, data);
+  if(type === 'accordion')      return renderAccordion(container, data);
+  if(type === 'dashboard')      return renderDashboard(container, data);
+  if(type === 'landing_page')   return renderLandingHero(container, data);
+  if(type === 'matrix_grid')    return renderMatrixGrid(container, data);
+  if(type === 'pipeline_stack') return renderPipelineStack(container, data);
+  if(type === 'article_page')   return renderArticleCard(container, data);
+  container.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px;">'
+    + 'Unknown infographic type "<strong>'+escapeHtml(type)+'</strong>".</div>';
+}
+
+function renderCustomSvg(c, d){
+  // D-029: LLM이 콘텐츠 맞춤 SVG/HTML 직접 생성한 거 그대로 박음
+  // 안전 검증은 Python에서 이미 완료 (script src/onclick/javascript: 차단)
+  var html = (d && d.html) || '';
+  if(!html){
+    c.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px;">custom_svg data missing</div>';
+    return;
+  }
+  c.innerHTML = html;
+}
+
+function renderStatCounter(c, d){
+  var stats = (d && d.stats) || [];
+  var grid = document.createElement('div');
+  grid.style.display = 'grid';
+  grid.style.gridTemplateColumns = 'repeat(auto-fit,minmax(140px,1fr))';
+  grid.style.gap = '12px';
+  stats.forEach(function(s){
+    var card = document.createElement('div');
+    card.style.cssText = 'background:rgba(212,175,55,.06);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;';
+    card.innerHTML = '<div style="font-size:28px;font-weight:900;color:var(--gold);">'+escapeHtml(s.value||'')+'</div>'
+      + '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;">'+escapeHtml(s.label||'')+'</div>'
+      + (s.delta ? '<div style="font-size:11px;color:var(--green);margin-top:4px;">'+escapeHtml(s.delta)+'</div>' : '')
+      + (typeof s.bar==='number' ? '<div style="height:3px;background:var(--border);margin-top:8px;border-radius:2px;overflow:hidden;"><div style="height:100%;background:var(--gold);width:'+s.bar+'%;"></div></div>' : '');
+    grid.appendChild(card);
+  });
+  c.appendChild(grid);
+}
+
+function renderFlowchart(c, d){
+  var steps = (d && d.steps) || [];
+  var col = document.createElement('div');
+  col.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+  steps.forEach(function(s, i){
+    var box = document.createElement('div');
+    var typeColor = s.type==='start' ? 'var(--green)'
+                  : s.type==='end' ? 'var(--gold)'
+                  : s.type==='decision' ? 'var(--yellow)' : 'var(--blue)';
+    box.style.cssText = 'background:rgba(255,255,255,.03);border:1.5px solid '+typeColor+';border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;';
+    box.innerHTML = '<div style="flex:1;min-width:0;"><strong style="color:'+typeColor+';word-break:keep-all;">'+escapeHtml(s.label||'')+'</strong>'
+      + (s.sub ? '<div style="font-size:11px;color:var(--muted);margin-top:2px;word-break:keep-all;">'+escapeHtml(s.sub)+'</div>' : '') + '</div>'
+      + '<span style="font-size:10px;color:var(--muted);flex-shrink:0;">'+(s.type||'step')+'</span>';
+    col.appendChild(box);
+    if(i < steps.length - 1){
+      var arrow = document.createElement('div');
+      arrow.style.cssText = 'text-align:center;color:var(--muted);font-size:14px;';
+      arrow.textContent = '↓';
+      col.appendChild(arrow);
+    }
+  });
+  c.appendChild(col);
+}
+
+function renderVsCompare(c, d){
+  var L = (d && d.left) || {title:'Before',items:[]};
+  var R = (d && d.right) || {title:'After',items:[]};
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:1fr 32px 1fr;gap:8px;align-items:start;';
+  function side(s, accent){
+    var col = document.createElement('div');
+    col.innerHTML = '<div style="font-size:11px;font-weight:700;color:'+accent+';text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">'+escapeHtml(s.title||'')+'</div>'
+      + (s.items||[]).map(function(it){
+          return '<div style="background:rgba(255,255,255,.03);border-left:2px solid '+accent+';padding:8px 10px;margin-bottom:4px;border-radius:0 4px 4px 0;font-size:12px;">'+escapeHtml(it.label||'')+
+                 (it.desc ? '<div style="color:var(--muted);font-size:10px;margin-top:2px;">'+escapeHtml(it.desc)+'</div>' : '')+'</div>';
+        }).join('');
+    return col;
+  }
+  grid.appendChild(side(L, 'var(--red,#F87171)'));
+  var vs = document.createElement('div');
+  vs.style.cssText = 'text-align:center;font-weight:700;color:var(--gold);font-size:16px;padding-top:24px;';
+  vs.textContent = 'VS';
+  grid.appendChild(vs);
+  grid.appendChild(side(R, 'var(--green)'));
+  c.appendChild(grid);
+}
+
+function renderZoomDetail(c, d){
+  var blocks = (d && d.blocks) || [];
+  blocks.forEach(function(b){
+    var lines = (b.code||'').split('\n');
+    var hl = b.highlight_lines || [];
+    var lineHtml = lines.map(function(line, i){
+      var n = i+1;
+      var cls = hl.indexOf(n) !== -1 ? ' style="background:rgba(212,175,55,.18);"' : '';
+      return '<div'+cls+'><span style="color:var(--muted);user-select:none;display:inline-block;width:30px;text-align:right;margin-right:12px;">'+n+'</span>'+escapeHtml(line)+'</div>';
+    }).join('');
+    var div = document.createElement('div');
+    div.className = 'art-codeblock';
+    div.innerHTML = '<div class="art-codeblock-header">'
+      + '<span class="art-codeblock-lang">'+escapeHtml(b.lang||'text')+'</span>'
+      + (b.label ? '<span style="color:var(--muted);">'+escapeHtml(b.label)+'</span>' : '')
+      + '</div><pre style="font-family:var(--mono);">'+lineHtml+'</pre>'
+      + (b.desc ? '<div style="padding:8px 12px;background:rgba(255,255,255,.02);font-size:11px;color:var(--muted);border-top:1px solid var(--border);">'+escapeHtml(b.desc)+'</div>' : '');
+    c.appendChild(div);
+  });
+}
+
+function renderTimeline(c, d){
+  var events = (d && d.events) || [];
+  var col = document.createElement('div');
+  col.style.cssText = 'position:relative;padding-left:24px;border-left:2px solid var(--gold);';
+  events.forEach(function(e){
+    var item = document.createElement('div');
+    item.style.cssText = 'position:relative;margin-bottom:16px;';
+    item.innerHTML = '<div style="position:absolute;left:-30px;top:4px;width:10px;height:10px;background:'+(e.done?'var(--green)':'var(--gold)')+';border-radius:50%;"></div>'
+      + '<div style="font-size:11px;color:var(--muted);font-family:var(--mono);">'+escapeHtml(e.date||'')+'</div>'
+      + '<div style="font-weight:700;color:var(--text);margin-top:2px;">'+escapeHtml(e.label||'')+'</div>'
+      + (e.desc ? '<div style="font-size:12px;color:var(--muted);margin-top:4px;">'+escapeHtml(e.desc)+'</div>' : '');
+    col.appendChild(item);
+  });
+  c.appendChild(col);
+}
+
+function renderNodeMapSimple(c, d){
+  // Simplified inline: just SVG with circles + lines (full force-directed in node_map.html)
+  var W = 360, H = 220;
+  var nodes = (d && d.nodes) || [];
+  var links = (d && d.links) || [];
+  // place nodes in a circle
+  var cx = W/2, cy = H/2, r = 80;
+  var positioned = nodes.map(function(n, i){
+    var theta = (i / nodes.length) * 2 * Math.PI - Math.PI/2;
+    return {x: n.root ? cx : cx + r*Math.cos(theta),
+            y: n.root ? cy : cy + r*Math.sin(theta),
+            label: n.label, root: !!n.root, idx: i, id: n.id};
+  });
+  function findIdx(ref){
+    if(typeof ref === 'number') return ref;
+    return positioned.findIndex(function(p){return p.id === ref;});
+  }
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-height:240px;display:block;">';
+  links.forEach(function(l){
+    var s = positioned[findIdx(l.source)], t = positioned[findIdx(l.target)];
+    if(!s || !t) return;
+    svg += '<line x1="'+s.x+'" y1="'+s.y+'" x2="'+t.x+'" y2="'+t.y+'" stroke="rgba(212,175,55,.4)" stroke-width="1.5" />';
+  });
+  positioned.forEach(function(p){
+    var rx = p.root ? 9 : 5;
+    svg += '<circle cx="'+p.x+'" cy="'+p.y+'" r="'+rx+'" fill="'+(p.root?'var(--gold)':'var(--green)')+'" />';
+    svg += '<text x="'+(p.x)+'" y="'+(p.y - rx - 4)+'" font-size="10" fill="var(--text)" text-anchor="middle">'+escapeHtml(p.label||'')+'</text>';
+  });
+  svg += '</svg>';
+  c.innerHTML = svg;
+}
+
+/* ── BUG-016/D-010 phase-2: 7 new infographic types ────────────────────── */
+
+function renderOrbitDiagram(c, d){
+  var W = 360, H = 260;
+  /* Handle both LLM format ({core, orbits[{label,desc}]}) and renderer format ({center:{label}, orbits[{nodes:[{label}]}]}) */
+  var centerLabel = (d && (d.center ? d.center.label : d.core)) || 'Core';
+  var orbits = (d && d.orbits) || [];
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-height:280px;display:block;">';
+  var cx = W/2, cy = H/2;
+  orbits.forEach(function(o, i){
+    var r = 50 + i*32;
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(212,175,55,.18)" stroke-dasharray="3 4" />';
+    /* Support both o.nodes[] (renderer format) and direct label (LLM format) */
+    var nodes = o.nodes || (o.label ? [{label: o.label, desc: o.desc}] : []);
+    nodes.forEach(function(n, j){
+      var theta = (j / nodes.length) * 2 * Math.PI + i * 0.4;
+      var x = cx + r*Math.cos(theta), y = cy + r*Math.sin(theta);
+      svg += '<circle cx="'+x+'" cy="'+y+'" r="6" fill="var(--gold)"><title>'+escapeHtml(n.label||'')+'</title></circle>';
+      svg += '<text x="'+x+'" y="'+(y - 10)+'" font-size="10" fill="var(--text)" text-anchor="middle">'+escapeHtml(n.label||'')+'</text>';
+    });
+  });
+  svg += '<circle cx="'+cx+'" cy="'+cy+'" r="14" fill="var(--gold)" />';
+  svg += '<text x="'+cx+'" y="'+(cy+4)+'" font-size="10" fill="#0A1A0F" text-anchor="middle" font-weight="700">'+escapeHtml(centerLabel)+'</text>';
+  svg += '</svg>';
+  /* Add orbit labels as a legend below the SVG */
+  var legendHtml = '';
+  orbits.forEach(function(o, i){
+    var label = o.label || (o.nodes && o.nodes.length ? o.nodes[0].label : '');
+    var desc = o.desc || (o.nodes && o.nodes.length ? o.nodes[0].desc : '');
+    if(label){
+      legendHtml += '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);margin-top:4px;">'
+        + '<span style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;"></span>'
+        + '<strong style="color:var(--gold);">'+escapeHtml(label)+'</strong>'
+        + (desc ? '<span style="color:var(--muted);">'+escapeHtml(desc)+'</span>' : '')
+        + '</div>';
+    }
+  });
+  if(legendHtml) c.innerHTML = svg + '<div style="padding:4px 0;">'+legendHtml+'</div>';
+  else c.innerHTML = svg;
+}
+
+function renderAccordion(c, d){
+  var items = (d && d.items) || [];
+  var col = document.createElement('div');
+  col.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
+  items.forEach(function(it, i){
+    var det = document.createElement('details');
+    if(i === 0) det.open = true;
+    det.style.cssText = 'background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:0;overflow:hidden;';
+    var sum = document.createElement('summary');
+    sum.style.cssText = 'padding:10px 14px;cursor:pointer;font-weight:700;color:var(--gold);list-style:none;display:flex;justify-content:space-between;align-items:center;';
+    sum.innerHTML = '<span>'+escapeHtml(it.title||('Item '+(i+1)))+'</span><span style="color:var(--muted);font-size:11px;">'+(it.tag ? escapeHtml(it.tag) : '▾')+'</span>';
+    det.appendChild(sum);
+    var body = document.createElement('div');
+    body.style.cssText = 'padding:8px 14px 12px;font-size:13px;color:var(--text);border-top:1px solid var(--border);';
+    body.innerHTML = escapeHtml(it.body||'');
+    det.appendChild(body);
+    col.appendChild(det);
+  });
+  c.appendChild(col);
+}
+
+function renderDashboard(c, d){
+  var kpis = (d && d.kpis) || [];
+  var grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;';
+  kpis.forEach(function(k){
+    var card = document.createElement('div');
+    var trend = k.trend === 'up' ? 'var(--green)' : k.trend === 'down' ? '#FF8A8A' : 'var(--muted)';
+    var arrow = k.trend === 'up' ? '▲' : k.trend === 'down' ? '▼' : '▬';
+    card.style.cssText = 'background:rgba(212,175,55,.05);border:1px solid var(--border);border-radius:10px;padding:12px;';
+    card.innerHTML = '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;">'+escapeHtml(k.label||'')+'</div>'
+      + '<div style="font-size:24px;font-weight:900;color:var(--gold);margin-top:4px;font-family:var(--mono);">'+escapeHtml(k.value||'—')+'</div>'
+      + '<div style="font-size:11px;color:'+trend+';margin-top:4px;">'+arrow+' '+escapeHtml(k.delta||'')+'</div>'
+      + (typeof k.bar === 'number' ? '<div style="height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden;"><div style="height:100%;width:'+k.bar+'%;background:'+trend+';"></div></div>' : '');
+    grid.appendChild(card);
+  });
+  c.appendChild(grid);
+}
+
+function renderLandingHero(c, d){
+  var hero = (d && d.hero) || {};
+  var feats = (d && d.features) || [];
+  var ctas = (d && d.ctas) || [];
+  var box = document.createElement('div');
+  box.style.cssText = 'background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(93,217,165,.05));border:1px solid var(--gold);border-radius:12px;padding:18px;';
+  box.innerHTML = '<div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.15em;">'+escapeHtml(hero.eyebrow||'Landing')+'</div>'
+    + '<div style="font-size:22px;font-weight:900;color:var(--text);margin-top:6px;line-height:1.25;">'+escapeHtml(hero.title||'')+'</div>'
+    + '<div style="font-size:13px;color:var(--muted);margin-top:8px;">'+escapeHtml(hero.subtitle||'')+'</div>';
+  if(feats.length){
+    var fg = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;">';
+    feats.forEach(function(f){
+      fg += '<div style="background:rgba(255,255,255,.03);border-left:2px solid var(--green);padding:8px 10px;border-radius:0 6px 6px 0;">'
+         + '<div style="font-size:12px;font-weight:700;color:var(--green);">'+escapeHtml(f.label||'')+'</div>'
+         + (f.desc?'<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+escapeHtml(f.desc)+'</div>':'')+'</div>';
+    });
+    fg += '</div>';
+    box.innerHTML += fg;
+  }
+  if(ctas.length){
+    var cg = '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">';
+    ctas.forEach(function(b, i){
+      var primary = i === 0;
+      cg += '<button class="art-cta" data-href="'+escapeHtml(b.href||'#')+'" style="'
+         + 'background:'+(primary?'var(--gold)':'transparent')+';color:'+(primary?'#0A1A0F':'var(--gold)')+';'
+         + 'border:1.5px solid var(--gold);border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:13px;">'
+         + escapeHtml(b.label||'CTA')+'</button>';
+    });
+    cg += '</div>';
+    box.innerHTML += cg;
+  }
+  c.appendChild(box);
+}
+
+function renderMatrixGrid(c, d){
+  var rows = (d && d.rows) || [];
+  var cols = (d && d.cols) || [];
+  var cells = (d && d.cells) || {};
+  if(!rows.length || !cols.length){ c.innerHTML = '<div style="color:var(--muted);font-size:12px;">matrix_grid: rows/cols required</div>'; return; }
+
+  // Mobile fallback: > 4 columns OR viewport < 480px → render as row-grouped cards
+  var narrow = (window.innerWidth || 0) < 480;
+  var tooWide = cols.length > 4;
+  if (narrow || tooWide) {
+    var fallback = '<div style="display:flex;flex-direction:column;gap:10px;">';
+    rows.forEach(function(row){
+      fallback += '<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 12px;">'
+        + '<div style="font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">'+escapeHtml(row)+'</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;">';
+      cols.forEach(function(col){
+        var key = row + '|' + col;
+        var v = cells[key];
+        var content = '—'; var border = 'var(--border)';
+        if (v && typeof v === 'object') {
+          content = v.value || v.label || '✓';
+          if (v.score === 'high') border = 'var(--green)';
+          else if (v.score === 'low') border = '#FF8A8A';
+          else if (v.score === 'mid') border = 'var(--yellow)';
+        } else if (v != null) { content = String(v); }
+        fallback += '<div style="background:rgba(255,255,255,.02);border-left:2px solid '+border+';padding:6px 8px;border-radius:0 4px 4px 0;font-size:11px;">'
+          + '<div style="color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em;">'+escapeHtml(col)+'</div>'
+          + '<div style="color:var(--text);margin-top:2px;font-weight:600;">'+escapeHtml(content)+'</div>'
+          + '</div>';
+      });
+      fallback += '</div></div>';
+    });
+    fallback += '</div>';
+    c.innerHTML = fallback;
+    return;
+  }
+
+  // Desktop / narrow data: 정규 표 (≤ 4 컬럼)
+  var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  html += '<thead><tr><th style="padding:8px;border-bottom:2px solid var(--gold);text-align:left;color:var(--gold);"></th>';
+  cols.forEach(function(col){
+    html += '<th style="padding:8px;border-bottom:2px solid var(--gold);text-align:center;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">'+escapeHtml(col)+'</th>';
+  });
+  html += '</tr></thead><tbody>';
+  rows.forEach(function(row){
+    html += '<tr><th style="padding:8px;text-align:left;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">'+escapeHtml(row)+'</th>';
+    cols.forEach(function(col){
+      var key = row + '|' + col;
+      var v = cells[key];
+      var bg = '';
+      var content = '—';
+      if(v && typeof v === 'object'){
+        content = v.value || v.label || '✓';
+        if(v.score === 'high') bg = 'background:rgba(93,217,165,.2);';
+        else if(v.score === 'low') bg = 'background:rgba(255,138,138,.15);';
+        else if(v.score === 'mid') bg = 'background:rgba(212,175,55,.15);';
+      } else if(v != null) {
+        content = String(v);
+      }
+      html += '<td style="padding:8px;text-align:center;border-bottom:1px solid var(--border);'+bg+'">'+escapeHtml(content)+'</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  c.innerHTML = html;
+}
+
+function renderPipelineStack(c, d){
+  /* BUG-019 fix: LLM generates d.layers[{label, items:[{name,desc}]}]
+     but renderer expected d.stages[{label,desc,done,metric}].
+     Handle both formats. */
+  var stages = (d && (d.stages || d.layers)) || [];
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;flex-wrap:wrap;align-items:stretch;gap:0;';
+  stages.forEach(function(s, i){
+    var box = document.createElement('div');
+    var done = !!s.done;
+    /* If s has items[] (LLM layers format), extract desc from items */
+    var stageLabel = s.label || (s.name || '');
+    var stageDesc = s.desc || '';
+    if(s.items && s.items.length){
+      stageDesc = s.items.map(function(it){ return it.label || it.name || it.desc || ''; }).join(' → ');
+    }
+    box.style.cssText = 'flex:1 1 140px;min-width:120px;background:'+(done?'rgba(93,217,165,.08)':'rgba(212,175,55,.05)')+';'
+      + 'border:1px solid '+(done?'var(--green)':'var(--gold)')+';border-radius:8px;padding:10px;margin:4px;position:relative;';
+    box.innerHTML = '<div style="font-size:10px;color:var(--muted);font-family:var(--mono);">P'+(i+1)+(done?' ✓':'')+'</div>'
+      + '<div style="font-size:13px;font-weight:700;color:'+(done?'var(--green)':'var(--gold)')+';margin-top:4px;">'+escapeHtml(stageLabel)+'</div>'
+      + (stageDesc?'<div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;">'+escapeHtml(stageDesc)+'</div>':'')
+      + (s.metric?'<div style="font-size:10px;color:var(--text);margin-top:6px;font-family:var(--mono);">'+escapeHtml(s.metric)+'</div>':'');
+    row.appendChild(box);
+  });
+  c.appendChild(row);
+}
+
+function renderArticleCard(c, d){
+  var title = (d && d.title) || 'Article';
+  var meta = (d && d.meta) || {};
+  var paragraphs = (d && d.paragraphs) || [];
+  var card = document.createElement('article');
+  card.style.cssText = 'background:rgba(255,255,255,.02);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:16px;';
+  var html = '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;">'
+    + escapeHtml(meta.section||'Article')
+    + (meta.date ? ' · <span style="font-family:var(--mono);">'+escapeHtml(meta.date)+'</span>' : '') + '</div>'
+    + '<h4 style="font-size:18px;font-weight:800;color:var(--text);margin:0 0 10px;line-height:1.3;">'+escapeHtml(title)+'</h4>';
+  paragraphs.forEach(function(p){
+    html += '<p style="font-size:13px;color:var(--text);line-height:1.65;margin:0 0 8px;">'+escapeHtml(p)+'</p>';
+  });
+  if(meta.tags && meta.tags.length){
+    html += '<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px;">'
+      + meta.tags.map(function(t){
+          return '<span style="font-size:10px;background:rgba(212,175,55,.12);color:var(--gold);padding:2px 8px;border-radius:10px;font-family:var(--mono);">#'+escapeHtml(t)+'</span>';
+        }).join('')
+      + '</div>';
+  }
+  card.innerHTML = html;
+  c.appendChild(card);
+}
+
+function wireVariableInputs(){
+  var inputs = document.querySelectorAll('input[data-var]');
+  var state = {};
+  // Load from localStorage
+  try{
+    var saved = localStorage.getItem('parksy_vars_2b0e3d13');
+    if(saved) state = JSON.parse(saved);
+  }catch(e){}
+  inputs.forEach(function(inp){
+    var name = inp.dataset.var;
+    if(state[name] !== undefined) inp.value = state[name];
+    inp.addEventListener('input', function(){
+      state[name] = inp.value;
+      try{ localStorage.setItem('parksy_vars_2b0e3d13', JSON.stringify(state)); }catch(e){}
+      // Replace {{name}} occurrences in slide bodies
+      document.querySelectorAll('[data-bind="'+name+'"]').forEach(function(el){
+        el.textContent = inp.value;
+      });
+    });
+    // Trigger initial substitution
+    inp.dispatchEvent(new Event('input'));
+  });
+}
+
+function wireCostFooter(){
+  var f = document.getElementById('cost-footer');
+  if(!f) return;
+  f.addEventListener('click', function(){
+    var meta = window.PARKSY_META || {build_cost: {estimated_usd: 0}};
+    var cost = meta.build_cost || {};
+    alert('Build cost transparency:\n\n'
+      + 'Models: ' + (cost.models_used||['Claude']).join(', ') + '\n'
+      + 'Tokens: ' + JSON.stringify(cost.tokens || {}) + '\n'
+      + 'Estimated USD: $' + (cost.estimated_usd || 0).toFixed(2) + '\n'
+      + 'Wall time: ' + (cost.wallclock_seconds || 0) + 's\n\n'
+      + 'This page was machine-built. Source: github.com/dtslib1979/parksy-image');
+  });
+}
+
+function wireSkipLink(){
+  var skip = document.querySelector('.skip-link');
+  if(!skip) return;
+  skip.addEventListener('click', function(e){
+    e.preventDefault();
+    var target = document.getElementById('main-content');
+    if(target){
+      target.setAttribute('tabindex', '-1');
+      target.focus();
+    }
+  });
+}
+
+function hookSlideAnnouncer(){
+  var status = document.getElementById('a11y-status');
+  if(!status) return;
+  // Hook into existing showSlide if available; otherwise observe slide-wrapper
+  var wrapper = document.getElementById('slide-wrapper-2b0e3d13');
+  if(!wrapper) return;
+  var observer = new MutationObserver(function(){
+    var active = wrapper.querySelector('.slide.active');
+    if(active){
+      var heading = active.querySelector('h1, h2, .art-heading');
+      if(heading) status.textContent = 'Slide: ' + heading.textContent;
+    }
+  });
+  observer.observe(wrapper, {attributes: true, subtree: true, attributeFilter: ['class']});
+}
+
+})();
+</script>
+
+<!-- Prism.js — defer + autoloader: only loads what page actually uses (1 RTT instead of 7) -->
+<script defer
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"
+        crossorigin="anonymous"></script>
+<script defer
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"
+        crossorigin="anonymous"></script>
+<style id="d028-entry-anim">
+/* D-028: S2.5 진입 애니 (chrome 0 / 박씨 미니멀) */
+.slide{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.25,.46,.45,.94),transform .8s cubic-bezier(.25,.46,.45,.94)}
+.slide.in-view,.slide.active{opacity:1;transform:translateY(0)}
+.art-infographic{opacity:0;transform:translateY(24px) scale(.96);transition:opacity .9s .2s cubic-bezier(.25,.46,.45,.94),transform .9s .2s cubic-bezier(.25,.46,.45,.94)}
+.slide.in-view .art-infographic,.slide.active .art-infographic{opacity:1;transform:translateY(0) scale(1)}
+.art-heading{opacity:0;transform:translateX(-20px);transition:opacity .7s .1s,transform .7s .1s}
+.slide.in-view .art-heading,.slide.active .art-heading{opacity:1;transform:translateX(0)}
+.art-body{opacity:0;transition:opacity .8s .15s}
+.slide.in-view .art-body,.slide.active .art-body{opacity:1}
+</style>
+<script id="d028-entry-js">
+(function(){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting) e.target.classList.add('in-view');});
+  }, {threshold:[0,.15,.4], rootMargin:'-5% 0px -5% 0px'});
+  function init(){
+    var slides = document.querySelectorAll('.slide');
+    slides.forEach(function(s){ io.observe(s); });
+    if(slides[0]) slides[0].classList.add('in-view');
+    var orig = window.showSlide;
+    if(typeof orig === 'function'){
+      window.showSlide = function(i){orig(i); if(slides[i]) slides[i].classList.add('in-view');};
+    }
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else { setTimeout(init, 50); }
+})();
+</script>
+</body>
+</html>
